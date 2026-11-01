@@ -21,12 +21,14 @@
       `move()` zu - ungetestet ist es trotzdem.
 - [ ] `.desktop`-Datei und Symbolpfade unter Cinnamon prüfen
 
-## Offene Wünsche aus den Einstellungen
+## Entschieden
 
-- [ ] Feiertage/Ferien: kein eigener Code nötig (siehe README) - das läuft
-      über einen zusätzlichen abonnierten Kalender in Thunderbird. Prüfen,
-      ob der Hinweis im README reicht oder ein Assistent in der GUI
-      sinnvoller wäre.
+- Feiertage/Ferien: kein eigener Code - läuft über einen zusätzlich in
+  Thunderbird abonnierten Kalender (siehe README). Ein Picker oder
+  automatisches Eintragen in `prefs.js` wurde erwogen und verworfen: hätte
+  die Zusage „nur lesen, nie schreiben" gebrochen und riskiert, dass
+  Thunderbird die Änderung beim nächsten eigenen Schreibvorgang wieder
+  überschreibt.
 
 ## Pflege
 
