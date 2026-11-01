@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import sys
 
+_sperrdatei = None   # muss offen bleiben, solange der Vorgang läuft
+
 
 def _pyqt_da() -> bool:
     try:
@@ -11,6 +13,32 @@ def _pyqt_da() -> bool:
     except ImportError:
         return False
     return True
+
+
+def _einzelinstanz() -> bool:
+    """Verhindert eine zweite gleichzeitige Oberfläche.
+
+    Eine Datei-Sperre statt einer PID-Datei, weil sie das Betriebssystem
+    selbst wieder freigibt - auch wenn der Vorgang abstürzt oder gewaltsam
+    beendet wird, bleibt keine Leiche zurück.
+    """
+    global _sperrdatei
+    import fcntl
+
+    from .. import paths
+
+    paths.lege_ordner_an()
+    _sperrdatei = open(paths.zustand_ordner() / "oberflaeche.lock", "w")
+    try:
+        fcntl.flock(_sperrdatei, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        return False
+    return True
+
+
+def _bereits_offen_hinweis() -> None:
+    print("KALENDERBlick läuft schon - ein zweites Fenster würde sich "
+          "doppeln.", file=sys.stderr)
 
 
 def _app():
@@ -26,6 +54,9 @@ def starte_fenster() -> int:
     if not _pyqt_da():
         print("PyQt6 fehlt. Installation: pip install PyQt6", file=sys.stderr)
         return 4
+    if not _einzelinstanz():
+        _bereits_offen_hinweis()
+        return 5
     from .fenster import HauptFenster
     app = _app()
     fenster = HauptFenster()
@@ -37,6 +68,9 @@ def starte_symbol() -> int:
     if not _pyqt_da():
         print("PyQt6 fehlt. Installation: pip install PyQt6", file=sys.stderr)
         return 4
+    if not _einzelinstanz():
+        _bereits_offen_hinweis()
+        return 5
     from PyQt6.QtWidgets import QApplication
     from .symbol import KalenderSymbol
     app = _app()
@@ -54,6 +88,9 @@ def starte_alles() -> int:
     if not _pyqt_da():
         print("PyQt6 fehlt. Installation: pip install PyQt6", file=sys.stderr)
         return 4
+    if not _einzelinstanz():
+        _bereits_offen_hinweis()
+        return 5
 
     from PyQt6.QtWidgets import QApplication
     from .desktop import SchreibtischFenster
