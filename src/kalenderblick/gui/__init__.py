@@ -1,4 +1,4 @@
-"""Oberfläche - noch nicht gebaut.
+"""Oberfläche von KALENDERBlick - noch nicht gebaut.
 
 Der Entwurf steht in uebergabe-kalenderblick.md.
 """

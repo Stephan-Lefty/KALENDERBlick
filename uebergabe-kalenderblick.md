@@ -1,4 +1,4 @@
-# Übergabe an den Code-Tab: kalenderblick
+# Übergabe an den Code-Tab: KALENDERBlick
 
 Stand: 01.11.2026. Geschrieben im Cowork-Tab, dort ohne Zugriff auf Stephans
 Rechner, auf seine Thunderbird-Daten und ohne Bildschirm für die Oberfläche.
@@ -123,7 +123,8 @@ Besseres anbieten – Plasma 6.7 ist neuer als mein Kenntnisstand.
 
 ## Danach
 
-* `packaging/kalenderblick.desktop` für den Autostart
+* `packaging/kalenderblick.desktop` für den Autostart, mit
+  `Name=KALENDERBlick`
 * PKGBUILD, wie bei `storage-box-sync`
 * Repository anlegen:
   ```bash
@@ -132,6 +133,11 @@ Besseres anbieten – Plasma 6.7 ist neuer als mein Kenntnisstand.
   ```
 
 ## Zusammenhang
+
+Die Anwendung heißt **KALENDERBlick**; Paket, Befehl und Modul heißen
+kleingeschrieben `kalenderblick`, weil Python und die Kommandozeile das so
+wollen. Fenstertitel, Leistensymbol und Startmenü tragen die große
+Schreibweise.
 
 Dieses Werkzeug ist aus einer Frage entstanden: Proton Calendar hat keine
 Desktop-App und kein CalDAV. Stephan abonniert den Proton-Freigabe-Link in

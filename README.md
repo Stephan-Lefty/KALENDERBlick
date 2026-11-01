@@ -1,4 +1,4 @@
-# kalenderblick
+# KALENDERBlick
 
 Zeigt die Termine aus **Thunderbird** auf dem Schreibtisch und in der
 Kontrollleiste – ohne Thunderbird offen zu haben und ohne Zugangsdaten
@@ -10,7 +10,7 @@ Gedacht für Manjaro mit KDE Plasma.
 
 Weil keines von beiden an Thunderbirds Daten kommt. Rainlendar liest
 iCalendar-Dateien, das Plasma-Widget „Event Calendar" kann Google und ICS –
-Thunderbirds eigene Ablage kann keines von beiden. `kalenderblick` geht genau
+Thunderbirds eigene Ablage kann keines von beiden. KALENDERBlick geht genau
 dorthin: an die SQLite-Dateien im Profil. Damit siehst du **alle** Kalender auf
 einmal, auch rein örtliche, und zwar genau so, wie Thunderbird sie kennt.
 

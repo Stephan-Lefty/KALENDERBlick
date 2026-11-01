@@ -1,4 +1,4 @@
-"""Kommandozeile von kalenderblick."""
+"""Kommandozeile von KALENDERBlick."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from . import __version__
+from . import NAME, __version__
 from . import config as konfig_modul
 from . import paths, thunderbird
 from .config import KonfigFehler
@@ -30,7 +30,7 @@ def _profil(args) -> Path:
 
 def befehl_pruefen(args) -> int:
     """Zeigt, was vorgefunden wurde - der erste Befehl auf einem neuen Rechner."""
-    _schreib(f"kalenderblick {__version__}")
+    _schreib(f"{NAME} {__version__}")
     _schreib(f"Python {sys.version.split()[0]}")
     try:
         from dateutil import __version__ as dv
@@ -218,8 +218,8 @@ def befehl_start(args) -> int:
 def baue_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog=AUFRUF,
-        description="Zeigt Thunderbirds Kalender auf dem Schreibtisch und in der "
-                    "Kontrollleiste.",
+        description=f"{NAME} - zeigt Thunderbirds Kalender auf dem Schreibtisch "
+                    "und in der Kontrollleiste.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"""Zuerst ausprobieren:
   {AUFRUF} pruefen        was wurde gefunden

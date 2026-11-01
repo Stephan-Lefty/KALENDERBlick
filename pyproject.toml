@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "kalenderblick"
 version = "0.1.0"
-description = "Zeigt Thunderbirds Kalender auf dem Schreibtisch und in der Kontrollleiste"
+description = "KALENDERBlick - zeigt Thunderbirds Kalender auf dem Schreibtisch und in der Kontrollleiste"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
