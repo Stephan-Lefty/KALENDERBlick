@@ -58,36 +58,62 @@ def profil_wurzeln() -> list[Path]:
     ]
 
 
+def _profile_einer_wurzel(wurzel: Path) -> tuple[list[Path], set[str]]:
+    """Profile einer Wurzel lesen; dazu die von Thunderbird selbst gewählten.
+
+    In profiles.ini steht unter [InstallXXXX] ein Eintrag Default=<Pfad>.
+    Das ist das Profil, mit dem Thunderbird tatsächlich startet - und nicht
+    unbedingt das, das als erstes in der Datei steht.
+    """
+    ini = wurzel / "profiles.ini"
+    if not ini.exists():
+        return [], set()
+
+    leser = configparser.ConfigParser()
+    try:
+        leser.read(ini, encoding="utf-8")
+    except (OSError, configparser.Error):
+        return [], set()
+
+    bevorzugt: set[str] = set()
+    for abschnitt in leser.sections():
+        if abschnitt.lower().startswith("install"):
+            ziel = leser[abschnitt].get("Default")
+            if ziel:
+                bevorzugt.add(ziel.strip())
+
+    standard: list[Path] = []
+    weitere: list[Path] = []
+    gewaehlt: set[str] = set()
+
+    for abschnitt in leser.sections():
+        if abschnitt.lower().startswith("install"):
+            continue
+        werte = leser[abschnitt]
+        pfad = werte.get("Path")
+        if not pfad:
+            continue
+        voll = Path(pfad) if werte.get("IsRelative", "1") == "0" else wurzel / pfad
+        if not voll.is_dir():
+            continue
+        if pfad.strip() in bevorzugt:
+            standard.insert(0, voll)
+            gewaehlt.add(str(voll))
+        elif werte.get("Default", "0") == "1":
+            standard.append(voll)
+        else:
+            weitere.append(voll)
+
+    return standard + weitere, gewaehlt
+
+
 def finde_profile() -> list[Path]:
-    """Alle Profile, Standardprofil zuerst."""
+    """Alle Profile. Das von Thunderbird gewählte steht vorn."""
     gefunden: list[Path] = []
     for wurzel in profil_wurzeln():
-        ini = wurzel / "profiles.ini"
-        if not ini.exists():
-            continue
-        leser = configparser.ConfigParser()
-        try:
-            leser.read(ini, encoding="utf-8")
-        except (OSError, configparser.Error):
-            continue
+        pfade, _ = _profile_einer_wurzel(wurzel)
+        gefunden += pfade
 
-        standard: list[Path] = []
-        weitere: list[Path] = []
-        for abschnitt in leser.sections():
-            werte = leser[abschnitt]
-            pfad = werte.get("Path")
-            if not pfad:
-                continue
-            voll = Path(pfad) if werte.get("IsRelative", "1") == "0" else wurzel / pfad
-            if not voll.is_dir():
-                continue
-            if werte.get("Default", "0") == "1" or abschnitt.startswith("Install"):
-                standard.append(voll)
-            else:
-                weitere.append(voll)
-        gefunden += standard + weitere
-
-    # Kein profiles.ini? Dann nach calendar-data suchen.
     if not gefunden:
         for wurzel in profil_wurzeln():
             if wurzel.is_dir():
@@ -100,22 +126,75 @@ def finde_profile() -> list[Path]:
     return einmalig
 
 
+def bevorzugte_profile() -> set[str]:
+    """Die Profile, die Thunderbird selbst als Startprofil führt."""
+    alle: set[str] = set()
+    for wurzel in profil_wurzeln():
+        _, gewaehlt = _profile_einer_wurzel(wurzel)
+        alle |= gewaehlt
+    return alle
+
+
+def termin_anzahl(profil: Path) -> int:
+    """Grobe Zahl der Termine - ohne Kopie, nur zum Vergleichen von Profilen."""
+    gesamt = 0
+    for datei in kalenderdateien(profil):
+        try:
+            verbindung = sqlite3.connect(f"file:{datei}?mode=ro", uri=True, timeout=2)
+            try:
+                gesamt += verbindung.execute("SELECT count(*) FROM cal_events").fetchone()[0]
+            finally:
+                verbindung.close()
+        except sqlite3.Error:
+            # Gesperrt oder unlesbar: die Dateigröße muss als Anhaltspunkt reichen
+            gesamt += 1 if datei.stat().st_size > 40_000 else 0
+    return gesamt
+
+
+def profil_vorschlaege() -> list[tuple[Path, int, int, bool]]:
+    """Alle Profile mit Dateizahl, Terminzahl und ob Thunderbird es führt."""
+    bevorzugt = bevorzugte_profile()
+    ergebnis = []
+    for pfad in finde_profile():
+        ergebnis.append((
+            pfad,
+            len(kalenderdateien(pfad)),
+            termin_anzahl(pfad),
+            str(pfad) in bevorzugt,
+        ))
+    return ergebnis
+
+
 def waehle_profil(vorgabe: str = "") -> Path:
+    """Das Profil, in dem die Termine tatsächlich liegen.
+
+    Vorrang hat ein von Hand angegebenes Profil. Sonst das Startprofil von
+    Thunderbird - aber nur, wenn dort auch Termine stehen. Ein leeres
+    Testprofil soll nicht gewinnen, bloß weil es zufällig vorn steht.
+    """
     if vorgabe:
         pfad = Path(os.path.expanduser(vorgabe))
         if not pfad.is_dir():
             raise ThunderbirdFehler(f"Das angegebene Profil gibt es nicht: {pfad}")
         return pfad
 
-    profile = finde_profile()
-    if not profile:
+    vorschlaege = profil_vorschlaege()
+    if not vorschlaege:
         raise ThunderbirdFehler(
             "Es wurde kein Thunderbird-Profil gefunden.\n"
             "Gesucht wurde in: " + ", ".join(str(p) for p in profil_wurzeln())
         )
-    # Das Profil mit den meisten Kalenderdateien gewinnt
-    with_daten = [p for p in profile if list((p / "calendar-data").glob("*.sqlite"))]
-    return with_daten[0] if with_daten else profile[0]
+
+    mit_terminen = [v for v in vorschlaege if v[2] > 0]
+    if mit_terminen:
+        bevorzugt = [v for v in mit_terminen if v[3]]
+        auswahl = bevorzugt or mit_terminen
+        return max(auswahl, key=lambda v: v[2])[0]
+
+    mit_dateien = [v for v in vorschlaege if v[1] > 0]
+    if mit_dateien:
+        return max(mit_dateien, key=lambda v: v[1])[0]
+    return vorschlaege[0][0]
 
 
 # ----------------------------------------------------------------------
@@ -298,14 +377,62 @@ def _wiederholungszeilen(verbindung: sqlite3.Connection, kennung: str,
     return ergebnis
 
 
+def _zeitschluessel(zeitpunkt: datetime):
+    """Vergleichbarer Schlüssel - unabhängig davon, in welcher Zone etwas steht."""
+    if zeitpunkt.tzinfo is None:
+        return ("ohne", zeitpunkt.replace(microsecond=0).isoformat())
+    return ("mit", round(zeitpunkt.timestamp()))
+
+
+def _datumsliste(zeile: str, bezug: datetime) -> list[datetime]:
+    """EXDATE- und RDATE-Zeilen lesen, in der Zone des Grundtermins.
+
+    EXDATE;TZID=Europe/Berlin:20261102T090000
+    EXDATE:20261102T080000Z
+    EXDATE;VALUE=DATE:20261102
+    """
+    kopf, _, rest = zeile.partition(":")
+    zone = None
+    for teil in kopf.split(";")[1:]:
+        if teil.upper().startswith("TZID="):
+            zone = zeitzone(teil.split("=", 1)[1])
+
+    ergebnis: list[datetime] = []
+    for stueck in rest.split(","):
+        stueck = stueck.strip()
+        if not stueck:
+            continue
+        in_utc = stueck.endswith("Z")
+        roh = stueck.rstrip("Z")
+        gelesen = None
+        for muster in ("%Y%m%dT%H%M%S", "%Y%m%dT%H%M", "%Y%m%d"):
+            try:
+                gelesen = datetime.strptime(roh, muster)
+                break
+            except ValueError:
+                continue
+        if gelesen is None:
+            continue
+
+        if bezug.tzinfo is None:
+            ergebnis.append(gelesen)
+        elif in_utc:
+            ergebnis.append(gelesen.replace(tzinfo=timezone.utc))
+        elif zone is not None:
+            ergebnis.append(gelesen.replace(tzinfo=zone))
+        else:
+            ergebnis.append(gelesen.replace(tzinfo=bezug.tzinfo))
+    return ergebnis
+
+
 def _entfalte(regeln: list[tuple[str, bool]], beginn: datetime,
               von: datetime, bis: datetime) -> list[datetime]:
     """Aus RRULE, RDATE und EXDATE die Termine im Zeitfenster errechnen."""
     if rrulestr is None:
         return [beginn] if von <= beginn <= bis else []
 
-    zeilen_positiv = []
-    ausnahmen: set[datetime] = set()
+    zeilen_positiv: list[str] = []
+    ausnahmen: set = set()
 
     for text, negativ in regeln:
         for zeile in str(text).splitlines():
@@ -313,12 +440,12 @@ def _entfalte(regeln: list[tuple[str, bool]], beginn: datetime,
             if not zeile:
                 continue
             kopf = zeile.split(":", 1)[0].split(";", 1)[0].upper()
-            if kopf == "EXDATE" or (negativ and kopf in ("RDATE", "")):
-                for zeitpunkt in _lies_datumsliste(zeile):
-                    ausnahmen.add(zeitpunkt)
-            elif kopf in ("RRULE", "RDATE", "EXRULE"):
-                if kopf == "EXRULE":
-                    continue            # seit RFC 5545 abgeschafft, selten
+            if kopf == "EXDATE" or (negativ and kopf in ("RDATE", "DTSTART")):
+                for zeitpunkt in _datumsliste(zeile, beginn):
+                    ausnahmen.add(_zeitschluessel(zeitpunkt))
+            elif kopf == "EXRULE":
+                continue                      # seit RFC 5545 abgeschafft
+            elif kopf in ("RRULE", "RDATE"):
                 zeilen_positiv.append(zeile)
             elif kopf.startswith("FREQ="):
                 zeilen_positiv.append("RRULE:" + zeile)
@@ -332,21 +459,7 @@ def _entfalte(regeln: list[tuple[str, bool]], beginn: datetime,
     except Exception:
         return [beginn] if von <= beginn <= bis else []
 
-    return [z for z in zeitpunkte if z not in ausnahmen]
-
-
-def _lies_datumsliste(zeile: str) -> list[datetime]:
-    teil = zeile.split(":", 1)[1] if ":" in zeile else ""
-    ergebnis = []
-    for stueck in teil.split(","):
-        stueck = stueck.strip().rstrip("Z")
-        for muster in ("%Y%m%dT%H%M%S", "%Y%m%d"):
-            try:
-                ergebnis.append(datetime.strptime(stueck, muster))
-                break
-            except ValueError:
-                continue
-    return ergebnis
+    return [z for z in zeitpunkte if _zeitschluessel(z) not in ausnahmen]
 
 
 def _orte(verbindung: sqlite3.Connection, kennungen: list[str]) -> dict[str, str]:
@@ -482,36 +595,62 @@ def lies_datei(datei: Path, von: datetime, bis: datetime,
 #  Zusammenführen
 # ----------------------------------------------------------------------
 
-def lies_kalender(profil: Path) -> list[Kalender]:
-    """Alle Kalender mit Art, Abholfrequenz und Stand der Datei."""
-    registry = lies_registry(profil)
-    dateien = kalenderdateien(profil)
+def _verteilung(datei: Path) -> dict[str, int]:
+    """Welche Kalender stecken in dieser Datei, mit wie vielen Terminen?
 
-    nach_kennung: dict[str, Path] = {}
-    for datei in dateien:
-        nach_kennung[datei.stem] = datei
+    Thunderbird legt je nach Fassung eine Datei pro Kalender an oder alles
+    in local.sqlite und cache.sqlite. Die Spalte cal_id sagt es verlässlich,
+    der Dateiname nicht.
+    """
+    for quelle in (datei, None):
+        try:
+            pfad = quelle if quelle is not None else _kopiere(datei)
+            verbindung = sqlite3.connect(f"file:{pfad}?mode=ro", uri=True, timeout=3)
+            try:
+                zeilen = verbindung.execute(
+                    "SELECT cal_id, count(*) FROM cal_events GROUP BY cal_id").fetchall()
+                return {str(z[0]): int(z[1]) for z in zeilen}
+            finally:
+                verbindung.close()
+        except (sqlite3.Error, OSError):
+            continue
+    return {}
+
+
+def lies_kalender(profil: Path) -> list[Kalender]:
+    """Alle Kalender mit Art, Abholfrequenz, Datei und Stand."""
+    registry = lies_registry(profil)
+
+    zuordnung: dict[str, tuple[Path, int]] = {}
+    for datei in kalenderdateien(profil):
+        for kennung, menge in _verteilung(datei).items():
+            frueher = zuordnung.get(kennung)
+            if frueher is None or menge > frueher[1]:
+                zuordnung[kennung] = (datei, menge)
+        # Datei ohne Termine trotzdem zuordnen, wenn der Name die Kennung trägt
+        if datei.stem not in zuordnung and datei.stem not in ("local", "cache"):
+            zuordnung.setdefault(datei.stem, (datei, 0))
 
     ergebnis: list[Kalender] = []
     for kennung, kalender in registry.items():
-        datei = nach_kennung.get(kennung)
-        if datei is None:
-            for name in ("local", "cache"):
-                if name in nach_kennung and kalender.art == "storage":
-                    datei = nach_kennung[name]
-                    break
-        if datei is not None:
-            kalender.datei = datei
-            kalender.zuletzt_geschrieben = datetime.fromtimestamp(datei.stat().st_mtime)
+        treffer = zuordnung.get(kennung)
+        if treffer is not None:
+            kalender.datei, kalender.anzahl = treffer
+            kalender.zuletzt_geschrieben = datetime.fromtimestamp(
+                kalender.datei.stat().st_mtime)
         ergebnis.append(kalender)
 
-    # Dateien ohne Eintrag in prefs.js
     bekannt = {k.kennung for k in ergebnis}
-    for stamm, datei in nach_kennung.items():
-        if stamm not in bekannt and stamm not in ("local", "cache"):
-            ergebnis.append(Kalender(
-                kennung=stamm, name=f"(unbenannt, {stamm[:8]})", datei=datei,
-                zuletzt_geschrieben=datetime.fromtimestamp(datei.stat().st_mtime),
-            ))
+    for kennung, (datei, menge) in zuordnung.items():
+        if kennung in bekannt:
+            continue
+        ergebnis.append(Kalender(
+            kennung=kennung,
+            name=f"(nicht in prefs.js, {kennung[:8]})",
+            datei=datei,
+            anzahl=menge,
+            zuletzt_geschrieben=datetime.fromtimestamp(datei.stat().st_mtime),
+        ))
     return ergebnis
 
 

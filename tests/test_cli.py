@@ -99,3 +99,15 @@ def test_unsinnige_einstellung_wird_abgelehnt(profil, capsys):
 
     assert main(["einstellungen", "--tage-voraus", "9999"]) == 2
     assert "Vorausblick" in capsys.readouterr().out
+
+
+def test_symbole_sind_im_paket():
+    from kalenderblick import bilder
+
+    assert len(bilder.alle_symbole()) == len(bilder.GROESSEN)
+    assert bilder.windows_symbol() is not None
+    for datei in bilder.alle_symbole():
+        assert datei.stat().st_size > 150
+    # kleinere Anforderung bekommt die nächstgrößere Datei
+    assert bilder.symbol_datei(20).name == "symbol-22.png"
+    assert bilder.symbol_datei(1000).name == "symbol-512.png"

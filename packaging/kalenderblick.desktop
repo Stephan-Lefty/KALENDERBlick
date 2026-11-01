@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=KALENDERBlick
+Comment=Thunderbirds Termine auf dem Schreibtisch und in der Kontrollleiste
+Exec=kalenderblick start
+Icon=kalenderblick
+Terminal=false
+Categories=Office;Calendar;Utility;
+StartupNotify=false
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-after=panel

@@ -39,21 +39,26 @@ def befehl_pruefen(args) -> int:
         _schreib("dateutil FEHLT - Wiederholungen können nicht berechnet werden")
     _schreib()
 
-    profile = thunderbird.finde_profile()
-    if not profile:
+    vorschlaege = thunderbird.profil_vorschlaege()
+    if not vorschlaege:
         _schreib("Kein Thunderbird-Profil gefunden. Gesucht wurde in:")
         for wurzel in thunderbird.profil_wurzeln():
             _schreib(f"  {wurzel}")
         return 1
 
     _schreib("Gefundene Profile:")
-    for pfad in profile:
-        anzahl = len(thunderbird.kalenderdateien(pfad))
-        _schreib(f"  {pfad}   ({anzahl} Kalenderdateien)")
+    for pfad, dateien, termine, bevorzugt in vorschlaege:
+        merkmale = [f"{dateien} Kalenderdateien", f"{termine} Termine"]
+        if bevorzugt:
+            merkmale.append("Startprofil von Thunderbird")
+        _schreib(f"  {pfad}")
+        _schreib("      " + ", ".join(merkmale))
     _schreib()
 
     profil = _profil(args)
     _schreib(f"Verwendet wird: {profil}")
+    _schreib("Anderes gewünscht:  kalenderblick --profil <PFAD> ...")
+    _schreib("Dauerhaft merken:   kalenderblick einstellungen --profil <PFAD>")
     _schreib()
 
     dateien = thunderbird.kalenderdateien(profil)
@@ -81,6 +86,13 @@ def befehl_pruefen(args) -> int:
                         f"SELECT count(*) FROM {tabelle}").fetchone()[0]
                     _schreib(f"   {tabelle}: {menge} Zeilen")
                     _schreib("      Spalten: " + ", ".join(spalten))
+                verteilung = verbindung.execute(
+                    "SELECT cal_id, count(*) FROM cal_events GROUP BY cal_id"
+                ).fetchall() if "cal_events" in tabellen else []
+                if verteilung:
+                    _schreib("   Enthaltene Kalender:")
+                    for kennung, menge in verteilung:
+                        _schreib(f"      {kennung}  -  {menge} Termine")
                 if "cal_recurrence" in tabellen and args.beispiele:
                     beispiele = verbindung.execute(
                         "SELECT * FROM cal_recurrence LIMIT 3").fetchall()

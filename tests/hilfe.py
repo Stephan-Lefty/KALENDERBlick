@@ -6,6 +6,11 @@ import sqlite3
 from datetime import datetime, time, timezone
 from pathlib import Path
 
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:                     # pragma: no cover
+    ZoneInfo = None
+
 SCHEMA = """
 CREATE TABLE cal_events (
   cal_id TEXT, id TEXT, time_created INTEGER, last_modified INTEGER,
@@ -26,10 +31,26 @@ FLAG_GANZTAGS = 8
 FLAG_WIEDERHOLUNG = 16
 
 
-def mikro(zeitpunkt: datetime) -> int:
-    """Wie Thunderbird speichert: Mikrosekunden seit 1970 in UTC."""
+def zone_aus(tz: str | None):
+    """Aus '/mozilla.org/20050126_1/Europe/Berlin' wird Europe/Berlin."""
+    if not tz or ZoneInfo is None:
+        return timezone.utc
+    name = tz.rsplit("/", 2)
+    name = "/".join(name[-2:]) if len(name) >= 2 else tz
+    try:
+        return ZoneInfo(name)
+    except Exception:
+        return timezone.utc
+
+
+def mikro(zeitpunkt: datetime, tz: str | None = None) -> int:
+    """Wie Thunderbird speichert: Mikrosekunden seit 1970 in UTC.
+
+    Eine Uhrzeit ohne Zeitzone gilt als Ortszeit in der angegebenen Zone -
+    genau so, wie der Benutzer sie in Thunderbird eingetragen hat.
+    """
     if zeitpunkt.tzinfo is None:
-        zeitpunkt = zeitpunkt.replace(tzinfo=timezone.utc)
+        zeitpunkt = zeitpunkt.replace(tzinfo=zone_aus(tz))
     return int(zeitpunkt.timestamp() * 1_000_000)
 
 
@@ -98,9 +119,9 @@ def termin(verbindung, cal_id, kennung, titel, beginn: datetime, ende: datetime,
         " event_end, event_end_tz, recurrence_id, recurrence_id_tz, privacy, ical_status)"
         " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
         (cal_id, kennung, titel, flags,
-         mikro(beginn), None if ganztags else tz,
-         mikro(ende), None if ganztags else tz,
-         mikro(recurrence_id) if recurrence_id else None,
+         mikro(beginn) if ganztags else mikro(beginn, tz), None if ganztags else tz,
+         mikro(ende) if ganztags else mikro(ende, tz), None if ganztags else tz,
+         mikro(recurrence_id, tz) if recurrence_id else None,
          tz if recurrence_id else None,
          "PUBLIC", "CONFIRMED"),
     )

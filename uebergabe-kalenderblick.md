@@ -1,6 +1,6 @@
 # Übergabe an den Code-Tab: KALENDERBlick
 
-Stand: 01.11.2026. Geschrieben im Cowork-Tab, dort ohne Zugriff auf Stephans
+Stand: 01.11.2026, zweite Fassung. Geschrieben im Cowork-Tab, dort ohne Zugriff auf Stephans
 Rechner, auf seine Thunderbird-Daten und ohne Bildschirm für die Oberfläche.
 
 ## Was gebaut werden soll
@@ -52,6 +52,40 @@ Was `thunderbird.py` kann, jeweils durch einen Test belegt: einfache Termine,
 ganztägige, wöchentliche Wiederholungen, `EXDATE`, abweichende Einzeltermine,
 abgeschaltete Kalender, versteckte Kalender, Zeitzonen, Fenstergrenzen.
 
+## Gegen die echten Daten geprüft - Ergebnis
+
+`kalenderblick pruefen` lief auf Stephans Manjaro. **Das Schema stimmt:**
+
+* `cal_recurrence` hat die Spalte `icalString` - der eingeschlagene Weg trägt
+* alle erwarteten Spalten von `cal_events` sind vorhanden
+* `cal_properties` ebenfalls
+
+Zwei Fehler kamen dabei ans Licht und sind behoben:
+
+1. **Falsches Profil gewählt.** Stephan hat drei Profile; gewonnen hatte ein
+   leeres Testprofil, bloß weil es in `profiles.ini` weiter oben stand.
+   `waehle_profil()` liest jetzt den Eintrag `Default=` aus dem Abschnitt
+   `[Install…]` - das ist das Profil, mit dem Thunderbird wirklich startet -
+   und bevorzugt bei Gleichstand das Profil mit den meisten Terminen. Ein
+   leeres Startprofil verliert gegen ein volles.
+2. **`EXDATE` wurde übergangen.** Abgesagte Einzeltermine einer Reihe tauchten
+   weiter auf: die Ausnahme wurde ohne Zeitzone gelesen, die errechneten
+   Termine aber mit - der Vergleich konnte nie zutreffen. Jetzt werden beide
+   Seiten über einen gemeinsamen Schlüssel verglichen, und `TZID=…`,
+   `…Z` sowie reine Datumsangaben werden alle erkannt.
+
+Beide Fälle haben jetzt Tests. Aufgefallen ist der zweite übrigens nicht durch
+einen Test, sondern beim Durchspielen der Ausgabe - die Testattrappe hatte
+Uhrzeiten als UTC abgelegt statt als Ortszeit und damit den Fehler verdeckt.
+Die Attrappe setzt Zeiten nun in die angegebene Zone, und `tests/conftest.py`
+pinnt die Zeitzone auf Europe/Berlin, damit die Umrechnung wirklich geprüft
+wird.
+
+Noch offen aus `pruefen`: Stephans Profil `default-release` hat drei
+Kalenderdateien. Ob darunter `local.sqlite` im alten Sammel-Schema ist, zeigt
+die Zeile „Enthaltene Kalender" je Datei. Beide Fälle sind abgedeckt - die
+Zuordnung Kalender zu Datei läuft über `cal_id`, nicht über den Dateinamen.
+
 ## Was zuerst zu tun ist
 
 **Vor jeder Zeile Oberfläche:**
@@ -91,8 +125,10 @@ gui/
 `liste.py` einmal bauen und dreimal verwenden – das ist der Hebel, der die
 Arbeit klein hält.
 
-Für das Symbol bietet sich ein selbst gemaltes Blatt mit der heutigen Zahl an
-(`QPainter`), dann braucht es kein Bildmaterial und es stimmt immer.
+Das Programmsymbol liegt schon bei: `src/kalenderblick/bilder/symbol-*.png`
+in neun Größen plus `symbol.ico`, erreichbar über das Modul `bilder.py` ohne
+Qt-Abhängigkeit. Für das Leistensymbol lässt sich die heutige Zahl mit
+`QPainter` darüberlegen - dann sieht man das Datum, ohne hinzuzeigen.
 
 ## Wayland – das muss man vorher wissen
 
@@ -121,10 +157,29 @@ versuchen, Wayland zu überlisten.
 Prüf vorher, ob `xdg-desktop-portal` und die Plasma-Fassung inzwischen etwas
 Besseres anbieten – Plasma 6.7 ist neuer als mein Kenntnisstand.
 
+## Auch für GuideOS (Debian)
+
+Stephan möchte das Werkzeug auch unter GuideOS anbieten. Technisch kostet das
+nichts: reines Python mit Qt, einzige Abhängigkeit `python-dateutil`. Über
+`pipx` läuft es dort sofort. Für eine saubere Weitergabe fehlt ein `.deb`:
+
+* `debian/` anlegen mit `dh-python` und `pybuild`, Abhängigkeiten
+  `python3-dateutil`, `python3-pyqt6`
+* `debian/install` für `kalenderblick.desktop` und die Symbole nach
+  `/usr/share/icons/hicolor/<groesse>x<groesse>/apps/`
+* Bauen mit `dpkg-buildpackage -us -uc`, prüfen mit `lintian`
+* Alternativ für den Anfang `fpm` - schneller, aber nicht paketgerecht genug
+  für eine Weitergabe in einer Distribution
+
+**Vorher klären:** welche Arbeitsumgebung GuideOS mitbringt und ob dort X11
+oder Wayland läuft. Davon hängt ab, wie das Schreibtischfenster positioniert
+wird - die KWin-Regel unten ist KDE-eigen. Unter GNOME oder Xfce braucht es
+einen anderen Weg, unter X11 reicht `move()` im Programm.
+
 ## Danach
 
 * `packaging/kalenderblick.desktop` für den Autostart, mit
-  `Name=KALENDERBlick`
+  `Name=KALENDERBlick` - liegt schon bei
 * PKGBUILD, wie bei `storage-box-sync`
 * Repository anlegen:
   ```bash

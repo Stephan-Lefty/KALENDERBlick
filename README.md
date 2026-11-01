@@ -34,10 +34,24 @@ einmal, auch rein örtliche, und zwar genau so, wie Thunderbird sie kennt.
 
 ## Installation
 
+**Manjaro, Arch**
+
 ```bash
-pamac install python-dateutil python-pyqt6
+pamac install python-dateutil python-pyqt6 python-pipx
 pipx install --system-site-packages git+https://github.com/stephan-lefty/kalenderblick.git
 ```
+
+**Debian, GuideOS, Ubuntu**
+
+```bash
+sudo apt install python3-dateutil python3-pyqt6 pipx
+pipx install --system-site-packages git+https://github.com/stephan-lefty/kalenderblick.git
+```
+
+KALENDERBlick ist reines Python mit Qt und hat außer `python-dateutil` keine
+Abhängigkeiten. Es läuft überall dort, wo Thunderbird läuft – auch wenn
+Thunderbird als Flatpak oder Snap installiert ist, denn deren Profilordner
+werden mitgesucht.
 
 ## Zuerst ausprobieren
 

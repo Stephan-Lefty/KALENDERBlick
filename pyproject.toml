@@ -39,6 +39,9 @@ Quellcode = "https://github.com/stephan-lefty/kalenderblick"
 [tool.setuptools]
 package-dir = { "" = "src" }
 
+[tool.setuptools.package-data]
+kalenderblick = ["bilder/*.png", "bilder/*.ico"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
