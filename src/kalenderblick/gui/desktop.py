@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from PyQt6.QtCore import Qt, QSize, QTimer
+from PyQt6.QtCore import QEvent, Qt, QSize, QTimer
 from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QLabel, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget
 
 from .. import config as konfig_modul
 from ..config import GROESSEN
@@ -33,6 +33,12 @@ class SchreibtischFenster(QWidget):
         self._baue_fenster()
         self._wende_groesse_an()
         self._wende_transparenz_an()
+        # Rahmenlos heißt: kein Titelbalken zum Ziehen. Ein Filter auf der
+        # ganzen Anwendung fängt Klicks auf eigene, sonst untätige Flächen
+        # ab (Kopfzeile, Terminzeilen, Leerraum) und verschiebt stattdessen
+        # das Fenster - auch neu nachgeladene Terminzeilen sind so erfasst,
+        # ohne den Filter nach jeder Aktualisierung neu einzuhängen.
+        QApplication.instance().installEventFilter(self)
         self._starte_ladethread()
         self._timer = QTimer(self)
         self._timer.timeout.connect(self._starte_ladethread)
@@ -106,6 +112,33 @@ class SchreibtischFenster(QWidget):
         super().resizeEvent(event)
         self._positioniere_knopf()
 
+    # ------------------------------------------------------------------
+
+    def _ausgenommen(self, objekt) -> bool:
+        """Eigene Widgets mit eigener Klickbedeutung - dort nicht ziehen."""
+        ausnahmen = (
+            self._einstellungen_knopf,
+            self._liste._uhr,
+            self._liste._scroll.verticalScrollBar(),
+            self._liste._scroll.horizontalScrollBar(),
+        )
+        for ausnahme in ausnahmen:
+            if objekt is ausnahme or ausnahme.isAncestorOf(objekt):
+                return True
+        return False
+
+    def eventFilter(self, objekt, event) -> bool:
+        if (event.type() == QEvent.Type.MouseButtonPress
+                and event.button() == Qt.MouseButton.LeftButton
+                and isinstance(objekt, QWidget)
+                and objekt.window() is self
+                and not self._ausgenommen(objekt)):
+            fenstergriff = self.windowHandle()
+            if fenstergriff is not None:
+                fenstergriff.startSystemMove()
+                return True
+        return super().eventFilter(objekt, event)
+
     def _wende_groesse_an(self) -> None:
         breite, hoehe = GROESSEN.get(self._e.desktop.groesse, (340, 480))
         if self._e.desktop.ansicht == "uhr":
@@ -162,6 +195,7 @@ class SchreibtischFenster(QWidget):
     # ------------------------------------------------------------------
 
     def closeEvent(self, event) -> None:
+        QApplication.instance().removeEventFilter(self)
         # Lage merken, damit beim nächsten Start wiederhergestellt werden kann
         pos = self.pos()
         self._e.desktop.x = pos.x()

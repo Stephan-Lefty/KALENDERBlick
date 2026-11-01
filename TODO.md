@@ -2,17 +2,19 @@
 
 ## Als Nächstes
 
-- [ ] Schwebendes Einstellungssymbol in der Uhr-Ansicht am echten Gerät
-      selbst anklicken - die Automatisierung konnte den Klick wegen des
-      „unter anderen halten"-Fensters nicht zuverlässig nachstellen, ohne
-      auf den echten Desktop durchzuschlagen. Mechanik ist dieselbe wie bei
-      den bereits funktionierenden Knöpfen (`clicked`-Signal).
-- [ ] GitHub-Repository anlegen:
-      `gh repo create kalenderblick --private --source=. --push`
 - [ ] PKGBUILD für Arch/Manjaro schreiben (wie bei storage-box-sync)
 - [ ] `debian/`-Verzeichnis für ein `.deb` (dh-python, pybuild);
       Abhängigkeiten `python3-dateutil`, `python3-pyqt6`; gilt für
       DialOS und GuideOS gleichermaßen
+
+## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
+
+- [x] GitHub-Repository angelegt und gepusht: github.com/Stephan-Lefty/kalenderblick
+- [x] Regulär per `pipx` installiert, Autostart und Startmenü-Eintrag
+      eingerichtet, Symbole in den Icon-Theme-Ordner kopiert
+- [x] KWin-Regel importiert (Systemeinstellungen → Fensterverwaltung →
+      Fensterregeln → Importieren) - Position, „hinter anderen halten" und
+      Ziehen per `startSystemMove()` am echten Gerät bestätigt
 
 ## Für GuideOS (Cinnamon, X11)
 
