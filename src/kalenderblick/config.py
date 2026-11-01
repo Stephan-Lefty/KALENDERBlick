@@ -13,6 +13,15 @@ class KonfigFehler(Exception):
     pass
 
 
+ANSICHTEN = ("naechste3", "tag", "woche", "monat", "uhr")
+GROESSEN = {
+    "klein":      (280, 340),
+    "mittel":     (340, 480),
+    "gross":      (420, 600),
+    "sehr_gross": (520, 740),
+}
+
+
 @dataclass
 class Fensterlage:
     x: int = 60
@@ -21,6 +30,10 @@ class Fensterlage:
     hoehe: int = 480
     deckkraft: int = 85          # Prozent
     sichtbar: bool = True
+    groesse: str = "mittel"      # klein / mittel / gross / sehr_gross
+    ansicht: str = "naechste3"   # naechste3 / tag / woche / monat / uhr
+    erscheinung: str = "dunkel"  # hell / dunkel
+    stunden_format: str = "24"   # 24 / 12
 
 
 @dataclass
@@ -45,6 +58,14 @@ class Einstellungen:
             raise KonfigFehler("Die Aktualisierung muss zwischen 1 und 240 Minuten liegen.")
         if not 20 <= self.desktop.deckkraft <= 100:
             raise KonfigFehler("Die Deckkraft muss zwischen 20 und 100 Prozent liegen.")
+        if self.desktop.groesse not in GROESSEN:
+            raise KonfigFehler(f"Ungültige Größe. Erlaubt: {', '.join(GROESSEN)}.")
+        if self.desktop.ansicht not in ANSICHTEN:
+            raise KonfigFehler(f"Ungültige Ansicht. Erlaubt: {', '.join(ANSICHTEN)}.")
+        if self.desktop.erscheinung not in ("hell", "dunkel"):
+            raise KonfigFehler("Das Erscheinungsbild muss 'hell' oder 'dunkel' sein.")
+        if self.desktop.stunden_format not in ("12", "24"):
+            raise KonfigFehler("Das Stundenformat muss '12' oder '24' sein.")
 
     def speichern(self):
         paths.lege_ordner_an()

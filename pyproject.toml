@@ -25,7 +25,7 @@ dependencies = ["python-dateutil>=2.8"]
 
 [project.optional-dependencies]
 fenster = ["PyQt6>=6.5"]
-entwicklung = ["pytest>=7.4"]
+entwicklung = ["pytest>=7.4", "python-dateutil>=2.8"]
 
 [project.scripts]
 kalenderblick = "kalenderblick.cli:main"

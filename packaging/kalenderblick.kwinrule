@@ -1,0 +1,16 @@
+[kalenderblick]
+Description=KALENDERBlick – Schreibtischfenster hinter allen anderen
+wmclass=kalenderblick kalenderblick
+wmclassmatch=1
+Title=KALENDERBlick
+titlematch=0
+below=true
+belowrule=2
+skiptaskbar=true
+skiptaskbarrule=2
+skipswitcher=true
+skipswitcherrule=2
+position=60,60
+positionrule=3
+size=340,480
+sizerule=3

@@ -76,6 +76,41 @@ Eigenschaften → Aktualisieren. „Zuletzt geschrieben" ist der Zeitpunkt, an d
 sich tatsächlich etwas geändert hat – holt Thunderbird ab und es gibt nichts
 Neues, bleibt der Stand stehen.
 
+## Feiertage und Ferien
+
+KALENDERBlick rechnet keine Feiertage oder Ferien selbst aus - es zeigt nur,
+was in Thunderbird liegt. Dafür reicht ein zusätzlicher abonnierter Kalender
+in Thunderbird; KALENDERBlick liest ihn automatisch mit, wie jeden anderen.
+
+**Feiertage** (Deutschland und Österreich, als ICS-Abo, gültig 2025-2028):
+
+```
+https://www.thunderbird.net/media/caldata/autogen/GermanHolidays.ics
+https://www.thunderbird.net/media/caldata/autogen/AustrianHolidays.ics
+```
+
+**Schulferien** nach Bundesland: [ferienwiki.de/exports/de](https://www.ferienwiki.de/exports/de).
+Die Links dort tragen die Jahreszahl in der URL (z. B. `.../2026/de/bayern`) -
+kein Dauerabo, die Adresse muss einmal im Jahr von Hand erneuert werden.
+
+Einrichten in Thunderbird: Kalender → Rechtsklick → Kalender erstellen →
+Im Netzwerk → URL einfügen. Die Abholfrequenz lässt sich dort wie bei jedem
+anderen entfernten Kalender einstellen; `kalenderblick kalender` zeigt sie an.
+
+## Wayland und KWin
+
+Unter KDE Plasma/Wayland kann sich ein Fenster weder selbst positionieren
+noch dauerhaft unter anderen Fenstern halten - das übernimmt KWin über eine
+Fensterregel. Liegt bei: `packaging/kalenderblick.kwinrule`.
+
+Einspielen: Systemeinstellungen → Fensterverwaltung → Fensterregeln →
+Regeln importieren → die Datei wählen.
+
+Unter GNOME (Wayland) gibt es dafür keine Entsprechung - das
+Schreibtischfenster verhält sich dort wie ein gewöhnliches Fenster. Unter
+X11 (z. B. Cinnamon auf GuideOS) braucht es keine Regel, KALENDERBlick
+positioniert sich dort selbst.
+
 ## Alle Befehle
 
 | Befehl | Zweck |
@@ -91,8 +126,12 @@ Neues, bleibt der Stand stehen.
 ## Stand
 
 Der Leser und die Kommandozeile sind fertig und mit 18 Tests abgedeckt. Die
-Oberfläche (`src/kalenderblick/gui/`) fehlt noch – siehe
-`uebergabe-kalenderblick.md`.
+Oberfläche (`src/kalenderblick/gui/`) ist gebaut: Schreibtischfenster,
+Leistensymbol und ein gewöhnliches Fenster mit drei Reitern, alle auf
+`TerminListe` aufgebaut. Fünf Ansichten stehen zur Wahl: die nächsten drei
+Termine, Tag, Woche, Monat und eine reine Uhr- und Datumsanzeige. Größe,
+Transparenz und Hell/Dunkel lassen sich einstellen. Offen sind noch die
+Pakete (PKGBUILD, `.deb`) und die KWin-Regel – siehe `TODO.md`.
 
 ## Lizenz
 

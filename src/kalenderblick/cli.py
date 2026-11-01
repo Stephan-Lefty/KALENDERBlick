@@ -215,12 +215,12 @@ def befehl_einstellungen(args) -> int:
     return 0
 
 
-def befehl_fenster(args) -> int:
+def befehl_fenster(args=None) -> int:
     from .gui import starte_fenster
     return starte_fenster()
 
 
-def befehl_start(args) -> int:
+def befehl_start(args=None) -> int:
     from .gui import starte_alles
     return starte_alles()
 
