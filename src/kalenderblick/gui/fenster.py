@@ -116,6 +116,10 @@ class _EinstellungenReiter(QWidget):
             self._groesse.addItem(name, schluessel)
         idx = list(_GROESSE_NAMEN).index(e.desktop.groesse) if e.desktop.groesse in _GROESSE_NAMEN else 1
         self._groesse.setCurrentIndex(idx)
+        self._groesse.setToolTip(
+            "Breite und Höhe des Schreibtischfensters. Bei der Uhr-Ansicht\n"
+            "wird daraus nur die Breite übernommen - die Höhe richtet sich\n"
+            "dort nach dem Inhalt, nicht nach dieser Vorgabe.")
         wl.addRow("Größe:", self._groesse)
 
         self._ansicht = QComboBox()
@@ -123,6 +127,10 @@ class _EinstellungenReiter(QWidget):
             self._ansicht.addItem(name, schluessel)
         ansicht_idx = list(_ANSICHT_NAMEN).index(e.desktop.ansicht) if e.desktop.ansicht in _ANSICHT_NAMEN else 0
         self._ansicht.setCurrentIndex(ansicht_idx)
+        self._ansicht.setToolTip(
+            "Was im Schreibtischwidget steht: die nächsten drei Termine,\n"
+            "ein Tag, eine Woche, ein Monat - oder nur Wochentag, Uhrzeit\n"
+            "und Datum ohne Terminliste.")
         wl.addRow("Ansicht:", self._ansicht)
 
         transp_zeile = QWidget()
@@ -135,6 +143,10 @@ class _EinstellungenReiter(QWidget):
         self._transp_label.setFixedWidth(40)
         self._transp_slider.valueChanged.connect(
             lambda v: self._transp_label.setText(f"{v} %"))
+        transp_tooltip = (
+            "Wie durchsichtig der Hintergrund des Schreibtischwidgets ist -\n"
+            "0 % ganz unsichtbar (nur Schrift bleibt), 100 % voll deckend.")
+        self._transp_slider.setToolTip(transp_tooltip)
         tl.addWidget(self._transp_slider, stretch=1)
         tl.addWidget(self._transp_label)
         wl.addRow("Transparenz:", transp_zeile)
@@ -144,6 +156,10 @@ class _EinstellungenReiter(QWidget):
         self._erscheinung.addItem("Hell", "hell")
         erscheinung_idx = 1 if e.desktop.erscheinung == "hell" else 0
         self._erscheinung.setCurrentIndex(erscheinung_idx)
+        self._erscheinung.setToolTip(
+            "Helle oder dunkle Farben für Hintergrund und Schrift - je\n"
+            "nachdem, was zum Hintergrund dahinter passt. Wirkt nur auf\n"
+            "das Schreibtischwidget, nicht auf dieses Fenster hier.")
         wl.addRow("Erscheinungsbild:", self._erscheinung)
 
         self._stunden_format = QComboBox()
@@ -151,6 +167,9 @@ class _EinstellungenReiter(QWidget):
         self._stunden_format.addItem("12 Stunden (AM/PM)", "12")
         stunden_idx = 1 if e.desktop.stunden_format == "12" else 0
         self._stunden_format.setCurrentIndex(stunden_idx)
+        self._stunden_format.setToolTip(
+            "Nur für die Uhr-Ansicht: Uhrzeit mit 24 Stunden oder mit\n"
+            "12 Stunden samt AM/PM.")
         wl.addRow("Stundenformat:", self._stunden_format)
 
         layout.addWidget(widget_box)
@@ -163,12 +182,22 @@ class _EinstellungenReiter(QWidget):
         self._tage.setRange(1, 365)
         self._tage.setValue(e.tage_voraus)
         self._tage.setSuffix(" Tage")
+        self._tage.setToolTip(
+            "Nur für die Kommandozeile (kalenderblick liste / naechster) -\n"
+            "wie viele Tage im Voraus diese Befehle nachsehen. Hat keinen\n"
+            "Einfluss auf das Schreibtischwidget oder dieses Fenster: die\n"
+            "laden je nach gewählter Ansicht immer genug Tage von selbst.")
         al.addRow("Vorausblick:", self._tage)
 
         self._interval = QSpinBox()
         self._interval.setRange(1, 240)
         self._interval.setValue(e.aktualisierung_minuten)
         self._interval.setSuffix(" Minuten")
+        self._interval.setToolTip(
+            "Wie oft die Oberfläche Thunderbirds Kalenderdaten neu einliest.\n"
+            "Ersetzt nicht Thunderbirds eigene Abholfrequenz für entfernte\n"
+            "Kalender (siehe Reiter „Kalender“) - erst wenn Thunderbird\n"
+            "selbst abgeholt hat, gibt es hier etwas Neues zu sehen.")
         al.addRow("Aktualisierung:", self._interval)
 
         layout.addWidget(allg_box)
@@ -234,22 +263,27 @@ class HauptFenster(QMainWindow):
         self.setMinimumSize(300, 400)
 
     def _baue_reiter(self) -> None:
-        tabs = QTabWidget()
-        self.setCentralWidget(tabs)
+        self._tabs = QTabWidget()
+        self.setCentralWidget(self._tabs)
 
         self._termine_liste = TerminListe(ansicht="woche", schrift=10)
-        tabs.addTab(self._termine_liste, "Termine")
+        self._tabs.addTab(self._termine_liste, "Termine")
 
         self._kalender_reiter = _KalenderReiter()
-        tabs.addTab(self._kalender_reiter, "Kalender")
+        self._tabs.addTab(self._kalender_reiter, "Kalender")
 
         einstellungen = _EinstellungenReiter(
             einstellungen_geaendert_cb=self._einstellungen_geaendert)
-        tabs.addTab(einstellungen, "Einstellungen")
+        self._tabs.addTab(einstellungen, "Einstellungen")
 
-        tabs.currentChanged.connect(self._reiter_gewechselt)
+        self._tabs.currentChanged.connect(self._reiter_gewechselt)
 
     # ------------------------------------------------------------------
+
+    def zeige_termine_reiter(self) -> None:
+        """Beim Öffnen aus Widget oder Leistensymbol zählt der schnelle
+        Blick auf die Termine - nicht der zuletzt offene Reiter."""
+        self._tabs.setCurrentIndex(0)
 
     def _reiter_gewechselt(self, index: int) -> None:
         if index == 1:

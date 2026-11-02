@@ -107,6 +107,7 @@ def starte_alles() -> int:
         if hauptfenster.isVisible():
             hauptfenster.hide()
         else:
+            hauptfenster.zeige_termine_reiter()
             hauptfenster.show()
             hauptfenster.raise_()
             hauptfenster.activateWindow()

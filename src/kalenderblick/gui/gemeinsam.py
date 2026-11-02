@@ -14,18 +14,26 @@ from ..modell import Termin
 
 
 class LadeThread(QThread):
-    """Liest Thunderbirds Termine im Hintergrund."""
+    """Liest Thunderbirds Termine im Hintergrund.
+
+    Holt immer so viele Tage, wie die weiteste Ansicht (Monat) braucht -
+    "Vorausblick" in den Einstellungen ist eine Kommandozeilen-Angabe und
+    soll nicht heimlich die Wochen- oder Monatsansicht der Oberfläche
+    verkürzen.
+    """
 
     fertig = pyqtSignal(list)
     fehler = pyqtSignal(str)
 
     def run(self) -> None:
         try:
+            from .liste import ANSICHT_TAGE
             e = konfig_modul.laden()
             profil = thunderbird.waehle_profil(e.profil)
+            weiteste_ansicht = max(t for t in ANSICHT_TAGE.values() if t)
             termine = thunderbird.lies_termine(
                 profil,
-                tage_voraus=e.tage_voraus,
+                tage_voraus=max(e.tage_voraus, weiteste_ansicht),
                 tage_zurueck=e.tage_zurueck,
                 versteckt=e.versteckte_kalender,
             )

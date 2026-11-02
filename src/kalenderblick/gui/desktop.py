@@ -61,9 +61,6 @@ class SchreibtischFenster(QWidget):
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(4)
 
-        self._kopf = QLabel("KALENDERBlick")
-        layout.addWidget(self._kopf)
-
         self._liste = TerminListe(
             ansicht=self._e.desktop.ansicht,
             schrift=_SCHRIFT_PRO_GROESSE.get(self._e.desktop.groesse, 10),
@@ -78,14 +75,6 @@ class SchreibtischFenster(QWidget):
         self._fehler.setWordWrap(True)
         self._fehler.setVisible(False)
         layout.addWidget(self._fehler)
-
-        self._wende_kopfzeile_an()
-
-    def _wende_kopfzeile_an(self) -> None:
-        # Bei der Uhr-Ansicht soll nur Wochentag, Uhrzeit und Datum stehen -
-        # die Kopfzeile wäre dort überflüssiger Ballast. Zu den Einstellungen
-        # kommt man per Klick auf die Uhr selbst (TerminListe.klick_cb).
-        self._kopf.setVisible(self._e.desktop.ansicht != "uhr")
 
     # ------------------------------------------------------------------
 
@@ -132,9 +121,6 @@ class SchreibtischFenster(QWidget):
             f"QWidget {{ background-color: rgba({farben['hintergrund']}, {alpha}%); "
             f"border-radius: 8px; }}"
         )
-        self._kopf.setStyleSheet(
-            f"font-weight: bold; font-size: 9pt; color: {farben['gedaempft']}; padding: 0 2px;"
-        )
 
     # ------------------------------------------------------------------
 
@@ -161,7 +147,6 @@ class SchreibtischFenster(QWidget):
         self._e = konfig_modul.laden()
         self._wende_groesse_an()
         self._wende_transparenz_an()
-        self._wende_kopfzeile_an()
         self._liste.setze_erscheinung(self._e.desktop.erscheinung)
         self._liste.setze_ansicht(self._e.desktop.ansicht)
         self._liste.setze_schrift(_SCHRIFT_PRO_GROESSE.get(self._e.desktop.groesse, 10))

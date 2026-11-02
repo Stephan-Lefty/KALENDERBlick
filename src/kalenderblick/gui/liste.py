@@ -19,7 +19,7 @@ from PyQt6.QtWidgets import (
 from ..modell import MONATE, Termin, WOCHENTAGE, nach_tagen, tagesueberschrift
 from .gemeinsam import FARBEN_SYSTEM, erscheinungsfarben, farbe_als_qt
 
-_ANSICHT_TAGE = {
+ANSICHT_TAGE = {
     "naechste3": None,   # Sonderfall: nur 3 Einträge
     "tag":        1,
     "woche":      7,
@@ -305,7 +305,7 @@ class TerminListe(QWidget):
             kommend = [t for t in self._termine if not t.ist_vorbei(jetzt)]
             return kommend[:3]
 
-        tage = _ANSICHT_TAGE.get(self._ansicht, 1)
+        tage = ANSICHT_TAGE.get(self._ansicht, 1)
         von = heute
         bis = heute + timedelta(days=tage - 1)
         return [t for t in self._termine if von <= t.tag <= bis]
