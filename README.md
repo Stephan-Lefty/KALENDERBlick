@@ -4,6 +4,8 @@
 
 # KALENDERBlick
 
+[Änderungsprotokoll](CHANGELOG.md) · [Anleitung mit Screenshots](Anleitung.md)
+
 Zeigt die Termine aus **Thunderbird** auf dem Schreibtisch und in der
 Kontrollleiste – ohne Thunderbird offen zu haben und ohne Zugangsdaten
 irgendwo einzutragen. Gelesen wird ausschließlich, geschrieben nie.
@@ -134,13 +136,14 @@ positioniert sich dort selbst.
 
 ## Stand
 
-Der Leser und die Kommandozeile sind fertig und mit 25 Tests abgedeckt. Die
-Oberfläche (`src/kalenderblick/gui/`) ist gebaut: Schreibtischfenster,
-Leistensymbol und ein gewöhnliches Fenster mit drei Reitern, alle auf
-`TerminListe` aufgebaut. Fünf Ansichten stehen zur Wahl: die nächsten drei
-Termine, Tag, Woche, Monat und eine reine Uhr- und Datumsanzeige. Größe,
-Transparenz und Hell/Dunkel lassen sich einstellen. Offen sind noch die
-Pakete (PKGBUILD, `.deb`) und die KWin-Regel – siehe `TODO.md`.
+Fertig und mit Tests abgedeckt. Die Oberfläche (`src/kalenderblick/gui/`)
+besteht aus Schreibtischfenster, Leistensymbol und einem gewöhnlichen
+Fenster mit zwei Reitern (Termine, Einstellungen), alle auf `TerminListe`
+aufgebaut. Vier Ansichten stehen fürs Schreibtischwidget zur Wahl: Uhr +
+Datum, nächste 3 Termine, nächste 7 Tage, nächste 14 Tage - das
+Hauptfenster zeigt beim Durchklicken 31 Tage. Größe, Transparenz und
+Dark-/Light-Mode lassen sich einstellen; eine Schritt-für-Schritt-Anleitung
+mit Screenshots steht in [Anleitung.md](Anleitung.md).
 
 ## Lizenz
 

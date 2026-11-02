@@ -2,12 +2,14 @@
 
 ## Als Nächstes
 
-- [ ] Erste Fassung veröffentlichen: Tag `v0.1.0` setzen und einen
-      GitHub-Release anlegen - erst dann laden PKGBUILD (lädt den
-      Quellcode-Tarball vom Tag) und das Release-Workflow (lädt das
+- [ ] GitHub-Release für 1.0.0 anlegen - erst dann laden PKGBUILD (lädt
+      den Quellcode-Tarball vom Tag) und das Release-Workflow (lädt das
       gebaute `.deb` an den Release) wirklich etwas Echtes hoch.
-      Fertiger Befehl, wenn es so weit ist:
-      `gh release create v0.1.0 --title "0.1.0" --generate-notes`
+      Fertiger Befehl:
+      `gh release create v1.0.0 --title "1.0.0" --notes-file CHANGELOG.md`
+- [ ] Stephan geht die Installation morgen früh frisch nach
+      `Anleitung.md` durch, nachdem KALENDERBlick zum Testen vollständig
+      vom Rechner entfernt wurde (02.11.2026)
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
@@ -79,6 +81,21 @@
       allen Arbeitsflächen zeigen) starten jetzt ausgeschaltet statt
       teils vorbelegt - wer nichts einstellt, sieht erstmal nur das
       Leistensymbol
+- [x] Autostart-Schalter in den Einstellungen (neues Modul
+      `autostart.py`) - legt `~/.config/autostart/kalenderblick.desktop`
+      an oder entfernt sie
+- [x] Reiter "Kalender" in die Einstellungen verschoben, als Abschnitt
+      "Kalenderquellen" - zwei Reiter statt drei, "Termine" neben
+      "Kalender" ließ sonst eine eigene Kalenderansicht vermuten
+- [x] `Anleitung.md` mit Fake-Daten erstellt (eigenes Profil, keine
+      echten Termine) - dabei zwei echte Bugs gefunden und behoben:
+      Listenansichten blieben nach dem Nachladen zu klein (Wayland
+      bestätigte ein zweites `resize()` nicht, behoben mit kurzem
+      hide()/show()), und die Kalenderquellen-Übersicht ignorierte das
+      eingestellte Profil und zeigte immer das echte Thunderbird-Profil
+- [x] Einstellungen-Reiter in eine Scroll-Fläche gepackt - mit Autostart
+      und Kalenderquellen passte der Inhalt nicht mehr ohne zu quetschen
+- [x] Version 1.0.0, `CHANGELOG.md` angelegt, README verlinkt es
 
 ## Bekannte Einschränkung (von Stephan akzeptiert)
 
@@ -107,8 +124,11 @@
 
 ## Pflege
 
-- [ ] Englische Fassung des READMEs nachziehen, sobald das Repo
-      veröffentlicht wird (Konvention: zweisprachig, gleicher Zug)
-- [ ] Changelog im README verlinken, sobald veröffentlicht
+- [ ] Repo ist jetzt öffentlich (02.11.2026) - englische Fassung von
+      README.md und Anleitung.md nachziehen (Konvention: zweisprachig,
+      gleicher Zug). In dieser Runde bewusst zurückgestellt, um die
+      deutsche Anleitung samt Screenshots und die Deinstallation/den
+      Neuinstallations-Test noch heute abzuschließen.
+- [x] Changelog im README verlinkt (CHANGELOG.md, 02.11.2026)
 - [ ] Hilfe-Zugang in der Oberfläche einbauen (Konvention: wer nicht
       weiterkommt, klickt auf Hilfe - noch nicht vorhanden)
