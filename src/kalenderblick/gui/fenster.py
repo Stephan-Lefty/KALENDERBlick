@@ -23,7 +23,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from .. import config as konfig_modul, thunderbird
+from .. import autostart, config as konfig_modul, thunderbird
 from ..config import ANSICHTEN, GROESSEN
 from ..modell import Termin
 from .gemeinsam import LadeThread, app_symbol
@@ -225,6 +225,13 @@ class _EinstellungenReiter(QWidget):
             "Thunderbird selbst abgeholt hat, gibt es hier etwas Neues zu sehen.")
         al.addRow("Aktualisierung:", self._interval)
 
+        self._autostart = QCheckBox("Beim Anmelden automatisch starten")
+        self._autostart.setChecked(autostart.ist_aktiv())
+        self._autostart.setToolTip(
+            "Legt eine .desktop-Datei in ~/.config/autostart/ an (oder\n"
+            "entfernt sie) - unabhängig vom Startmenü-Eintrag.")
+        al.addRow(self._autostart)
+
         layout.addWidget(allg_box)
 
         # --- Kalenderübersicht (rein lesend, kein eigener Schalter) ---
@@ -264,6 +271,10 @@ class _EinstellungenReiter(QWidget):
         try:
             e.pruefe()
             e.speichern()
+            if self._autostart.isChecked():
+                autostart.aktiviere()
+            else:
+                autostart.deaktiviere()
             self._status.setStyleSheet("color: #2ec27e;")
             self._status.setText("Gespeichert.")
         except Exception as fehler:
@@ -275,7 +286,7 @@ class _EinstellungenReiter(QWidget):
 
 
 class HauptFenster(QMainWindow):
-    """Normales Fenster mit drei Reitern."""
+    """Normales Fenster mit zwei Reitern."""
 
     def __init__(self, desktop_fenster=None):
         super().__init__()
