@@ -161,12 +161,29 @@ class SchreibtischFenster(QWidget):
             hoehe = self._inhalt_hoehe(hoehe_max)
         self._e.desktop.breite = breite
         self._e.desktop.hoehe = hoehe
+        war_sichtbar = self.isVisible()
+        if war_sichtbar:
+            # Unter Wayland übernimmt ein bereits angezeigtes, randloses
+            # "StaysOnBottom"-Fenster ein zweites resize() nicht zuverlässig -
+            # KWin bestätigt die neue Größe nicht. Kurz aus- und wieder
+            # einblenden erzwingt einen neuen configure/ack-Zyklus, bei dem
+            # die neue Größe diesmal ankommt.
+            self.hide()
         self.resize(breite, hoehe)
+        if war_sichtbar:
+            self.show()
         if self._env["x11"]:
             self.move(self._e.desktop.x, self._e.desktop.y)
 
     def _inhalt_hoehe(self, obergrenze: int) -> int:
         rand = 2 * 8 + 8   # Fensterrand oben/unten + etwas Luft
+        # Nach dem Austauschen der Terminzeilen hat Qt das Layout noch nicht
+        # zwangsläufig neu berechnet - invalidate()+activate() erzwingt das
+        # synchron, sonst liefert sizeHint() mitunter noch den alten
+        # (kleineren) Wert und der Kasten schneidet neue Zeilen ab.
+        inhalt_layout = self._liste._inhalt.layout()
+        inhalt_layout.invalidate()
+        inhalt_layout.activate()
         gewuenscht = self._liste._inhalt.sizeHint().height() + rand
         return max(80, min(gewuenscht, obergrenze))
 
