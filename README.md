@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/icon-256.png" alt="KALENDERBlick" width="140">
+</p>
+
 # KALENDERBlick
 
 Zeigt die Termine aus **Thunderbird** auf dem Schreibtisch und in der
