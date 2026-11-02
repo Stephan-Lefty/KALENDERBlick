@@ -24,7 +24,11 @@
       schlanke Weg wie bei storage-box-sync (venv + `dpkg-deb`); lokal
       nachgebaut und geprüft, Struktur und Inhalt stimmen
 - [x] `.github/workflows/tests.yml` - nur Ubuntu, da das Programm ohnehin
-      nur unter Linux läuft (Thunderbird-Profilpfade, KDE/GNOME/Cinnamon)
+      nur unter Linux läuft (Thunderbird-Profilpfade, KDE/GNOME/Cinnamon);
+      Matrix 3.10/3.14 statt 3.9/3.12 - Python 3.9 hat für den neuen
+      Ubuntu-26-Runner keinen Build mehr (EOL seit Oktober 2025),
+      `requires-python` entsprechend auf `>=3.10` angehoben. CI geprüft
+      und grün.
 - [x] `pytest` in `.venv/` eingerichtet (bleibt im Repo-Ordner, ist schon
       in `.gitignore`) - 25 Tests, alle grün; README von 18 auf die
       tatsächliche Zahl korrigiert
