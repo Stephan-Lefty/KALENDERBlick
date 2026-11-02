@@ -319,7 +319,14 @@ class HauptFenster(QMainWindow):
         einstellungen = _EinstellungenReiter(
             einstellungen_geaendert_cb=self._einstellungen_geaendert,
             kalender_uebersicht=self._kalender_uebersicht)
-        self._tabs.addTab(einstellungen, "Einstellungen")
+        # Mit "Klick öffnet", Autostart und den Kalenderquellen passt der
+        # Inhalt bei kleinerer Fensterhöhe nicht mehr ohne zu quetschen -
+        # in einer Scroll-Fläche bleibt jede Zeile lesbar.
+        einstellungen_scroll = QScrollArea()
+        einstellungen_scroll.setWidgetResizable(True)
+        einstellungen_scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+        einstellungen_scroll.setWidget(einstellungen)
+        self._tabs.addTab(einstellungen_scroll, "Einstellungen")
 
         self._tabs.currentChanged.connect(self._reiter_gewechselt)
 
@@ -332,7 +339,8 @@ class HauptFenster(QMainWindow):
 
     def _reiter_gewechselt(self, index: int) -> None:
         if index == 1:
-            self._kalender_uebersicht.lade()
+            e = konfig_modul.laden()
+            self._kalender_uebersicht.lade(e.profil or None)
 
     def _starte_ladethread(self) -> None:
         if self._thread and self._thread.isRunning():
