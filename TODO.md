@@ -11,7 +11,7 @@
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
-- [x] GitHub-Repository angelegt und gepusht: github.com/Stephan-Lefty/kalenderblick
+- [x] GitHub-Repository angelegt und gepusht: github.com/Stephan-Lefty/KALENDERBlick
 - [x] Regulär per `pipx` installiert, Autostart und Startmenü-Eintrag
       eingerichtet, Symbole in den Icon-Theme-Ordner kopiert
 - [x] KWin-Regel importiert (Systemeinstellungen → Fensterverwaltung →

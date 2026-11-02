@@ -38,14 +38,14 @@ einmal, auch rein örtliche, und zwar genau so, wie Thunderbird sie kennt.
 
 ```bash
 pamac install python-dateutil python-pyqt6 python-pipx
-pipx install --system-site-packages git+https://github.com/stephan-lefty/kalenderblick.git
+pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDERBlick.git
 ```
 
 **Debian, GuideOS, Ubuntu**
 
 ```bash
 sudo apt install python3-dateutil python3-pyqt6 pipx
-pipx install --system-site-packages git+https://github.com/stephan-lefty/kalenderblick.git
+pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDERBlick.git
 ```
 
 KALENDERBlick ist reines Python mit Qt und hat außer `python-dateutil` keine

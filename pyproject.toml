@@ -34,7 +34,7 @@ kalenderblick = "kalenderblick.cli:main"
 kalenderblick-fenster = "kalenderblick.cli:befehl_fenster"
 
 [project.urls]
-Quellcode = "https://github.com/stephan-lefty/kalenderblick"
+Quellcode = "https://github.com/Stephan-Lefty/KALENDERBlick"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
