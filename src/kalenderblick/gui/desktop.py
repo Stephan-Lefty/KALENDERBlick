@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from PyQt6.QtCore import QEvent, Qt, QSize, QTimer
+from PyQt6.QtCore import QEvent, Qt, QTimer
 from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
 
 from .. import config as konfig_modul
 from ..config import GROESSEN
@@ -79,45 +79,19 @@ class SchreibtischFenster(QWidget):
         self._fehler.setVisible(False)
         layout.addWidget(self._fehler)
 
-        # Schwebt frei über dem Fenster, nicht im Layout - bei der Uhr-Ansicht
-        # tritt es an die Stelle der Kopfzeile, die dort stört.
-        self._einstellungen_knopf = QPushButton(self)
-        self._einstellungen_knopf.setIcon(app_symbol())
-        self._einstellungen_knopf.setIconSize(QSize(18, 18))
-        self._einstellungen_knopf.setFixedSize(26, 26)
-        self._einstellungen_knopf.setFlat(True)
-        self._einstellungen_knopf.setToolTip("Einstellungen öffnen")
-        self._einstellungen_knopf.setCursor(Qt.CursorShape.PointingHandCursor)
-        self._einstellungen_knopf.setStyleSheet(
-            "QPushButton { background: transparent; border: none; } "
-            "QPushButton:hover { background: rgba(128, 128, 128, 60); border-radius: 13px; }"
-        )
-        if self._hauptfenster_oeffnen_cb:
-            self._einstellungen_knopf.clicked.connect(self._hauptfenster_oeffnen_cb)
-        self._positioniere_knopf()
-
         self._wende_kopfzeile_an()
 
-    def _positioniere_knopf(self) -> None:
-        rand = 6
-        self._einstellungen_knopf.move(
-            self.width() - self._einstellungen_knopf.width() - rand, rand)
-
     def _wende_kopfzeile_an(self) -> None:
-        uhr_ansicht = self._e.desktop.ansicht == "uhr"
-        self._kopf.setVisible(not uhr_ansicht)
-        self._einstellungen_knopf.setVisible(uhr_ansicht and bool(self._hauptfenster_oeffnen_cb))
-
-    def resizeEvent(self, event) -> None:
-        super().resizeEvent(event)
-        self._positioniere_knopf()
+        # Bei der Uhr-Ansicht soll nur Wochentag, Uhrzeit und Datum stehen -
+        # die Kopfzeile wäre dort überflüssiger Ballast. Zu den Einstellungen
+        # kommt man per Klick auf die Uhr selbst (TerminListe.klick_cb).
+        self._kopf.setVisible(self._e.desktop.ansicht != "uhr")
 
     # ------------------------------------------------------------------
 
     def _ausgenommen(self, objekt) -> bool:
         """Eigene Widgets mit eigener Klickbedeutung - dort nicht ziehen."""
         ausnahmen = (
-            self._einstellungen_knopf,
             self._liste._uhr,
             self._liste._scroll.verticalScrollBar(),
             self._liste._scroll.horizontalScrollBar(),
@@ -142,7 +116,9 @@ class SchreibtischFenster(QWidget):
     def _wende_groesse_an(self) -> None:
         breite, hoehe = GROESSEN.get(self._e.desktop.groesse, (340, 480))
         if self._e.desktop.ansicht == "uhr":
-            breite = hoehe = breite   # Uhr + Datum wirkt als Quadrat am klarsten
+            # Drei Zeilen Text brauchen nicht die volle Listen-Höhe - sonst
+            # bleibt oben und unten nur durchscheinende Leerfläche stehen.
+            hoehe = round(breite * 0.42)
         self._e.desktop.breite = breite
         self._e.desktop.hoehe = hoehe
         self.resize(breite, hoehe)
@@ -150,7 +126,7 @@ class SchreibtischFenster(QWidget):
             self.move(self._e.desktop.x, self._e.desktop.y)
 
     def _wende_transparenz_an(self) -> None:
-        alpha = max(20, min(100, self._e.desktop.deckkraft))
+        alpha = max(0, min(100, self._e.desktop.deckkraft))
         farben = erscheinungsfarben(self._e.desktop.erscheinung)
         self.setStyleSheet(
             f"QWidget {{ background-color: rgba({farben['hintergrund']}, {alpha}%); "

@@ -56,8 +56,8 @@ class Einstellungen:
             raise KonfigFehler("Der Rückblick muss zwischen 0 und 31 Tagen liegen.")
         if not 1 <= self.aktualisierung_minuten <= 240:
             raise KonfigFehler("Die Aktualisierung muss zwischen 1 und 240 Minuten liegen.")
-        if not 20 <= self.desktop.deckkraft <= 100:
-            raise KonfigFehler("Die Deckkraft muss zwischen 20 und 100 Prozent liegen.")
+        if not 0 <= self.desktop.deckkraft <= 100:
+            raise KonfigFehler("Die Deckkraft muss zwischen 0 und 100 Prozent liegen.")
         if self.desktop.groesse not in GROESSEN:
             raise KonfigFehler(f"Ungültige Größe. Erlaubt: {', '.join(GROESSEN)}.")
         if self.desktop.ansicht not in ANSICHTEN:

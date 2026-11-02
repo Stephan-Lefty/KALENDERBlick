@@ -129,7 +129,7 @@ class _EinstellungenReiter(QWidget):
         tl = QHBoxLayout(transp_zeile)
         tl.setContentsMargins(0, 0, 0, 0)
         self._transp_slider = QSlider(Qt.Orientation.Horizontal)
-        self._transp_slider.setRange(20, 100)
+        self._transp_slider.setRange(0, 100)
         self._transp_slider.setValue(e.desktop.deckkraft)
         self._transp_label = QLabel(f"{e.desktop.deckkraft} %")
         self._transp_label.setFixedWidth(40)

@@ -187,10 +187,30 @@ class _UhrAnzeige(QWidget):
         self._datum.setText(f"{jetzt.day}. {MONATE[jetzt.month - 1]}")
 
     def mousePressEvent(self, event) -> None:
-        if self._klick_cb and event.button() == Qt.MouseButton.LeftButton:
-            self._klick_cb()
+        if event.button() == Qt.MouseButton.LeftButton:
+            self._zug_start = event.globalPosition().toPoint()
+            self._gezogen = False
         else:
             event.ignore()
+
+    def mouseMoveEvent(self, event) -> None:
+        start = getattr(self, "_zug_start", None)
+        if start is None or not (event.buttons() & Qt.MouseButton.LeftButton):
+            return
+        from PyQt6.QtWidgets import QApplication
+        abstand = (event.globalPosition().toPoint() - start).manhattanLength()
+        if abstand > QApplication.startDragDistance():
+            self._gezogen = True
+            self._zug_start = None
+            fenstergriff = self.window().windowHandle()
+            if fenstergriff is not None:
+                fenstergriff.startSystemMove()
+
+    def mouseReleaseEvent(self, event) -> None:
+        if (event.button() == Qt.MouseButton.LeftButton
+                and not getattr(self, "_gezogen", False) and self._klick_cb):
+            self._klick_cb()
+        self._zug_start = None
 
 
 class TerminListe(QWidget):
