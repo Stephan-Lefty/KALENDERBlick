@@ -9,7 +9,9 @@ from PyQt6.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
 from .. import config as konfig_modul
 from ..config import GROESSEN
 from ..modell import Termin
-from .gemeinsam import LadeThread, app_symbol, erscheinungsfarben, umgebung
+from .gemeinsam import (
+    LadeThread, app_symbol, erscheinungsfarben, setze_auf_allen_arbeitsflaechen, umgebung,
+)
 from .liste import TerminListe
 
 _SCHRIFT_PRO_GROESSE = {
@@ -18,6 +20,11 @@ _SCHRIFT_PRO_GROESSE = {
     "gross":      11,
     "sehr_gross": 12,
 }
+
+# Eigener, unsichtbarer Titel (kein Rahmen, also nie zu sehen) - nötig, um
+# dieses Fenster von außen (KWin-Skript) eindeutig vom Hauptfenster zu
+# unterscheiden, das denselben wmclass trägt, aber "KALENDERBlick" heißt.
+_FENSTERTITEL = "KALENDERBlick-Schreibtisch"
 
 
 class SchreibtischFenster(QWidget):
@@ -54,7 +61,7 @@ class SchreibtischFenster(QWidget):
         )
         self.setWindowFlags(flags)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setWindowTitle("KALENDERBlick")
+        self.setWindowTitle(_FENSTERTITEL)
         self.setWindowIcon(app_symbol())
 
         layout = QVBoxLayout(self)
@@ -91,7 +98,8 @@ class SchreibtischFenster(QWidget):
         return False
 
     def eventFilter(self, objekt, event) -> bool:
-        if (event.type() == QEvent.Type.MouseButtonPress
+        if (not self._e.desktop.position_fixiert
+                and event.type() == QEvent.Type.MouseButtonPress
                 and event.button() == Qt.MouseButton.LeftButton
                 and isinstance(objekt, QWidget)
                 and objekt.window() is self
@@ -122,6 +130,13 @@ class SchreibtischFenster(QWidget):
             f"border-radius: 8px; }}"
         )
 
+    def _wende_arbeitsflaechen_an(self) -> None:
+        setze_auf_allen_arbeitsflaechen(_FENSTERTITEL, self._e.desktop.alle_arbeitsflaechen)
+
+    def showEvent(self, event) -> None:
+        super().showEvent(event)
+        self._wende_arbeitsflaechen_an()
+
     # ------------------------------------------------------------------
 
     def _starte_ladethread(self) -> None:
@@ -147,6 +162,7 @@ class SchreibtischFenster(QWidget):
         self._e = konfig_modul.laden()
         self._wende_groesse_an()
         self._wende_transparenz_an()
+        self._wende_arbeitsflaechen_an()
         self._liste.setze_erscheinung(self._e.desktop.erscheinung)
         self._liste.setze_ansicht(self._e.desktop.ansicht)
         self._liste.setze_schrift(_SCHRIFT_PRO_GROESSE.get(self._e.desktop.groesse, 10))

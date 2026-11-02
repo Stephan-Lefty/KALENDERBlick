@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import json
 import os
+import subprocess
+import tempfile
+from pathlib import Path
 
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtGui import QColor, QIcon
@@ -40,6 +44,47 @@ class LadeThread(QThread):
             self.fertig.emit(termine)
         except Exception as fehler:
             self.fehler.emit(str(fehler))
+
+
+def setze_auf_allen_arbeitsflaechen(fenstertitel: str, wert: bool) -> None:
+    """Zeigt oder entfernt das Fenster auf allen Arbeitsflächen - nur KDE.
+
+    Qt kennt dafür keine eigene, plattformübergreifende Einstellung; unter
+    Wayland gibt es dafür kein Protokoll außerhalb von KWin. Deshalb
+    dieselbe Technik, mit der sich KWin-Regeln auch sonst nur über ein
+    kurzes Skript live setzen lassen - fehlschlagen darf das, ohne die
+    Oberfläche zu stören (anderer Fensterm­anager, qdbus6 fehlt, KWin
+    antwortet nicht).
+    """
+    if not umgebung()["kde"]:
+        return
+    skript = (
+        "var liste = workspace.windowList();\n"
+        "for (var i = 0; i < liste.length; i++) {\n"
+        "    var f = liste[i];\n"
+        f"    if (f.resourceClass === \"kalenderblick\" && f.caption === {json.dumps(fenstertitel)}) {{\n"
+        f"        f.onAllDesktops = {'true' if wert else 'false'};\n"
+        "    }\n"
+        "}\n"
+    )
+    try:
+        with tempfile.NamedTemporaryFile(
+                mode="w", suffix=".js", delete=False, encoding="utf-8") as datei:
+            datei.write(skript)
+            pfad = Path(datei.name)
+        try:
+            geladen = subprocess.run(
+                ["qdbus6", "org.kde.KWin", "/Scripting", "loadScript", str(pfad)],
+                capture_output=True, text=True, timeout=5)
+            kennung = geladen.stdout.strip()
+            if kennung.isdigit():
+                subprocess.run(
+                    ["qdbus6", "org.kde.KWin", f"/Scripting/Script{kennung}", "run"],
+                    capture_output=True, text=True, timeout=5)
+        finally:
+            pfad.unlink(missing_ok=True)
+    except (OSError, subprocess.SubprocessError):
+        pass
 
 
 def umgebung() -> dict:

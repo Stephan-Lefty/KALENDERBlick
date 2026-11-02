@@ -6,6 +6,7 @@ from datetime import datetime
 
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtWidgets import (
+    QCheckBox,
     QComboBox,
     QFormLayout,
     QGroupBox,
@@ -110,6 +111,14 @@ class _EinstellungenReiter(QWidget):
         widget_box = QGroupBox("Schreibtisch-Widget")
         wl = QFormLayout(widget_box)
 
+        self._desktop_an = QCheckBox("Schreibtisch-Widget anzeigen")
+        self._desktop_an.setChecked(e.desktop_an)
+        self._desktop_an.setToolTip(
+            "Ob überhaupt ein Fenster auf dem Schreibtisch liegt. Wirkt erst\n"
+            "nach einem Neustart von KALENDERBlick - das Leistensymbol bleibt\n"
+            "davon unberührt.")
+        wl.addRow(self._desktop_an)
+
         self._groesse = QComboBox()
         for schluessel, name in _GROESSE_NAMEN.items():
             self._groesse.addItem(name, schluessel)
@@ -151,8 +160,8 @@ class _EinstellungenReiter(QWidget):
         wl.addRow("Transparenz:", transp_zeile)
 
         self._erscheinung = QComboBox()
-        self._erscheinung.addItem("Dunkel", "dunkel")
-        self._erscheinung.addItem("Hell", "hell")
+        self._erscheinung.addItem("Dark-Mode (weiße Schrift)", "dunkel")
+        self._erscheinung.addItem("Light-Mode (schwarze Schrift)", "hell")
         erscheinung_idx = 1 if e.desktop.erscheinung == "hell" else 0
         self._erscheinung.setCurrentIndex(erscheinung_idx)
         self._erscheinung.setToolTip(
@@ -170,6 +179,20 @@ class _EinstellungenReiter(QWidget):
             "Nur für die Uhr-Ansicht: Uhrzeit mit 24 Stunden oder mit\n"
             "12 Stunden samt AM/PM.")
         wl.addRow("Stundenformat:", self._stunden_format)
+
+        self._position_fixiert = QCheckBox("Position sperren")
+        self._position_fixiert.setChecked(e.desktop.position_fixiert)
+        self._position_fixiert.setToolTip(
+            "Einmal an die richtige Stelle gezogen, lässt sich das Fenster\n"
+            "nicht mehr versehentlich verschieben.")
+        wl.addRow(self._position_fixiert)
+
+        self._alle_arbeitsflaechen = QCheckBox("Auf allen Arbeitsflächen zeigen")
+        self._alle_arbeitsflaechen.setChecked(e.desktop.alle_arbeitsflaechen)
+        self._alle_arbeitsflaechen.setToolTip(
+            "Das Widget bleibt sichtbar, egal auf welche Arbeitsfläche du\n"
+            "wechselst - nur unter KDE/KWin wirksam.")
+        wl.addRow(self._alle_arbeitsflaechen)
 
         layout.addWidget(widget_box)
 
@@ -214,11 +237,14 @@ class _EinstellungenReiter(QWidget):
 
     def _speichern(self) -> None:
         e = konfig_modul.laden()
+        e.desktop_an = self._desktop_an.isChecked()
         e.desktop.groesse = self._groesse.currentData()
         e.desktop.ansicht = self._ansicht.currentData()
         e.desktop.deckkraft = self._transp_slider.value()
         e.desktop.erscheinung = self._erscheinung.currentData()
         e.desktop.stunden_format = self._stunden_format.currentData()
+        e.desktop.position_fixiert = self._position_fixiert.isChecked()
+        e.desktop.alle_arbeitsflaechen = self._alle_arbeitsflaechen.isChecked()
         e.tage_voraus = self._tage.value()
         e.aktualisierung_minuten = self._interval.value()
         # Größe auch in Pixel übernehmen

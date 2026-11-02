@@ -93,6 +93,7 @@ def starte_alles() -> int:
         return 5
 
     from PyQt6.QtWidgets import QApplication
+    from .. import config as konfig_modul
     from .desktop import SchreibtischFenster
     from .fenster import HauptFenster
     from .symbol import KalenderSymbol
@@ -112,8 +113,10 @@ def starte_alles() -> int:
             hauptfenster.raise_()
             hauptfenster.activateWindow()
 
-    desktop = SchreibtischFenster(hauptfenster_oeffnen_cb=fenster_umschalten)
-    desktop.show()
+    desktop = None
+    if konfig_modul.laden().desktop_an:
+        desktop = SchreibtischFenster(hauptfenster_oeffnen_cb=fenster_umschalten)
+        desktop.show()
 
     hauptfenster = HauptFenster(desktop_fenster=desktop)
 
