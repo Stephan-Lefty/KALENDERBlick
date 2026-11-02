@@ -60,13 +60,26 @@
       Kommandozeile, hätte in der Oberfläche nur verwirrt); stattdessen
       zeigt das Leistensymbol die Stunde des nächsten Termins als
       Abzeichen unten rechts
-- [x] Uhr-Ansicht wieder quadratisch; alle anderen Ansichten richten die
-      Fensterhöhe nach dem tatsächlichen Inhalt aus (nicht mehr nach der
-      festen Größe) - bei wenig Terminen bleibt kein durchscheinender
-      Leerraum mehr stehen
+- [x] Uhr-Ansicht: erst quadratisch zur gewählten "Größe" gemacht, dann
+      nochmal überarbeitet - die Schrift blieb dabei fast unverändert
+      klein, bei "Sehr groß" also viel leere Fläche in einem 520×520-
+      Kasten. Jetzt eigene, deutlich größere Schrift für die Uhr
+      (`_UHR_SCHRIFT` in `gui/liste.py`, unabhängig von der kleinen
+      Listen-Schrift) UND der Kasten folgt dem Inhalt (wie bei den
+      anderen Ansichten) statt der festen "Größe"-Breite - bei "Klein"
+      jetzt ca. 350×310 statt vorher 280×340 mit viel Leerraum
 - [x] "Klick öffnet die Termine" als eigener Schalter in den
       Einstellungen, wie "Position sperren" - einmal ausgeschaltet, lässt
       sich das Widget nur noch über das Leistensymbol öffnen
+
+## Bekannte Einschränkung (von Stephan akzeptiert)
+
+- Der Klick zum Öffnen der Termine funktioniert zuverlässig nur bei der
+  Uhr-Ansicht. Bei den anderen Ansichten (nächste 3, 7 Tage, 14 Tage)
+  reagiert der Klick in der Praxis nicht, obwohl der Code dafür vorgesehen
+  ist (eventFilter in `gui/desktop.py`). Stephan kann damit leben
+  (02.11.2026) - bei Bedarf später genauer debuggen, z. B. ob QLabel-Zeilen
+  in der Terminliste den Klick vor dem App-weiten Event-Filter abfangen.
 
 ## Für GuideOS (Cinnamon, X11)
 

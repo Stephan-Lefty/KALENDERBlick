@@ -75,6 +75,7 @@ class SchreibtischFenster(QWidget):
             stunden_format=self._e.desktop.stunden_format,
             position_fixiert=self._e.desktop.position_fixiert,
             klick_cb=self._oeffne_hauptfenster,
+            uhr_groesse=self._e.desktop.groesse,
         )
         layout.addWidget(self._liste, stretch=1)
 
@@ -141,16 +142,22 @@ class SchreibtischFenster(QWidget):
             self._hauptfenster_oeffnen_cb()
 
     def _wende_groesse_an(self) -> None:
-        breite, obergrenze = GROESSEN.get(self._e.desktop.groesse, (340, 480))
+        breite_max, hoehe_max = GROESSEN.get(self._e.desktop.groesse, (340, 480))
         if self._e.desktop.ansicht == "uhr":
-            # Quadratisch, passend zur gewählten Größe.
-            hoehe = breite
+            # Keine feste Breite mehr - der Kasten soll nur knapp um
+            # Wochentag/Uhrzeit/Datum liegen. Wie groß das wirkt, steuert
+            # stattdessen die Schrift selbst (_UHR_SCHRIFT in liste.py,
+            # wächst mit der gewählten "Größe").
+            rand = 2 * 8
+            hinweis = self._liste._uhr.sizeHint()
+            breite = max(150, hinweis.width() + rand)
+            hoehe = max(150, hinweis.height() + rand)
         else:
-            # Der Kasten soll nur unwesentlich größer sein als der Inhalt,
-            # egal welche Ansicht - "Größe" ist hier nur noch die Obergrenze,
-            # bei wenig Terminen bleibt viel durchscheinende Leerfläche sonst
-            # stehen.
-            hoehe = self._inhalt_hoehe(obergrenze)
+            # Der Kasten soll nur unwesentlich größer sein als der Inhalt -
+            # "Größe" ist hier nur noch die Obergrenze, bei wenig Terminen
+            # bleibt viel durchscheinende Leerfläche sonst stehen.
+            breite = breite_max
+            hoehe = self._inhalt_hoehe(hoehe_max)
         self._e.desktop.breite = breite
         self._e.desktop.hoehe = hoehe
         self.resize(breite, hoehe)
@@ -210,14 +217,17 @@ class SchreibtischFenster(QWidget):
     def aktualisiere_einstellungen(self) -> None:
         """Wird aufgerufen, wenn der Nutzer Einstellungen geändert hat."""
         self._e = konfig_modul.laden()
-        self._wende_groesse_an()
-        self._wende_transparenz_an()
-        self._erzwinge_kwin_eigenschaften()
         self._liste.setze_erscheinung(self._e.desktop.erscheinung)
         self._liste.setze_ansicht(self._e.desktop.ansicht)
         self._liste.setze_schrift(_SCHRIFT_PRO_GROESSE.get(self._e.desktop.groesse, 10))
+        self._liste.setze_uhr_groesse(self._e.desktop.groesse)
         self._liste.setze_stunden_format(self._e.desktop.stunden_format)
         self._liste.setze_position_fixiert(self._e.desktop.position_fixiert)
+        # Erst die Schrift setzen, dann die Fenstergröße danach ausrichten -
+        # sizeHint() der Uhr-Ansicht hängt von der gerade gesetzten Schrift ab.
+        self._wende_groesse_an()
+        self._wende_transparenz_an()
+        self._erzwinge_kwin_eigenschaften()
         self._timer.setInterval(self._e.aktualisierung_minuten * 60 * 1000)
 
     # ------------------------------------------------------------------

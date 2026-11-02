@@ -26,6 +26,16 @@ ANSICHT_TAGE = {
     "monat":     31,     # nur im Hauptfenster - am Widget nicht wählbar
 }
 
+# Eigene, deutlich größere Schrift für die Uhr-Ansicht - unabhängig von der
+# kleinen Listen-Schrift (9-12pt), sonst bleibt bei größeren "Größe"-Stufen
+# viel leere Fläche um den Text stehen, die das Quadrat nicht ausfüllt.
+_UHR_SCHRIFT = {
+    "klein":      {"wochentag": 26, "zeit": 96,  "datum": 29},
+    "mittel":     {"wochentag": 29, "zeit": 108, "datum": 31},
+    "gross":      {"wochentag": 31, "zeit": 124, "datum": 34},
+    "sehr_gross": {"wochentag": 36, "zeit": 144, "datum": 39},
+}
+
 
 class _Punkt(QWidget):
     """Kleiner farbiger Kreis für die Kalenderfarbe."""
@@ -117,13 +127,13 @@ class _TagesBlock(QWidget):
 class _UhrAnzeige(QWidget):
     """Wochentag über, Uhrzeit, Datum darunter. Anklicken ruft klick_cb auf."""
 
-    def __init__(self, schrift: int = 10, farben: dict = FARBEN_SYSTEM,
+    def __init__(self, groesse: str = "mittel", farben: dict = FARBEN_SYSTEM,
                 stunden_format: str = "24", position_fixiert: bool = False,
                 klick_cb=None, parent=None):
         super().__init__(parent)
         self._klick_cb = klick_cb
         self._farben = farben
-        self._schrift = schrift
+        self._groesse = groesse
         self._stunden_format = stunden_format
         self._position_fixiert = position_fixiert
 
@@ -156,21 +166,22 @@ class _UhrAnzeige(QWidget):
         self._timer = QTimer(self)
         self._timer.timeout.connect(self._aktualisiere)
         self._timer.start(1000)
-        self.setze_schrift(schrift)
+        self.setze_groesse(groesse)
 
-    def setze_schrift(self, schrift: int) -> None:
-        self._schrift = schrift
+    def setze_groesse(self, groesse: str) -> None:
+        self._groesse = groesse
+        pt = _UHR_SCHRIFT.get(groesse, _UHR_SCHRIFT["mittel"])
         farbe_haupt = f" color: {self._farben['haupt']};" if self._farben["haupt"] else ""
         self._wochentag.setStyleSheet(
-            f"font-size: {schrift + 2}pt; font-weight: bold; "
+            f"font-size: {pt['wochentag']}pt; font-weight: bold; "
             f"color: {self._farben['gedaempft']}; letter-spacing: 1px;")
-        self._zeit.setStyleSheet(f"font-size: {schrift + 20}pt; font-weight: 300;{farbe_haupt}")
-        self._datum.setStyleSheet(f"font-size: {schrift + 4}pt; color: {self._farben['gedaempft']};")
+        self._zeit.setStyleSheet(f"font-size: {pt['zeit']}pt; font-weight: 300;{farbe_haupt}")
+        self._datum.setStyleSheet(f"font-size: {pt['datum']}pt; color: {self._farben['gedaempft']};")
         self._aktualisiere()
 
     def setze_farben(self, farben: dict) -> None:
         self._farben = farben
-        self.setze_schrift(self._schrift)
+        self.setze_groesse(self._groesse)
 
     def setze_stunden_format(self, stunden_format: str) -> None:
         self._stunden_format = stunden_format
@@ -225,7 +236,8 @@ class TerminListe(QWidget):
 
     def __init__(self, ansicht: str = "naechste3", schrift: int = 10,
                 erscheinung: str | None = None, stunden_format: str = "24",
-                position_fixiert: bool = False, klick_cb=None, parent=None):
+                position_fixiert: bool = False, klick_cb=None,
+                uhr_groesse: str = "mittel", parent=None):
         super().__init__(parent)
         self._ansicht = ansicht
         self._schrift = schrift
@@ -255,7 +267,7 @@ class TerminListe(QWidget):
         self._inhalt_layout.addStretch()
         self._scroll.setWidget(self._inhalt)
 
-        self._uhr = _UhrAnzeige(schrift, farben=self._farben, stunden_format=stunden_format,
+        self._uhr = _UhrAnzeige(uhr_groesse, farben=self._farben, stunden_format=stunden_format,
                                position_fixiert=position_fixiert, klick_cb=self._klick_cb)
         self._stapel.addWidget(self._uhr)
 
@@ -267,8 +279,10 @@ class TerminListe(QWidget):
 
     def setze_schrift(self, groesse: int) -> None:
         self._schrift = groesse
-        self._uhr.setze_schrift(groesse)
         self._aktualisiere()
+
+    def setze_uhr_groesse(self, groesse: str) -> None:
+        self._uhr.setze_groesse(groesse)
 
     def setze_erscheinung(self, erscheinung: str) -> None:
         self._farben = erscheinungsfarben(erscheinung)
