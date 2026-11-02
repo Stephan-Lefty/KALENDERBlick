@@ -237,6 +237,8 @@ class TerminListe(QWidget):
         self._scroll.setWidgetResizable(True)
         self._scroll.setFrameShape(QFrame.Shape.NoFrame)
         self._scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        # Bildlaufleiste stört die ruhige Fläche - Mausrad scrollt trotzdem.
+        self._scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self._stapel.addWidget(self._scroll)
 
         self._inhalt = QWidget()
