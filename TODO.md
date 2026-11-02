@@ -2,10 +2,12 @@
 
 ## Als Nächstes
 
-- [ ] PKGBUILD für Arch/Manjaro schreiben (wie bei storage-box-sync)
-- [ ] `debian/`-Verzeichnis für ein `.deb` (dh-python, pybuild);
-      Abhängigkeiten `python3-dateutil`, `python3-pyqt6`; gilt für
-      DialOS und GuideOS gleichermaßen
+- [ ] Erste Fassung veröffentlichen: Tag `v0.1.0` setzen und einen
+      GitHub-Release anlegen - erst dann laden PKGBUILD (lädt den
+      Quellcode-Tarball vom Tag) und das Release-Workflow (lädt das
+      gebaute `.deb` an den Release) wirklich etwas Echtes hoch.
+      Fertiger Befehl, wenn es so weit ist:
+      `gh release create v0.1.0 --title "0.1.0" --generate-notes`
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
@@ -15,6 +17,17 @@
 - [x] KWin-Regel importiert (Systemeinstellungen → Fensterverwaltung →
       Fensterregeln → Importieren) - Position, „hinter anderen halten" und
       Ziehen per `startSystemMove()` am echten Gerät bestätigt
+- [x] `packaging/PKGBUILD` für Arch/Manjaro - wie bei storage-box-sync,
+      baut aus dem Quellcode-Tarball eines Tags
+- [x] `.deb`-Bau über `.github/workflows/release.yml` - kein
+      `debian/`-Verzeichnis mit dh-python/pybuild, sondern derselbe
+      schlanke Weg wie bei storage-box-sync (venv + `dpkg-deb`); lokal
+      nachgebaut und geprüft, Struktur und Inhalt stimmen
+- [x] `.github/workflows/tests.yml` - nur Ubuntu, da das Programm ohnehin
+      nur unter Linux läuft (Thunderbird-Profilpfade, KDE/GNOME/Cinnamon)
+- [x] `pytest` in `.venv/` eingerichtet (bleibt im Repo-Ordner, ist schon
+      in `.gitignore`) - 25 Tests, alle grün; README von 18 auf die
+      tatsächliche Zahl korrigiert
 
 ## Für GuideOS (Cinnamon, X11)
 
@@ -34,9 +47,6 @@
 
 ## Pflege
 
-- [ ] `pytest` in der Entwicklungsumgebung nachrüsten (aktuell nicht
-      installiert, Tests konnten in dieser Sitzung nicht laufen - nur
-      Syntaxprüfung und Live-Test gegen echte Daten)
 - [ ] Englische Fassung des READMEs nachziehen, sobald das Repo
       veröffentlicht wird (Konvention: zweisprachig, gleicher Zug)
 - [ ] Changelog im README verlinken, sobald veröffentlicht

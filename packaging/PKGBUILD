@@ -1,0 +1,39 @@
+# Maintainer: Stephan Rösner
+pkgname=kalenderblick
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Zeigt Thunderbirds Kalender auf dem Schreibtisch und in der Kontrollleiste"
+arch=('any')
+url="https://github.com/Stephan-Lefty/kalenderblick"
+license=('MIT')
+depends=('python' 'python-dateutil')
+optdepends=('python-pyqt6: Oberfläche - Schreibtischfenster, Leistensymbol, Fenster')
+makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
+checkdepends=('python-pytest' 'python-pyqt6')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cd "$pkgname-$pkgver"
+  python -m build --wheel --no-isolation
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  PYTHONPATH=src python -m pytest
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  python -m installer --destdir="$pkgdir" dist/*.whl
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+  install -Dm644 packaging/kalenderblick.desktop \
+    "$pkgdir/usr/share/applications/kalenderblick.desktop"
+  install -Dm644 packaging/kalenderblick.kwinrule \
+    "$pkgdir/usr/share/doc/$pkgname/kalenderblick.kwinrule"
+  for groesse in 16 22 24 32 48 64 128 256 512; do
+    install -Dm644 "src/kalenderblick/bilder/symbol-${groesse}.png" \
+      "$pkgdir/usr/share/icons/hicolor/${groesse}x${groesse}/apps/kalenderblick.png"
+  done
+}

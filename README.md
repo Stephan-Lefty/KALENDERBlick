@@ -125,7 +125,7 @@ positioniert sich dort selbst.
 
 ## Stand
 
-Der Leser und die Kommandozeile sind fertig und mit 18 Tests abgedeckt. Die
+Der Leser und die Kommandozeile sind fertig und mit 25 Tests abgedeckt. Die
 Oberfläche (`src/kalenderblick/gui/`) ist gebaut: Schreibtischfenster,
 Leistensymbol und ein gewöhnliches Fenster mit drei Reitern, alle auf
 `TerminListe` aufgebaut. Fünf Ansichten stehen zur Wahl: die nächsten drei
