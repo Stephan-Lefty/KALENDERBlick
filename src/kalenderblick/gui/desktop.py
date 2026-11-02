@@ -76,6 +76,7 @@ class SchreibtischFenster(QWidget):
             position_fixiert=self._e.desktop.position_fixiert,
             klick_cb=self._oeffne_hauptfenster,
             uhr_groesse=self._e.desktop.groesse,
+            klick_aktiv=self._e.desktop.klick_oeffnet,
         )
         layout.addWidget(self._liste, stretch=1)
 
@@ -223,6 +224,7 @@ class SchreibtischFenster(QWidget):
         self._liste.setze_uhr_groesse(self._e.desktop.groesse)
         self._liste.setze_stunden_format(self._e.desktop.stunden_format)
         self._liste.setze_position_fixiert(self._e.desktop.position_fixiert)
+        self._liste.setze_klick_aktiv(self._e.desktop.klick_oeffnet)
         # Erst die Schrift setzen, dann die Fenstergröße danach ausrichten -
         # sizeHint() der Uhr-Ansicht hängt von der gerade gesetzten Schrift ab.
         self._wende_groesse_an()

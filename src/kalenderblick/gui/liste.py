@@ -129,7 +129,7 @@ class _UhrAnzeige(QWidget):
 
     def __init__(self, groesse: str = "mittel", farben: dict = FARBEN_SYSTEM,
                 stunden_format: str = "24", position_fixiert: bool = False,
-                klick_cb=None, parent=None):
+                klick_cb=None, klick_aktiv: bool = True, parent=None):
         super().__init__(parent)
         self._klick_cb = klick_cb
         self._farben = farben
@@ -160,8 +160,7 @@ class _UhrAnzeige(QWidget):
 
         layout.addStretch()
 
-        if klick_cb:
-            self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setze_klick_aktiv(klick_aktiv)
 
         self._timer = QTimer(self)
         self._timer.timeout.connect(self._aktualisiere)
@@ -189,6 +188,12 @@ class _UhrAnzeige(QWidget):
 
     def setze_position_fixiert(self, wert: bool) -> None:
         self._position_fixiert = wert
+
+    def setze_klick_aktiv(self, wert: bool) -> None:
+        if wert and self._klick_cb:
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
+        else:
+            self.unsetCursor()
 
     def _aktualisiere(self) -> None:
         jetzt = datetime.now()
@@ -237,7 +242,7 @@ class TerminListe(QWidget):
     def __init__(self, ansicht: str = "naechste3", schrift: int = 10,
                 erscheinung: str | None = None, stunden_format: str = "24",
                 position_fixiert: bool = False, klick_cb=None,
-                uhr_groesse: str = "mittel", parent=None):
+                uhr_groesse: str = "mittel", klick_aktiv: bool = True, parent=None):
         super().__init__(parent)
         self._ansicht = ansicht
         self._schrift = schrift
@@ -268,7 +273,8 @@ class TerminListe(QWidget):
         self._scroll.setWidget(self._inhalt)
 
         self._uhr = _UhrAnzeige(uhr_groesse, farben=self._farben, stunden_format=stunden_format,
-                               position_fixiert=position_fixiert, klick_cb=self._klick_cb)
+                               position_fixiert=position_fixiert, klick_cb=self._klick_cb,
+                               klick_aktiv=klick_aktiv)
         self._stapel.addWidget(self._uhr)
 
         self._stapel.setCurrentWidget(self._uhr if ansicht == "uhr" else self._scroll)
@@ -294,6 +300,9 @@ class TerminListe(QWidget):
 
     def setze_position_fixiert(self, wert: bool) -> None:
         self._uhr.setze_position_fixiert(wert)
+
+    def setze_klick_aktiv(self, wert: bool) -> None:
+        self._uhr.setze_klick_aktiv(wert)
 
     def setze_termine(self, termine: list[Termin]) -> None:
         self._termine = termine
