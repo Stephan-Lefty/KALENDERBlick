@@ -70,6 +70,7 @@ def befehl_pruefen(args) -> int:
         groesse = datei.stat().st_size // 1024
         stand = datetime.fromtimestamp(datei.stat().st_mtime).strftime("%d.%m.%Y %H:%M")
         _schreib(f"{datei.name}  ({groesse} kB, zuletzt geschrieben {stand})")
+        kopie = None
         try:
             kopie = thunderbird._kopiere(datei)
             verbindung = sqlite3.connect(f"file:{kopie}?mode=ro", uri=True, timeout=5)
@@ -102,6 +103,9 @@ def befehl_pruefen(args) -> int:
                 verbindung.close()
         except sqlite3.Error as fehler:
             _schreib(f"   Nicht lesbar: {fehler}")
+        finally:
+            if kopie is not None:
+                thunderbird._aufraeumen(kopie)
         _schreib()
 
     _schreib("Wenn hier cal_recurrence ohne Spalte icalString auftaucht, sag Bescheid -")

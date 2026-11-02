@@ -15,6 +15,7 @@ import os
 import re
 import shutil
 import sqlite3
+import tempfile
 from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
@@ -329,17 +330,32 @@ def _schluessel(zeitpunkt: datetime, ganztags: bool) -> int:
 # ----------------------------------------------------------------------
 
 def _kopiere(datei: Path) -> Path:
-    """Kopie anlegen, damit ein laufender Thunderbird nicht stört."""
+    """Kopie in einem eigenen Ordner anlegen, damit weder ein laufender
+    Thunderbird noch ein zweiter, gleichzeitiger Lesevorgang dieses
+    Programms sich in die Quere kommt.
+
+    Schreibtischfenster, Hauptfenster und Leistensymbol lesen jeweils
+    unabhängig voneinander und können sich zeitlich überlappen. Ein
+    gemeinsamer Dateiname hätte bedeutet, dass die Kopie mitten im Lesen
+    von einem anderen Lesevorgang überschrieben wird - das hat tatsächlich
+    zu Abstürzen geführt (SIGBUS in SQLite beim Lesen einer plötzlich
+    verkürzten Datei). tempfile.mkdtemp() ist für genau das gemacht: ein
+    garantiert eindeutiger Ordner, auch bei gleichzeitigen Aufrufen.
+    """
     paths.lege_ordner_an()
-    ziel = paths.arbeits_ordner() / datei.name
+    eigener_ordner = Path(tempfile.mkdtemp(prefix="lesen-", dir=paths.arbeits_ordner()))
+    ziel = eigener_ordner / datei.name
     shutil.copy2(datei, ziel)
     for anhang in ("-wal", "-shm"):
         begleiter = datei.with_name(datei.name + anhang)
         if begleiter.exists():
             shutil.copy2(begleiter, ziel.with_name(ziel.name + anhang))
-        else:
-            ziel.with_name(ziel.name + anhang).unlink(missing_ok=True)
     return ziel
+
+
+def _aufraeumen(kopie: Path) -> None:
+    """Den eigenen Ordner einer Kopie wieder entfernen."""
+    shutil.rmtree(kopie.parent, ignore_errors=True)
 
 
 def _spalten(verbindung: sqlite3.Connection, tabelle: str) -> set[str]:
@@ -500,6 +516,14 @@ def lies_datei(datei: Path, von: datetime, bis: datetime,
     von und bis sind Ortszeit ohne Zeitzone.
     """
     kopie = _kopiere(datei)
+    try:
+        return _lies_kopie(kopie, von, bis, registry)
+    finally:
+        _aufraeumen(kopie)
+
+
+def _lies_kopie(kopie: Path, von: datetime, bis: datetime,
+                registry: dict[str, Kalender]) -> tuple[list[Termin], dict[str, int]]:
     termine: list[Termin] = []
     anzahl: dict[str, int] = {}
 
@@ -603,8 +627,12 @@ def _verteilung(datei: Path) -> dict[str, int]:
     der Dateiname nicht.
     """
     for quelle in (datei, None):
+        kopie = None
         try:
-            pfad = quelle if quelle is not None else _kopiere(datei)
+            if quelle is not None:
+                pfad = quelle
+            else:
+                kopie = pfad = _kopiere(datei)
             verbindung = sqlite3.connect(f"file:{pfad}?mode=ro", uri=True, timeout=3)
             try:
                 zeilen = verbindung.execute(
@@ -614,6 +642,9 @@ def _verteilung(datei: Path) -> dict[str, int]:
                 verbindung.close()
         except (sqlite3.Error, OSError):
             continue
+        finally:
+            if kopie is not None:
+                _aufraeumen(kopie)
     return {}
 
 
