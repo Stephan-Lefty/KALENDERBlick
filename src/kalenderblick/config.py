@@ -13,7 +13,7 @@ class KonfigFehler(Exception):
     pass
 
 
-ANSICHTEN = ("naechste3", "tag", "woche", "monat", "uhr")
+ANSICHTEN = ("uhr", "naechste3", "woche", "14tage")
 GROESSEN = {
     "klein":      (280, 340),
     "mittel":     (340, 480),
@@ -31,7 +31,7 @@ class Fensterlage:
     deckkraft: int = 85          # Prozent
     sichtbar: bool = True
     groesse: str = "mittel"      # klein / mittel / gross / sehr_gross
-    ansicht: str = "naechste3"   # naechste3 / tag / woche / monat / uhr
+    ansicht: str = "naechste3"   # uhr / naechste3 / woche / 14tage
     erscheinung: str = "dunkel"  # hell / dunkel
     stunden_format: str = "24"   # 24 / 12
 

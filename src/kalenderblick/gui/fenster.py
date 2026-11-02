@@ -29,11 +29,10 @@ from .gemeinsam import LadeThread, app_symbol
 from .liste import TerminListe
 
 _ANSICHT_NAMEN = {
-    "naechste3": "Nächste 3 Termine",
-    "tag":       "Tagesansicht",
-    "woche":     "Wochenansicht",
-    "monat":     "Monatsansicht",
     "uhr":       "Uhr + Datum",
+    "naechste3": "Nächste 3 Termine",
+    "woche":     "Nächste 7 Tage",
+    "14tage":    "Nächste 14 Tage",
 }
 _GROESSE_NAMEN = {
     "klein":      "Klein (280 × 340)",
@@ -266,7 +265,7 @@ class HauptFenster(QMainWindow):
         self._tabs = QTabWidget()
         self.setCentralWidget(self._tabs)
 
-        self._termine_liste = TerminListe(ansicht="woche", schrift=10)
+        self._termine_liste = TerminListe(ansicht="monat", schrift=10)
         self._tabs.addTab(self._termine_liste, "Termine")
 
         self._kalender_reiter = _KalenderReiter()

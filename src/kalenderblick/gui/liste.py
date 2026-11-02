@@ -21,9 +21,9 @@ from .gemeinsam import FARBEN_SYSTEM, erscheinungsfarben, farbe_als_qt
 
 ANSICHT_TAGE = {
     "naechste3": None,   # Sonderfall: nur 3 Einträge
-    "tag":        1,
     "woche":      7,
-    "monat":     31,
+    "14tage":    14,
+    "monat":     31,     # nur im Hauptfenster - am Widget nicht wählbar
 }
 
 
@@ -214,7 +214,7 @@ class _UhrAnzeige(QWidget):
 
 
 class TerminListe(QWidget):
-    """Zeigt Termine nach Ansicht: naechste3 / tag / woche / monat / uhr."""
+    """Zeigt Termine nach Ansicht: uhr / naechste3 / woche / 14tage / monat."""
 
     def __init__(self, ansicht: str = "naechste3", schrift: int = 10,
                 erscheinung: str | None = None, stunden_format: str = "24",
