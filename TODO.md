@@ -35,6 +35,21 @@
 - [x] Icon im Haus-Stil (wie HANDYHelfer): Blauverlauf, Namenszug
       KALENDER/Blick; eigene textlose Fassung für 16-32 Pixel
       (Kontrollleiste), sonst unlesbar. Im README eingebettet.
+- [x] Echter Absturz behoben (SIGBUS in SQLite): Schreibtischfenster,
+      Hauptfenster und Leistensymbol kopierten beim Lesen in dieselbe
+      Zieldatei - eigener Ordner pro Lesevorgang statt gemeinsamer Datei
+- [x] Schreibtischfenster startete minimiert, dadurch zusätzlicher Tab in
+      der Fensterleiste trotz "skiptaskbar" - KWin-Regel um
+      `minimized=false` (Force) ergänzt
+- [x] "Schreibtisch-Widget anzeigen" (desktop_an war totes
+      Konfigurationsfeld, jetzt wirksam), "Position sperren", "Auf allen
+      Arbeitsflächen zeigen" (per KWin-Skript live aus der App heraus,
+      nur KDE/KWin)
+- [x] Scrollbalken der Terminliste entfernt (Mausrad scrollt weiter)
+- [x] Widget-Ansichten auf kurze Zeiträume verschlankt (Uhr, nächste 3,
+      7 Tage, 14 Tage); Hauptfenster zeigt beim Durchklicken 31 Tage
+- [x] Erscheinungsbild in "Dark-Mode (weiße Schrift)" /
+      "Light-Mode (schwarze Schrift)" umbenannt
 
 ## Für GuideOS (Cinnamon, X11)
 
