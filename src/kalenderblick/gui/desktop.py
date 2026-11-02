@@ -10,7 +10,7 @@ from .. import config as konfig_modul
 from ..config import GROESSEN
 from ..modell import Termin
 from .gemeinsam import (
-    LadeThread, app_symbol, erscheinungsfarben, setze_auf_allen_arbeitsflaechen, umgebung,
+    LadeThread, app_symbol, erscheinungsfarben, erzwinge_fenstereigenschaften, umgebung,
 )
 from .liste import TerminListe
 
@@ -73,7 +73,8 @@ class SchreibtischFenster(QWidget):
             schrift=_SCHRIFT_PRO_GROESSE.get(self._e.desktop.groesse, 10),
             erscheinung=self._e.desktop.erscheinung,
             stunden_format=self._e.desktop.stunden_format,
-            klick_cb=self._hauptfenster_oeffnen_cb,
+            position_fixiert=self._e.desktop.position_fixiert,
+            klick_cb=self._oeffne_hauptfenster,
         )
         layout.addWidget(self._liste, stretch=1)
 
@@ -98,29 +99,68 @@ class SchreibtischFenster(QWidget):
         return False
 
     def eventFilter(self, objekt, event) -> bool:
-        if (not self._e.desktop.position_fixiert
-                and event.type() == QEvent.Type.MouseButtonPress
-                and event.button() == Qt.MouseButton.LeftButton
-                and isinstance(objekt, QWidget)
-                and objekt.window() is self
-                and not self._ausgenommen(objekt)):
-            fenstergriff = self.windowHandle()
-            if fenstergriff is not None:
-                fenstergriff.startSystemMove()
-                return True
+        """Klick öffnet das Hauptfenster, Ziehen verschiebt - dieselbe
+        Unterscheidung wie in _UhrAnzeige, hier für die Listenansichten.
+        Ohne das wäre ein Klick auf eine Terminzeile nur ein fehlgeschlagener
+        Zugversuch gewesen, nie ein Öffnen des Hauptfensters.
+        """
+        passt = (isinstance(objekt, QWidget) and objekt.window() is self
+                 and not self._ausgenommen(objekt))
+
+        if passt and event.type() == QEvent.Type.MouseButtonPress \
+                and event.button() == Qt.MouseButton.LeftButton:
+            self._zug_start = event.globalPosition().toPoint()
+            self._gezogen = False
+
+        elif passt and event.type() == QEvent.Type.MouseMove \
+                and not self._e.desktop.position_fixiert \
+                and (event.buttons() & Qt.MouseButton.LeftButton):
+            start = getattr(self, "_zug_start", None)
+            if start is not None:
+                from PyQt6.QtWidgets import QApplication
+                abstand = (event.globalPosition().toPoint() - start).manhattanLength()
+                if abstand > QApplication.instance().startDragDistance():
+                    self._gezogen = True
+                    self._zug_start = None
+                    fenstergriff = self.windowHandle()
+                    if fenstergriff is not None:
+                        fenstergriff.startSystemMove()
+                        return True
+
+        elif passt and event.type() == QEvent.Type.MouseButtonRelease \
+                and event.button() == Qt.MouseButton.LeftButton:
+            gezogen = getattr(self, "_gezogen", False)
+            self._zug_start = None
+            if not gezogen:
+                self._oeffne_hauptfenster()
+
         return super().eventFilter(objekt, event)
 
+    def _oeffne_hauptfenster(self) -> None:
+        if self._e.desktop.klick_oeffnet and self._hauptfenster_oeffnen_cb:
+            self._hauptfenster_oeffnen_cb()
+
     def _wende_groesse_an(self) -> None:
-        breite, hoehe = GROESSEN.get(self._e.desktop.groesse, (340, 480))
+        breite, obergrenze = GROESSEN.get(self._e.desktop.groesse, (340, 480))
         if self._e.desktop.ansicht == "uhr":
-            # Drei Zeilen Text brauchen nicht die volle Listen-Höhe - sonst
-            # bleibt oben und unten nur durchscheinende Leerfläche stehen.
-            hoehe = round(breite * 0.42)
+            # Quadratisch, passend zur gewählten Größe.
+            hoehe = breite
+        else:
+            # Der Kasten soll nur unwesentlich größer sein als der Inhalt,
+            # egal welche Ansicht - "Größe" ist hier nur noch die Obergrenze,
+            # bei wenig Terminen bleibt viel durchscheinende Leerfläche sonst
+            # stehen.
+            hoehe = self._inhalt_hoehe(obergrenze)
         self._e.desktop.breite = breite
         self._e.desktop.hoehe = hoehe
         self.resize(breite, hoehe)
         if self._env["x11"]:
             self.move(self._e.desktop.x, self._e.desktop.y)
+
+    def _inhalt_hoehe(self, obergrenze: int) -> int:
+        rand = 2 * 8 + 8   # Fensterrand oben/unten + etwas Luft
+        gewuenscht = self._liste._inhalt.sizeHint().height() + rand
+        return max(80, min(gewuenscht, obergrenze))
 
     def _wende_transparenz_an(self) -> None:
         alpha = max(0, min(100, self._e.desktop.deckkraft))
@@ -130,12 +170,15 @@ class SchreibtischFenster(QWidget):
             f"border-radius: 8px; }}"
         )
 
-    def _wende_arbeitsflaechen_an(self) -> None:
-        setze_auf_allen_arbeitsflaechen(_FENSTERTITEL, self._e.desktop.alle_arbeitsflaechen)
+    def _erzwinge_kwin_eigenschaften(self) -> None:
+        erzwinge_fenstereigenschaften(_FENSTERTITEL, self._e.desktop.alle_arbeitsflaechen)
 
     def showEvent(self, event) -> None:
         super().showEvent(event)
-        self._wende_arbeitsflaechen_an()
+        # KWin braucht einen Moment, bis das frisch angezeigte Fenster in
+        # workspace.windowList() auftaucht und die Eigenschaften greifen -
+        # sofort aufgerufen verpufft es wirkungslos.
+        QTimer.singleShot(1000, self._erzwinge_kwin_eigenschaften)
 
     # ------------------------------------------------------------------
 
@@ -150,6 +193,13 @@ class SchreibtischFenster(QWidget):
     def _bei_fertig(self, termine: list[Termin]) -> None:
         self._fehler.setVisible(False)
         self._liste.setze_termine(termine)
+        # sizeHint() braucht einen Zwischenstopp im Ereignisumlauf, um die
+        # gerade erst eingefügten Terminzeilen mitzuzählen.
+        QTimer.singleShot(0, self._wende_groesse_an)
+        # Bei jeder Aktualisierung gleich mit erneuern - so erholt sich das
+        # Widget von selbst, falls Plasma die Eigenschaften je zurücksetzt
+        # (z. B. nach dem Ruhezustand), ohne dass man neu einstellen muss.
+        self._erzwinge_kwin_eigenschaften()
 
     def _bei_fehler(self, meldung: str) -> None:
         self._fehler.setText(meldung)
@@ -162,11 +212,12 @@ class SchreibtischFenster(QWidget):
         self._e = konfig_modul.laden()
         self._wende_groesse_an()
         self._wende_transparenz_an()
-        self._wende_arbeitsflaechen_an()
+        self._erzwinge_kwin_eigenschaften()
         self._liste.setze_erscheinung(self._e.desktop.erscheinung)
         self._liste.setze_ansicht(self._e.desktop.ansicht)
         self._liste.setze_schrift(_SCHRIFT_PRO_GROESSE.get(self._e.desktop.groesse, 10))
         self._liste.setze_stunden_format(self._e.desktop.stunden_format)
+        self._liste.setze_position_fixiert(self._e.desktop.position_fixiert)
         self._timer.setInterval(self._e.aktualisierung_minuten * 60 * 1000)
 
     # ------------------------------------------------------------------

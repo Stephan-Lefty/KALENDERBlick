@@ -8,8 +8,8 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from PyQt6.QtCore import QThread, pyqtSignal
-from PyQt6.QtGui import QColor, QIcon
+from PyQt6.QtCore import QRect, Qt, QThread, pyqtSignal
+from PyQt6.QtGui import QColor, QIcon, QPainter, QPixmap
 
 from .. import bilder
 from .. import config as konfig_modul
@@ -46,24 +46,38 @@ class LadeThread(QThread):
             self.fehler.emit(str(fehler))
 
 
-def setze_auf_allen_arbeitsflaechen(fenstertitel: str, wert: bool) -> None:
-    """Zeigt oder entfernt das Fenster auf allen Arbeitsflächen - nur KDE.
+def erzwinge_fenstereigenschaften(fenstertitel: str, alle_arbeitsflaechen: bool) -> None:
+    """Erzwingt die Eigenschaften, die das Schreibtischwidget nie in der
+    Taskleiste oder beim Fensterwechsel zeigen sollen, sowie "auf allen
+    Arbeitsflächen" - nur KDE.
 
-    Qt kennt dafür keine eigene, plattformübergreifende Einstellung; unter
-    Wayland gibt es dafür kein Protokoll außerhalb von KWin. Deshalb
-    dieselbe Technik, mit der sich KWin-Regeln auch sonst nur über ein
-    kurzes Skript live setzen lassen - fehlschlagen darf das, ohne die
-    Oberfläche zu stören (anderer Fensterm­anager, qdbus6 fehlt, KWin
+    Die statische Fensterregel (packaging/kalenderblick.kwinrule) greift
+    beim wmclass-Abgleich nicht mehr zuverlässig, sobald der tatsächliche
+    Programmname von "kalenderblick" abweicht (z. B. "python3.14" bei
+    manuellem Start) - deshalb hier bei jedem Anzeigen live über das
+    KWin-Skript neu gesetzt, statt sich auf die Regel zu verlassen. Qt
+    kennt für "auf allen Arbeitsflächen" ohnehin keine eigene,
+    plattformübergreifende Einstellung; unter Wayland gibt es dafür kein
+    Protokoll außerhalb von KWin. Fehlschlagen darf das, ohne die
+    Oberfläche zu stören (anderer Fenstermanager, qdbus6 fehlt, KWin
     antwortet nicht).
     """
     if not umgebung()["kde"]:
         return
+    # f.caption ist nicht immer exakt der gesetzte Fenstertitel - KWin hängt
+    # unter Wayland mitunter einen Zusatz an ("Titel — App-Name"). Deshalb
+    # ein Enthalten-Vergleich statt Gleichheit.
     skript = (
         "var liste = workspace.windowList();\n"
         "for (var i = 0; i < liste.length; i++) {\n"
         "    var f = liste[i];\n"
-        f"    if (f.resourceClass === \"kalenderblick\" && f.caption === {json.dumps(fenstertitel)}) {{\n"
-        f"        f.onAllDesktops = {'true' if wert else 'false'};\n"
+        f"    if (f.resourceClass === \"kalenderblick\""
+        f" && f.caption.indexOf({json.dumps(fenstertitel)}) !== -1) {{\n"
+        "        f.skipTaskbar = true;\n"
+        "        f.skipSwitcher = true;\n"
+        "        f.keepBelow = true;\n"
+        "        f.minimized = false;\n"
+        f"        f.onAllDesktops = {'true' if alle_arbeitsflaechen else 'false'};\n"
         "    }\n"
         "}\n"
     )
@@ -85,6 +99,38 @@ def setze_auf_allen_arbeitsflaechen(fenstertitel: str, wert: bool) -> None:
             pfad.unlink(missing_ok=True)
     except (OSError, subprocess.SubprocessError):
         pass
+
+
+def symbol_mit_naechstem_termin(termin: Termin | None) -> QIcon:
+    """Leistensymbol mit der Startzeit des nächsten Termins als Abzeichen
+    unten rechts - ganztägige Termine und "kein Termin" bleiben ohne
+    Abzeichen, bei der kleinen Größe passt ohnehin nur die Stunde hinein.
+    """
+    groesse = 64
+    bild = QPixmap(groesse, groesse)
+    bild.fill(Qt.GlobalColor.transparent)
+    maler = QPainter(bild)
+    maler.setRenderHint(QPainter.RenderHint.Antialiasing)
+    app_symbol().paint(maler, 0, 0, groesse, groesse)
+
+    if termin is not None and not termin.ganztags:
+        text = termin.beginn.strftime("%H")
+        durchmesser = 30
+        x = groesse - durchmesser - 2
+        y = groesse - durchmesser - 2
+        maler.setBrush(QColor("#c01c28"))
+        maler.setPen(Qt.PenStyle.NoPen)
+        maler.drawEllipse(x, y, durchmesser, durchmesser)
+        maler.setPen(QColor("#ffffff"))
+        schrift = maler.font()
+        schrift.setPixelSize(20)
+        schrift.setBold(True)
+        maler.setFont(schrift)
+        maler.drawText(QRect(x, y, durchmesser, durchmesser),
+                       Qt.AlignmentFlag.AlignCenter, text)
+
+    maler.end()
+    return QIcon(bild)
 
 
 def umgebung() -> dict:

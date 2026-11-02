@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import QMenu, QSystemTrayIcon
 
 from .. import config as konfig_modul, thunderbird
 from ..modell import Termin, kurzfassung, naechster
-from .gemeinsam import LadeThread, app_symbol
+from .gemeinsam import LadeThread, app_symbol, symbol_mit_naechstem_termin
 
 
 class KalenderSymbol(QSystemTrayIcon):
@@ -53,8 +53,10 @@ class KalenderSymbol(QSystemTrayIcon):
 
     def _bei_fertig(self, termine: list[Termin]) -> None:
         self._termine = termine
-        hinweis = kurzfassung(naechster(termine))
+        naechster_termin = naechster(termine)
+        hinweis = kurzfassung(naechster_termin)
         self.setToolTip(f"KALENDERBlick\n{hinweis}")
+        self.setIcon(symbol_mit_naechstem_termin(naechster_termin))
 
     def _bei_fehler(self, meldung: str) -> None:
         self.setToolTip(f"KALENDERBlick\nFehler: {meldung}")

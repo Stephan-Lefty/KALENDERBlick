@@ -15,8 +15,14 @@
 - [x] Regulär per `pipx` installiert, Autostart und Startmenü-Eintrag
       eingerichtet, Symbole in den Icon-Theme-Ordner kopiert
 - [x] KWin-Regel importiert (Systemeinstellungen → Fensterverwaltung →
-      Fensterregeln → Importieren) - Position, „hinter anderen halten" und
-      Ziehen per `startSystemMove()` am echten Gerät bestätigt
+      Fensterregeln → Importieren) - Position und Ziehen per
+      `startSystemMove()` am echten Gerät bestätigt. „Hinter anderen
+      halten", „nie in Taskleiste/Fensterwechsler" und „auf allen
+      Arbeitsflächen" liegen nicht mehr in der Regel: der wmclass-Abgleich
+      griff beim manuellen Start nicht zuverlässig (Fensterklasse hing vom
+      tatsächlichen Programmnamen ab), deshalb erzwingt KALENDERBlick diese
+      Eigenschaften jetzt selbst per KWin-Skript bei jedem Anzeigen -
+      unabhängig von der Regel, funktioniert nachweislich zuverlässiger.
 - [x] `packaging/PKGBUILD` für Arch/Manjaro - wie bei storage-box-sync,
       baut aus dem Quellcode-Tarball eines Tags
 - [x] `.deb`-Bau über `.github/workflows/release.yml` - kein
@@ -50,6 +56,17 @@
       7 Tage, 14 Tage); Hauptfenster zeigt beim Durchklicken 31 Tage
 - [x] Erscheinungsbild in "Dark-Mode (weiße Schrift)" /
       "Light-Mode (schwarze Schrift)" umbenannt
+- [x] "Vorausblick" aus den Einstellungen entfernt (wirkte nur auf die
+      Kommandozeile, hätte in der Oberfläche nur verwirrt); stattdessen
+      zeigt das Leistensymbol die Stunde des nächsten Termins als
+      Abzeichen unten rechts
+- [x] Uhr-Ansicht wieder quadratisch; alle anderen Ansichten richten die
+      Fensterhöhe nach dem tatsächlichen Inhalt aus (nicht mehr nach der
+      festen Größe) - bei wenig Terminen bleibt kein durchscheinender
+      Leerraum mehr stehen
+- [x] "Klick öffnet die Termine" als eigener Schalter in den
+      Einstellungen, wie "Position sperren" - einmal ausgeschaltet, lässt
+      sich das Widget nur noch über das Leistensymbol öffnen
 
 ## Für GuideOS (Cinnamon, X11)
 

@@ -118,12 +118,14 @@ class _UhrAnzeige(QWidget):
     """Wochentag über, Uhrzeit, Datum darunter. Anklicken ruft klick_cb auf."""
 
     def __init__(self, schrift: int = 10, farben: dict = FARBEN_SYSTEM,
-                stunden_format: str = "24", klick_cb=None, parent=None):
+                stunden_format: str = "24", position_fixiert: bool = False,
+                klick_cb=None, parent=None):
         super().__init__(parent)
         self._klick_cb = klick_cb
         self._farben = farben
         self._schrift = schrift
         self._stunden_format = stunden_format
+        self._position_fixiert = position_fixiert
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)
@@ -174,6 +176,9 @@ class _UhrAnzeige(QWidget):
         self._stunden_format = stunden_format
         self._aktualisiere()
 
+    def setze_position_fixiert(self, wert: bool) -> None:
+        self._position_fixiert = wert
+
     def _aktualisiere(self) -> None:
         jetzt = datetime.now()
         self._wochentag.setText(WOCHENTAGE[jetzt.weekday()].upper())
@@ -194,6 +199,8 @@ class _UhrAnzeige(QWidget):
             event.ignore()
 
     def mouseMoveEvent(self, event) -> None:
+        if self._position_fixiert:
+            return
         start = getattr(self, "_zug_start", None)
         if start is None or not (event.buttons() & Qt.MouseButton.LeftButton):
             return
@@ -218,7 +225,7 @@ class TerminListe(QWidget):
 
     def __init__(self, ansicht: str = "naechste3", schrift: int = 10,
                 erscheinung: str | None = None, stunden_format: str = "24",
-                klick_cb=None, parent=None):
+                position_fixiert: bool = False, klick_cb=None, parent=None):
         super().__init__(parent)
         self._ansicht = ansicht
         self._schrift = schrift
@@ -248,8 +255,8 @@ class TerminListe(QWidget):
         self._inhalt_layout.addStretch()
         self._scroll.setWidget(self._inhalt)
 
-        self._uhr = _UhrAnzeige(schrift, farben=self._farben,
-                               stunden_format=stunden_format, klick_cb=self._klick_cb)
+        self._uhr = _UhrAnzeige(schrift, farben=self._farben, stunden_format=stunden_format,
+                               position_fixiert=position_fixiert, klick_cb=self._klick_cb)
         self._stapel.addWidget(self._uhr)
 
         self._stapel.setCurrentWidget(self._uhr if ansicht == "uhr" else self._scroll)
@@ -270,6 +277,9 @@ class TerminListe(QWidget):
 
     def setze_stunden_format(self, stunden_format: str) -> None:
         self._uhr.setze_stunden_format(stunden_format)
+
+    def setze_position_fixiert(self, wert: bool) -> None:
+        self._uhr.setze_position_fixiert(wert)
 
     def setze_termine(self, termine: list[Termin]) -> None:
         self._termine = termine

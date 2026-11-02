@@ -180,6 +180,14 @@ class _EinstellungenReiter(QWidget):
             "12 Stunden samt AM/PM.")
         wl.addRow("Stundenformat:", self._stunden_format)
 
+        self._klick_oeffnet = QCheckBox("Klick öffnet die Termine")
+        self._klick_oeffnet.setChecked(e.desktop.klick_oeffnet)
+        self._klick_oeffnet.setToolTip(
+            "Ein Klick auf das Widget öffnet das Hauptfenster mit den\n"
+            "Terminen. Einmal ausgeschaltet, lässt sich das Widget nur noch\n"
+            "über das Leistensymbol öffnen oder verschieben.")
+        wl.addRow(self._klick_oeffnet)
+
         self._position_fixiert = QCheckBox("Position sperren")
         self._position_fixiert.setChecked(e.desktop.position_fixiert)
         self._position_fixiert.setToolTip(
@@ -197,19 +205,10 @@ class _EinstellungenReiter(QWidget):
         layout.addWidget(widget_box)
 
         # --- Allgemein ---
+        # "Vorausblick" (tage_voraus) bewusst nicht hier - wirkt nur auf die
+        # Kommandozeile, hätte in dieser Oberfläche nur verwirrt.
         allg_box = QGroupBox("Allgemein")
         al = QFormLayout(allg_box)
-
-        self._tage = QSpinBox()
-        self._tage.setRange(1, 365)
-        self._tage.setValue(e.tage_voraus)
-        self._tage.setSuffix(" Tage")
-        self._tage.setToolTip(
-            "Nur für die Kommandozeile (kalenderblick liste / naechster) -\n"
-            "wie viele Tage im Voraus diese Befehle nachsehen. Hat keinen\n"
-            "Einfluss auf das Schreibtischwidget oder dieses Fenster: die\n"
-            "laden je nach gewählter Ansicht immer genug Tage von selbst.")
-        al.addRow("Vorausblick:", self._tage)
 
         self._interval = QSpinBox()
         self._interval.setRange(1, 240)
@@ -243,9 +242,9 @@ class _EinstellungenReiter(QWidget):
         e.desktop.deckkraft = self._transp_slider.value()
         e.desktop.erscheinung = self._erscheinung.currentData()
         e.desktop.stunden_format = self._stunden_format.currentData()
+        e.desktop.klick_oeffnet = self._klick_oeffnet.isChecked()
         e.desktop.position_fixiert = self._position_fixiert.isChecked()
         e.desktop.alle_arbeitsflaechen = self._alle_arbeitsflaechen.isChecked()
-        e.tage_voraus = self._tage.value()
         e.aktualisierung_minuten = self._interval.value()
         # Größe auch in Pixel übernehmen
         breite, hoehe = GROESSEN[e.desktop.groesse]

@@ -103,12 +103,17 @@ anderen entfernten Kalender einstellen; `kalenderblick kalender` zeigt sie an.
 
 ## Wayland und KWin
 
-Unter KDE Plasma/Wayland kann sich ein Fenster weder selbst positionieren
-noch dauerhaft unter anderen Fenstern halten - das übernimmt KWin über eine
-Fensterregel. Liegt bei: `packaging/kalenderblick.kwinrule`.
+Unter KDE Plasma/Wayland kann sich ein Fenster nicht selbst positionieren -
+dafür gibt es eine optionale Fensterregel mit Startposition und -größe:
+`packaging/kalenderblick.kwinrule`.
 
 Einspielen: Systemeinstellungen → Fensterverwaltung → Fensterregeln →
 Regeln importieren → die Datei wählen.
+
+Alles andere (unter anderem Fenstern bleiben, nie in Taskleiste oder
+Fensterwechsler, auf allen Arbeitsflächen zeigen) erzwingt KALENDERBlick
+selbst über ein kurzes KWin-Skript, sobald das Widget erscheint - ganz ohne
+Regel, und unabhängig davon, wie das Programm gestartet wurde.
 
 Unter GNOME (Wayland) gibt es dafür keine Entsprechung - das
 Schreibtischfenster verhält sich dort wie ein gewöhnliches Fenster. Unter

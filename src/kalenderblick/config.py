@@ -36,6 +36,7 @@ class Fensterlage:
     stunden_format: str = "24"   # 24 / 12
     position_fixiert: bool = False       # Ziehen gesperrt, einmal eingerichtet
     alle_arbeitsflaechen: bool = False   # auf jeder Arbeitsfläche zeigen (nur KDE/KWin)
+    klick_oeffnet: bool = True           # Klick auf das Widget öffnet die Termine
 
 
 @dataclass
