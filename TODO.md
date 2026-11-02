@@ -32,6 +32,9 @@
 - [x] `pytest` in `.venv/` eingerichtet (bleibt im Repo-Ordner, ist schon
       in `.gitignore`) - 25 Tests, alle grün; README von 18 auf die
       tatsächliche Zahl korrigiert
+- [x] Icon im Haus-Stil (wie HANDYHelfer): Blauverlauf, Namenszug
+      KALENDER/Blick; eigene textlose Fassung für 16-32 Pixel
+      (Kontrollleiste), sonst unlesbar. Im README eingebettet.
 
 ## Für GuideOS (Cinnamon, X11)
 
