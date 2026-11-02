@@ -7,7 +7,7 @@ name = "kalenderblick"
 version = "0.1.0"
 description = "KALENDERBlick - zeigt Thunderbirds Kalender auf dem Schreibtisch und in der Kontrollleiste"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Stephan Rösner" }]
 keywords = ["thunderbird", "kalender", "calendar", "kde", "plasma", "desktop-widget"]
