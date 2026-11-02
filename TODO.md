@@ -71,6 +71,14 @@
 - [x] "Klick öffnet die Termine" als eigener Schalter in den
       Einstellungen, wie "Position sperren" - einmal ausgeschaltet, lässt
       sich das Widget nur noch über das Leistensymbol öffnen
+- [x] Mauszeiger der Uhr-Ansicht wurde unabhängig vom Schalter "Klick
+      öffnet die Termine" immer als Hand angezeigt (nur einmal beim Start
+      gesetzt) - folgt jetzt dem Schalter live
+- [x] Ersteinrichtung: alle Schalter im Schreibtisch-Widget-Bereich
+      (Widget anzeigen, Klick öffnet die Termine, Position sperren, Auf
+      allen Arbeitsflächen zeigen) starten jetzt ausgeschaltet statt
+      teils vorbelegt - wer nichts einstellt, sieht erstmal nur das
+      Leistensymbol
 
 ## Bekannte Einschränkung (von Stephan akzeptiert)
 
