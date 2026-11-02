@@ -1,4 +1,4 @@
-"""Hauptfenster mit drei Reitern: Termine · Kalender · Einstellungen."""
+"""Hauptfenster mit zwei Reitern: Termine · Einstellungen."""
 
 from __future__ import annotations
 
@@ -43,13 +43,16 @@ _GROESSE_NAMEN = {
 }
 
 
-class _KalenderReiter(QScrollArea):
-    """Zeigt alle Kalender mit Art und Abholfrequenz."""
+class _KalenderUebersicht(QScrollArea):
+    """Zeigt alle Kalender mit Art und Abholfrequenz - rein lesend, sitzt
+    im Reiter "Einstellungen". Ein eigener Reiter "Kalender" neben
+    "Termine" ließ vermuten, dahinter verberge sich eine Kalenderansicht."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWidgetResizable(True)
         self.setFrameShape(QScrollArea.Shape.NoFrame)
+        self.setMinimumHeight(180)
         self._inhalt = QWidget()
         self._layout = QVBoxLayout(self._inhalt)
         self._layout.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -97,9 +100,10 @@ class _KalenderReiter(QScrollArea):
 class _EinstellungenReiter(QWidget):
     """Einstellungen für das Schreibtischwidget und allgemeine Optionen."""
 
-    def __init__(self, einstellungen_geaendert_cb=None, parent=None):
+    def __init__(self, einstellungen_geaendert_cb=None, kalender_uebersicht=None, parent=None):
         super().__init__(parent)
         self._cb = einstellungen_geaendert_cb
+        self._kalender_uebersicht = kalender_uebersicht
         self._baue()
 
     def _baue(self) -> None:
@@ -217,11 +221,18 @@ class _EinstellungenReiter(QWidget):
         self._interval.setToolTip(
             "Wie oft die Oberfläche Thunderbirds Kalenderdaten neu einliest.\n"
             "Ersetzt nicht Thunderbirds eigene Abholfrequenz für entfernte\n"
-            "Kalender (siehe Reiter „Kalender“) - erst wenn Thunderbird\n"
-            "selbst abgeholt hat, gibt es hier etwas Neues zu sehen.")
+            "Kalender (siehe „Kalenderquellen“ weiter unten) - erst wenn\n"
+            "Thunderbird selbst abgeholt hat, gibt es hier etwas Neues zu sehen.")
         al.addRow("Aktualisierung:", self._interval)
 
         layout.addWidget(allg_box)
+
+        # --- Kalenderübersicht (rein lesend, kein eigener Schalter) ---
+        if self._kalender_uebersicht is not None:
+            kalender_box = QGroupBox("Kalenderquellen")
+            kl = QVBoxLayout(kalender_box)
+            kl.addWidget(self._kalender_uebersicht)
+            layout.addWidget(kalender_box)
 
         # --- Speichern ---
         btn = QPushButton("Einstellungen speichern")
@@ -293,11 +304,10 @@ class HauptFenster(QMainWindow):
         self._termine_liste = TerminListe(ansicht="monat", schrift=10)
         self._tabs.addTab(self._termine_liste, "Termine")
 
-        self._kalender_reiter = _KalenderReiter()
-        self._tabs.addTab(self._kalender_reiter, "Kalender")
-
+        self._kalender_uebersicht = _KalenderUebersicht()
         einstellungen = _EinstellungenReiter(
-            einstellungen_geaendert_cb=self._einstellungen_geaendert)
+            einstellungen_geaendert_cb=self._einstellungen_geaendert,
+            kalender_uebersicht=self._kalender_uebersicht)
         self._tabs.addTab(einstellungen, "Einstellungen")
 
         self._tabs.currentChanged.connect(self._reiter_gewechselt)
@@ -311,7 +321,7 @@ class HauptFenster(QMainWindow):
 
     def _reiter_gewechselt(self, index: int) -> None:
         if index == 1:
-            self._kalender_reiter.lade()
+            self._kalender_uebersicht.lade()
 
     def _starte_ladethread(self) -> None:
         if self._thread and self._thread.isRunning():
