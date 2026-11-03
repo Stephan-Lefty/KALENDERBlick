@@ -1,6 +1,6 @@
 # Maintainer: Stephan Rösner
 pkgname=kalenderblick
-pkgver=1.1.1
+pkgver=1.1.2
 pkgrel=1
 pkgdesc="Zeigt Thunderbirds Kalender auf dem Schreibtisch und in der Kontrollleiste"
 arch=('any')
@@ -33,6 +33,10 @@ package() {
     "$pkgdir/usr/share/applications/kalenderblick.desktop"
   install -Dm644 packaging/kalenderblick.kwinrule \
     "$pkgdir/usr/share/doc/$pkgname/kalenderblick.kwinrule"
+  # Ohne AppStream-Metadaten kennen die Software-Verwaltungen das
+  # Programm nicht - es taucht dort weder zum Suchen noch zum Entfernen auf.
+  install -Dm644 packaging/io.github.stephan_lefty.kalenderblick.metainfo.xml \
+    "$pkgdir/usr/share/metainfo/io.github.stephan_lefty.kalenderblick.metainfo.xml"
   for groesse in 16 22 24 32 48 64 128 256 512; do
     install -Dm644 "src/kalenderblick/bilder/symbol-${groesse}.png" \
       "$pkgdir/usr/share/icons/hicolor/${groesse}x${groesse}/apps/kalenderblick.png"

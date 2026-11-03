@@ -23,7 +23,8 @@ jobs:
           PYVER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
           PKG=deb_pkg
           mkdir -p "${PKG}/usr/bin" "${PKG}/usr/lib/python3/dist-packages" "${PKG}/DEBIAN" \
-            "${PKG}/usr/share/applications" "${PKG}/usr/share/doc/kalenderblick"
+            "${PKG}/usr/share/applications" "${PKG}/usr/share/doc/kalenderblick" \
+            "${PKG}/usr/share/metainfo"
           cp -r "venv/lib/python${PYVER}/site-packages/kalenderblick" "${PKG}/usr/lib/python3/dist-packages/"
           find "venv/lib/python${PYVER}/site-packages/" -maxdepth 1 -name 'kalenderblick*.dist-info' \
             -exec cp -r {} "${PKG}/usr/lib/python3/dist-packages/" \;
@@ -33,6 +34,11 @@ jobs:
           done
           cp packaging/kalenderblick.desktop "${PKG}/usr/share/applications/"
           cp packaging/kalenderblick.kwinrule "${PKG}/usr/share/doc/kalenderblick/"
+          # Ohne AppStream-Metadaten kennen die Software-Verwaltungen das
+          # Programm nicht: Es taucht weder zum Suchen noch unter
+          # "installierte Software" zum Entfernen auf.
+          cp packaging/io.github.stephan_lefty.kalenderblick.metainfo.xml \
+            "${PKG}/usr/share/metainfo/"
           for groesse in 16 22 24 32 48 64 128 256 512; do
             mkdir -p "${PKG}/usr/share/icons/hicolor/${groesse}x${groesse}/apps"
             cp "src/kalenderblick/bilder/symbol-${groesse}.png" \

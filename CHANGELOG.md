@@ -1,5 +1,15 @@
 # Änderungsprotokoll
 
+## 1.1.2 – 2026-11-03
+
+**Neu**
+
+- Die Pakete bringen AppStream-Angaben mit. Dadurch taucht KALENDERBlick
+  in den Software-Verwaltungen auf (GNOME Software, KDE Discover,
+  Cinnamons Anwendungsverwaltung) – zum Finden, Ansehen der
+  Bildschirmfotos und vor allem zum Entfernen per Mausklick. Bisher war
+  dafür zwingend das Terminal nötig.
+
 ## 1.1.1 – 2026-11-03
 
 **Behoben**

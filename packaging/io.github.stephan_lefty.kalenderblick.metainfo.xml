@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  AppStream-Metadaten. Ohne diese Datei kennen die Software-Verwaltungen
+  (GNOME Software, KDE Discover, Cinnamons Anwendungsverwaltung) das
+  Programm nicht - es taucht dann unter "installierte Software" gar nicht
+  erst auf und lässt sich dort auch nicht entfernen.
+
+  Die Kennung folgt der GitHub-Konvention (io.github.<Benutzer>.<Projekt>)
+  und weicht bewusst vom Namen der .desktop-Datei ab: Diese muss
+  "kalenderblick.desktop" heißen, weil Qt sie über
+  setDesktopFileName("kalenderblick") meldet und die KWin-Fensterregeln
+  daran hängen. Verknüpft wird beides über <launchable>.
+-->
+<component type="desktop-application">
+  <id>io.github.stephan_lefty.kalenderblick</id>
+
+  <name>KALENDERBlick</name>
+  <summary>Thunderbirds Termine auf dem Schreibtisch und in der Kontrollleiste</summary>
+
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+
+  <developer id="io.github.stephan_lefty">
+    <name>Stephan Rösner</name>
+  </developer>
+
+  <description>
+    <p>
+      KALENDERBlick zeigt die Termine aus Thunderbird auf dem Schreibtisch
+      und in der Kontrollleiste an - ohne dass Thunderbird dafür geöffnet
+      sein muss und ohne dass irgendwo Zugangsdaten eingetragen werden.
+      Gelesen wird ausschließlich, geschrieben nie.
+    </p>
+    <p>
+      Anders als andere Schreibtisch-Kalender greift KALENDERBlick direkt
+      auf Thunderbirds eigene Ablage zu. Damit erscheinen alle Kalender auf
+      einmal - auch rein örtlich gespeicherte - und zwar genau so, wie
+      Thunderbird sie kennt.
+    </p>
+    <p>Für das Schreibtischfenster stehen vier Ansichten zur Wahl:</p>
+    <ul>
+      <li>Uhr und Datum</li>
+      <li>die nächsten drei Termine</li>
+      <li>die nächsten 7 Tage</li>
+      <li>die nächsten 14 Tage</li>
+    </ul>
+    <p>
+      Größe, Transparenz sowie helle oder dunkle Darstellung lassen sich
+      einstellen. Unter KDE Plasma kann das Fenster hinter allen anderen
+      liegen, aus der Fensterleiste herausgehalten, auf allen
+      Arbeitsflächen angezeigt und an einer festen Stelle verankert werden.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">kalenderblick.desktop</launchable>
+
+  <categories>
+    <category>Office</category>
+    <category>Calendar</category>
+  </categories>
+
+  <keywords>
+    <keyword>Thunderbird</keyword>
+    <keyword>Kalender</keyword>
+    <keyword>Termine</keyword>
+    <keyword>Schreibtisch</keyword>
+  </keywords>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Das Schreibtischfenster mit den Terminen der nächsten 7 Tage</caption>
+      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/docs/bilder/woche_dunkel.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Uhr und Datum statt einer Terminliste</caption>
+      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/docs/bilder/uhr_dunkel.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Das Hauptfenster mit allen Terminen</caption>
+      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/docs/bilder/hauptfenster_termine.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Die Einstellungen für das Schreibtischfenster</caption>
+      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/docs/bilder/hauptfenster_einstellungen.png</image>
+    </screenshot>
+  </screenshots>
+
+  <url type="homepage">https://github.com/Stephan-Lefty/KALENDERBlick</url>
+  <url type="bugtracker">https://github.com/Stephan-Lefty/KALENDERBlick/issues</url>
+  <url type="help">https://github.com/Stephan-Lefty/KALENDERBlick/blob/main/Anleitung.md</url>
+
+  <provides>
+    <binary>kalenderblick</binary>
+    <binary>kalenderblick-fenster</binary>
+  </provides>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="1.1.2" date="2026-11-03">
+      <description>
+        <p>
+          Die Pakete bringen jetzt Angaben für die Software-Verwaltung mit.
+          Dort lässt sich KALENDERBlick nun finden und auch wieder
+          entfernen, ohne das Terminal zu benötigen.
+        </p>
+      </description>
+    </release>
+    <release version="1.1.1" date="2026-11-03">
+      <description>
+        <p>
+          Die Pakete führen PyQt6 jetzt als feste Abhängigkeit - ohne die
+          Oberfläche startete das Programm sonst gar nicht.
+        </p>
+      </description>
+    </release>
+    <release version="1.1.0" date="2026-11-03">
+      <description>
+        <p>
+          Sieben Fehler behoben, unter anderem bei der gesperrten Position,
+          der Fensterhöhe und dem Schließen des Hauptfensters.
+        </p>
+      </description>
+    </release>
+    <release version="1.0.0" date="2026-11-02">
+      <description>
+        <p>Erste öffentliche Fassung.</p>
+      </description>
+    </release>
+  </releases>
+</component>
