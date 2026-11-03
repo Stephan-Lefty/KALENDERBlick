@@ -2,11 +2,13 @@
 
 ## Als Nächstes
 
-- [ ] Release v1.1.0 veröffentlichen (alles vorbereitet, Stand
-      03.11.2026): `gh release create v1.1.0 --title "1.1.0" --notes-file CHANGELOG.md`
+- [ ] Nichts Offenes. v1.1.0 ist veröffentlicht (03.11.2026), die
+      Anleitung wurde auf einem bereinigten Rechner durchgespielt.
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
+- [x] v1.1.0 veröffentlicht (03.11.2026) mit den sieben Fehlern, die
+      beim Durchspielen der Anleitung herauskamen - siehe CHANGELOG.md
 - [x] Erste öffentliche Fassung: Repo öffentlich gestellt, v1.0.0 und
       v1.0.1 veröffentlicht (02.11.2026) - v1.0.0 hatte noch ein falsches
       Versions-Label im `.deb` (0.1.0 statt 1.0.0, `__init__.py` und
