@@ -1,10 +1,13 @@
-"""Hauptfenster mit zwei Reitern: Termine · Einstellungen."""
+"""Hauptfenster mit drei Reitern: Termine · Einstellungen · Hilfe."""
 
 from __future__ import annotations
 
+import tempfile
 from datetime import datetime
+from pathlib import Path
 
-from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtCore import Qt, QTimer, QUrl
+from PyQt6.QtGui import QDesktopServices, QImage, QTextCursor, QTextDocument
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -19,11 +22,12 @@ from PyQt6.QtWidgets import (
     QSizePolicy,
     QSpinBox,
     QTabWidget,
+    QTextBrowser,
     QVBoxLayout,
     QWidget,
 )
 
-from .. import autostart, config as konfig_modul, thunderbird
+from .. import NAME, __version__, autostart, config as konfig_modul, hilfe as hilfe_modul, thunderbird
 from ..config import ANSICHTEN, GROESSEN
 from ..modell import Termin
 from .gemeinsam import LadeThread, app_symbol
@@ -42,6 +46,81 @@ _GROESSE_NAMEN = {
     "gross":      "Groß",
     "sehr_gross": "Sehr groß",
 }
+
+
+_REPO = "https://github.com/Stephan-Lefty/KALENDERBlick"
+
+
+class _HilfeReiter(QWidget):
+    """Zeigt die mitgelieferte Anleitung - ohne Internet.
+
+    Wer nicht weiterkommt, klickt auf Hilfe und findet dort dieselbe
+    Anleitung samt Bildschirmfotos, die auch im Netz steht. Für längeres
+    Lesen oder zum Ausdrucken lässt sie sich zusätzlich im Browser
+    öffnen, wo die Bildschirmfotos in voller Größe erscheinen.
+    """
+
+    _BILDBREITE = 360
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        self._browser = QTextBrowser()
+        self._browser.setOpenExternalLinks(True)
+        self._browser.document().setDefaultStyleSheet(
+            "h1 { font-size: 15pt; } h2 { font-size: 13pt; } h3 { font-size: 11pt; }")
+        layout.addWidget(self._browser, stretch=1)
+
+        self._browser_btn = QPushButton("Anleitung im Browser öffnen")
+        self._browser_btn.setToolTip(
+            "Öffnet dieselbe Anleitung im Webbrowser - dort erscheinen die\n"
+            "Bildschirmfotos in voller Größe und lassen sich ausdrucken.\n"
+            "Funktioniert auch ohne Internet.")
+        self._browser_btn.clicked.connect(self._im_browser_oeffnen)
+        layout.addWidget(self._browser_btn)
+
+        self._zeige_anleitung()
+
+    def _im_browser_oeffnen(self) -> None:
+        html = hilfe_modul.als_html()
+        if html is None:
+            QDesktopServices.openUrl(QUrl(
+                f"{_REPO}/blob/main/src/kalenderblick/hilfe/anleitung.md"))
+            return
+        ziel = Path(tempfile.gettempdir()) / "kalenderblick-anleitung.html"
+        try:
+            ziel.write_text(html, encoding="utf-8")
+        except OSError:
+            return
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(ziel)))
+
+    def _zeige_anleitung(self) -> None:
+        text = hilfe_modul.anleitung_text()
+        if text is None:
+            self._browser.setMarkdown(
+                f"# {NAME} {__version__}\n\n"
+                "Die Anleitung konnte nicht gefunden werden. Online steht sie "
+                f"unter <{_REPO}/blob/main/src/kalenderblick/hilfe/anleitung.md>.\n")
+            self._browser_btn.setEnabled(False)
+            return
+
+        # Die Bildschirmfotos sind breiter als dieses Fenster. Qt verkleinert
+        # nicht von selbst, deshalb werden sie vorab verkleinert eingehängt.
+        for pfad in hilfe_modul.bild_dateien():
+            bild = QImage(str(pfad))
+            if bild.isNull():
+                continue
+            if bild.width() > self._BILDBREITE:
+                bild = bild.scaledToWidth(
+                    self._BILDBREITE, Qt.TransformationMode.SmoothTransformation)
+            self._browser.document().addResource(
+                QTextDocument.ResourceType.ImageResource,
+                QUrl(f"bilder/{pfad.name}"), bild)
+
+        self._browser.setMarkdown(text)
+        self._browser.moveCursor(QTextCursor.MoveOperation.Start)
 
 
 class _KalenderUebersicht(QScrollArea):
@@ -119,9 +198,9 @@ class _EinstellungenReiter(QWidget):
         self._desktop_an = QCheckBox("Schreibtisch-Widget anzeigen")
         self._desktop_an.setChecked(e.desktop_an)
         self._desktop_an.setToolTip(
-            "Ob überhaupt ein Fenster auf dem Schreibtisch liegt. Wirkt erst\n"
-            "nach einem Neustart von KALENDERBlick - das Leistensymbol bleibt\n"
-            "davon unberührt.")
+            "Ob überhaupt ein Fenster auf dem Schreibtisch liegt. Wirkt\n"
+            "sofort beim Speichern - das Leistensymbol bleibt davon\n"
+            "unberührt.")
         wl.addRow(self._desktop_an)
 
         self._groesse = QComboBox()
@@ -185,6 +264,13 @@ class _EinstellungenReiter(QWidget):
             "Nur für die Uhr-Ansicht: Uhrzeit mit 24 Stunden oder mit\n"
             "12 Stunden samt AM/PM.")
         wl.addRow("Stundenformat:", self._stunden_format)
+
+        self._jahr_zeigen = QCheckBox("Jahreszahl anzeigen")
+        self._jahr_zeigen.setChecked(e.desktop.jahr_zeigen)
+        self._jahr_zeigen.setToolTip(
+            "Nur für die Uhr-Ansicht: zeigt die Jahreszahl als eigene\n"
+            "Zeile unter dem Datum.")
+        wl.addRow(self._jahr_zeigen)
 
         self._klick_oeffnet = QCheckBox("Klick öffnet die Termine")
         self._klick_oeffnet.setChecked(e.desktop.klick_oeffnet)
@@ -257,6 +343,14 @@ class _EinstellungenReiter(QWidget):
         self._status = QLabel("")
         self._status.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+        # Sichtbare Versionsnummer - bei Rückfragen muss niemand erst auf
+        # der Kommandozeile nachsehen, ein Bildschirmfoto genügt.
+        self._version = QLabel(f"{NAME} {__version__}")
+        self._version.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._version.setStyleSheet("font-size: 8pt; color: palette(mid);")
+        self._version.setTextInteractionFlags(
+            Qt.TextInteractionFlag.TextSelectableByMouse)
+
     def _speichern(self) -> None:
         e = konfig_modul.laden()
         e.desktop_an = self._desktop_an.isChecked()
@@ -265,6 +359,7 @@ class _EinstellungenReiter(QWidget):
         e.desktop.deckkraft = self._transp_slider.value()
         e.desktop.erscheinung = self._erscheinung.currentData()
         e.desktop.stunden_format = self._stunden_format.currentData()
+        e.desktop.jahr_zeigen = self._jahr_zeigen.isChecked()
         e.desktop.klick_oeffnet = self._klick_oeffnet.isChecked()
         e.desktop.position_fixiert = self._position_fixiert.isChecked()
         e.desktop.alle_arbeitsflaechen = self._alle_arbeitsflaechen.isChecked()
@@ -291,7 +386,7 @@ class _EinstellungenReiter(QWidget):
 
 
 class HauptFenster(QMainWindow):
-    """Normales Fenster mit zwei Reitern.
+    """Normales Fenster mit drei Reitern.
 
     Verwaltet bei Bedarf (verwalte_desktop=True) auch das
     Schreibtischwidget selbst: legt es an oder entfernt es live, sobald
@@ -351,7 +446,10 @@ class HauptFenster(QMainWindow):
         el.addWidget(einstellungen_scroll, stretch=1)
         el.addWidget(self._einstellungen._speichern_btn)
         el.addWidget(self._einstellungen._status)
+        el.addWidget(self._einstellungen._version)
         self._tabs.addTab(einstellungen_seite, "Einstellungen")
+
+        self._tabs.addTab(_HilfeReiter(), "Hilfe")
 
         self._tabs.currentChanged.connect(self._reiter_gewechselt)
 

@@ -38,6 +38,7 @@ class Fensterlage:
     position_fixiert: bool = False       # Ziehen gesperrt, einmal eingerichtet
     alle_arbeitsflaechen: bool = False   # auf jeder Arbeitsfläche zeigen (nur KDE/KWin)
     klick_oeffnet: bool = False          # Klick auf das Widget öffnet die Termine
+    jahr_zeigen: bool = False            # Jahreszahl unter dem Datum (nur Uhr-Ansicht)
 
 
 @dataclass

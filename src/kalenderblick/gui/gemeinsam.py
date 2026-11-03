@@ -101,36 +101,57 @@ def erzwinge_fenstereigenschaften(fenstertitel: str, alle_arbeitsflaechen: bool)
         pass
 
 
+# Größen, die eine Kontrollleiste üblicherweise anfordert. Für jede wird
+# ein eigenes Bild erzeugt, damit nichts hoch- oder heruntergerechnet
+# werden muss: Ein Symbol mit nur einer Auflösung wird von der Leiste
+# skaliert und die Linien werden matschig - unter Cinnamon/X11 deutlich
+# zu sehen gewesen. Die mitgelieferten Vorlagen bis 32 Pixel kommen
+# zudem ohne Schriftzug aus; den wählt app_symbol() nur dann aus, wenn
+# auch wirklich in dieser Größe gemalt wird.
+_LEISTENGROESSEN = (16, 22, 24, 32, 48, 64, 128)
+
+# Unterhalb dieser Kantenlänge wäre die Stundenzahl im Abzeichen nur noch
+# ein Fleck - dort bleibt es bei einem schlichten Punkt.
+_ABZEICHEN_MIT_TEXT_AB = 32
+
+
 def symbol_mit_naechstem_termin(termin: Termin | None) -> QIcon:
-    """Leistensymbol mit der Startzeit des nächsten Termins als Abzeichen
-    unten rechts - ganztägige Termine und "kein Termin" bleiben ohne
-    Abzeichen, bei der kleinen Größe passt ohnehin nur die Stunde hinein.
+    """Leistensymbol mit der Startstunde des nächsten Termins als
+    Abzeichen unten rechts - ganztägige Termine und "kein Termin" bleiben
+    ohne Abzeichen.
     """
-    groesse = 64
-    bild = QPixmap(groesse, groesse)
-    bild.fill(Qt.GlobalColor.transparent)
-    maler = QPainter(bild)
-    maler.setRenderHint(QPainter.RenderHint.Antialiasing)
-    app_symbol().paint(maler, 0, 0, groesse, groesse)
+    icon = QIcon()
+    zeigt_abzeichen = termin is not None and not termin.ganztags
+    text = termin.beginn.strftime("%H") if zeigt_abzeichen else ""
 
-    if termin is not None and not termin.ganztags:
-        text = termin.beginn.strftime("%H")
-        durchmesser = 30
-        x = groesse - durchmesser - 2
-        y = groesse - durchmesser - 2
-        maler.setBrush(QColor("#c01c28"))
-        maler.setPen(Qt.PenStyle.NoPen)
-        maler.drawEllipse(x, y, durchmesser, durchmesser)
-        maler.setPen(QColor("#ffffff"))
-        schrift = maler.font()
-        schrift.setPixelSize(20)
-        schrift.setBold(True)
-        maler.setFont(schrift)
-        maler.drawText(QRect(x, y, durchmesser, durchmesser),
-                       Qt.AlignmentFlag.AlignCenter, text)
+    for groesse in _LEISTENGROESSEN:
+        bild = QPixmap(groesse, groesse)
+        bild.fill(Qt.GlobalColor.transparent)
+        maler = QPainter(bild)
+        maler.setRenderHint(QPainter.RenderHint.Antialiasing)
+        app_symbol().paint(maler, 0, 0, groesse, groesse)
 
-    maler.end()
-    return QIcon(bild)
+        if zeigt_abzeichen:
+            durchmesser = max(6, round(groesse * 0.47))
+            rand = max(1, round(groesse * 0.03))
+            x = groesse - durchmesser - rand
+            y = groesse - durchmesser - rand
+            maler.setBrush(QColor("#c01c28"))
+            maler.setPen(Qt.PenStyle.NoPen)
+            maler.drawEllipse(x, y, durchmesser, durchmesser)
+            if groesse >= _ABZEICHEN_MIT_TEXT_AB:
+                maler.setPen(QColor("#ffffff"))
+                schrift = maler.font()
+                schrift.setPixelSize(max(6, round(groesse * 0.31)))
+                schrift.setBold(True)
+                maler.setFont(schrift)
+                maler.drawText(QRect(x, y, durchmesser, durchmesser),
+                               Qt.AlignmentFlag.AlignCenter, text)
+
+        maler.end()
+        icon.addPixmap(bild)
+
+    return icon
 
 
 def farbe_als_qt(hex_farbe: str) -> QColor:

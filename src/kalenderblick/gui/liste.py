@@ -132,7 +132,8 @@ class _UhrAnzeige(QWidget):
 
     def __init__(self, groesse: str = "mittel", farben: dict = FARBEN_SYSTEM,
                 stunden_format: str = "24", position_fixiert: bool = False,
-                klick_cb=None, klick_aktiv: bool = True, parent=None):
+                klick_cb=None, klick_aktiv: bool = True,
+                jahr_zeigen: bool = False, parent=None):
         super().__init__(parent)
         self._klick_cb = klick_cb
         self._farben = farben
@@ -161,6 +162,14 @@ class _UhrAnzeige(QWidget):
         self._datum.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         layout.addWidget(self._datum)
 
+        # Eigene Zeile unter dem Datum, gleiche Schriftgröße - abschaltbar,
+        # weil das Jahr im Alltag meist überflüssig ist.
+        self._jahr = QLabel()
+        self._jahr.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._jahr.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self._jahr.setVisible(jahr_zeigen)
+        layout.addWidget(self._jahr)
+
         layout.addStretch()
 
         self.setze_klick_aktiv(klick_aktiv)
@@ -179,6 +188,7 @@ class _UhrAnzeige(QWidget):
             f"color: {self._farben['gedaempft']}; letter-spacing: 1px;")
         self._zeit.setStyleSheet(f"font-size: {pt['zeit']}pt; font-weight: 300;{farbe_haupt}")
         self._datum.setStyleSheet(f"font-size: {pt['datum']}pt; color: {self._farben['gedaempft']};")
+        self._jahr.setStyleSheet(f"font-size: {pt['datum']}pt; color: {self._farben['gedaempft']};")
         self._aktualisiere()
 
     def setze_farben(self, farben: dict) -> None:
@@ -198,6 +208,10 @@ class _UhrAnzeige(QWidget):
         else:
             self.unsetCursor()
 
+    def setze_jahr_zeigen(self, wert: bool) -> None:
+        self._jahr.setVisible(wert)
+        self._aktualisiere()
+
     def _aktualisiere(self) -> None:
         jetzt = datetime.now()
         self._wochentag.setText(WOCHENTAGE[jetzt.weekday()].upper())
@@ -209,6 +223,7 @@ class _UhrAnzeige(QWidget):
         else:
             self._zeit.setText(jetzt.strftime("%H:%M"))
         self._datum.setText(f"{jetzt.day}. {MONATE[jetzt.month - 1]}")
+        self._jahr.setText(str(jetzt.year))
 
     def mousePressEvent(self, event) -> None:
         if event.button() == Qt.MouseButton.LeftButton:
@@ -245,7 +260,8 @@ class TerminListe(QWidget):
     def __init__(self, ansicht: str = "naechste3", schrift: int = 10,
                 erscheinung: str | None = None, stunden_format: str = "24",
                 position_fixiert: bool = False, klick_cb=None,
-                uhr_groesse: str = "mittel", klick_aktiv: bool = True, parent=None):
+                uhr_groesse: str = "mittel", klick_aktiv: bool = True,
+                jahr_zeigen: bool = False, parent=None):
         super().__init__(parent)
         self._ansicht = ansicht
         self._schrift = schrift
@@ -277,7 +293,7 @@ class TerminListe(QWidget):
 
         self._uhr = _UhrAnzeige(uhr_groesse, farben=self._farben, stunden_format=stunden_format,
                                position_fixiert=position_fixiert, klick_cb=self._klick_cb,
-                               klick_aktiv=klick_aktiv)
+                               klick_aktiv=klick_aktiv, jahr_zeigen=jahr_zeigen)
         self._stapel.addWidget(self._uhr)
 
         self._stapel.setCurrentWidget(self._uhr if ansicht == "uhr" else self._scroll)
@@ -306,6 +322,9 @@ class TerminListe(QWidget):
 
     def setze_klick_aktiv(self, wert: bool) -> None:
         self._uhr.setze_klick_aktiv(wert)
+
+    def setze_jahr_zeigen(self, wert: bool) -> None:
+        self._uhr.setze_jahr_zeigen(wert)
 
     def setze_termine(self, termine: list[Termin]) -> None:
         self._termine = termine

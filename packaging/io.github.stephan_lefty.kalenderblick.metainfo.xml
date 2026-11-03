@@ -69,25 +69,25 @@
   <screenshots>
     <screenshot type="default">
       <caption>Das Schreibtischfenster mit den Terminen der nächsten 7 Tage</caption>
-      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/docs/bilder/woche_dunkel.png</image>
+      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/src/kalenderblick/hilfe/bilder/woche_dunkel.png</image>
     </screenshot>
     <screenshot>
       <caption>Uhr und Datum statt einer Terminliste</caption>
-      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/docs/bilder/uhr_dunkel.png</image>
+      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/src/kalenderblick/hilfe/bilder/uhr_dunkel.png</image>
     </screenshot>
     <screenshot>
       <caption>Das Hauptfenster mit allen Terminen</caption>
-      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/docs/bilder/hauptfenster_termine.png</image>
+      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/src/kalenderblick/hilfe/bilder/hauptfenster_termine.png</image>
     </screenshot>
     <screenshot>
       <caption>Die Einstellungen für das Schreibtischfenster</caption>
-      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/docs/bilder/hauptfenster_einstellungen.png</image>
+      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/src/kalenderblick/hilfe/bilder/hauptfenster_einstellungen.png</image>
     </screenshot>
   </screenshots>
 
   <url type="homepage">https://github.com/Stephan-Lefty/KALENDERBlick</url>
   <url type="bugtracker">https://github.com/Stephan-Lefty/KALENDERBlick/issues</url>
-  <url type="help">https://github.com/Stephan-Lefty/KALENDERBlick/blob/main/Anleitung.md</url>
+  <url type="help">https://github.com/Stephan-Lefty/KALENDERBlick/blob/main/src/kalenderblick/hilfe/anleitung.md</url>
 
   <provides>
     <binary>kalenderblick</binary>
@@ -100,8 +100,12 @@
     <release version="1.2.0" date="2026-11-03">
       <description>
         <p>
-          Eine weitere Größenstufe „Sehr klein" für ältere Geräte, auf
-          denen schon die bisherige kleinste Stufe viel Platz einnahm.
+          Neu: ein Reiter „Hilfe" mit der vollständigen Anleitung samt
+          Bildschirmfotos, auch ohne Internet lesbar; eine sichtbare
+          Fassungsnummer; eine Größenstufe „Sehr klein" für ältere
+          Geräte; die Jahreszahl wahlweise unter dem Datum. Behoben: das
+          Leistensymbol wurde nur in einer Auflösung erzeugt und von der
+          Kontrollleiste unscharf heruntergerechnet.
         </p>
       </description>
     </release>

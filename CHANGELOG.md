@@ -4,10 +4,31 @@
 
 **Neu**
 
+- Ein dritter Reiter „Hilfe" mit der vollständigen Anleitung samt
+  Bildschirmfotos – mitgeliefert im Programm, also auch ohne Internet
+  lesbar. Ein Knopf dort öffnet sie zusätzlich im Webbrowser, wo die
+  Bilder in voller Größe erscheinen und sich ausdrucken lassen.
+- Die Fassungsnummer steht jetzt sichtbar unter den Einstellungen – bei
+  Rückfragen genügt ein Bildschirmfoto.
 - Eine weitere Größenstufe „Sehr klein" unterhalb von „Klein" – gedacht
   für ältere Geräte mit 1920er Auflösung, wo schon die bisherige
   kleinste Stufe viel Platz einnahm. Die Uhr misst damit rund
   100 × 110 Pixel statt 174 × 172.
+- Die Jahreszahl lässt sich wahlweise als eigene Zeile unter das Datum
+  stellen (nur Uhr-Ansicht).
+
+**Behoben**
+
+- Das Leistensymbol wurde nur in einer einzigen Auflösung (64 × 64)
+  erzeugt. Die Kontrollleiste musste es selbst herunterrechnen, wodurch
+  die Linien unscharf wurden und die eigens ohne Schriftzug angelegten
+  Vorlagen für 16 bis 32 Pixel gar nicht zum Zug kamen – unter
+  Cinnamon/X11 deutlich zu sehen. Jetzt wird für jede übliche
+  Leistengröße ein eigenes Bild erzeugt; unterhalb von 32 Pixeln zeigt
+  das Abzeichen nur noch einen Punkt statt einer unleserlichen Zahl.
+- Der Hinweis zu „Schreibtisch-Widget anzeigen" behauptete noch, die
+  Einstellung wirke erst nach einem Neustart. Seit Fassung 1.1.0 greift
+  sie sofort.
 
 ## 1.1.2 – 2026-11-03
 

@@ -110,7 +110,7 @@ erscheint also zunächst **nur** das Leistensymbol, kein Fenster auf dem
 Schreibtisch. Ein Klick auf das Symbol öffnet das Hauptfenster mit dem
 Reiter „Termine":
 
-<img src="docs/bilder/hauptfenster_termine.png" alt="Hauptfenster, Reiter Termine" width="340">
+<img src="bilder/hauptfenster_termine.png" alt="Hauptfenster, Reiter Termine" width="340">
 
 Die Termine der nächsten 31 Tage, nach Tagen gruppiert. Farbpunkt zeigt
 den Kalender, bei örtlichen Terminen steht der Ort direkt darunter.
@@ -119,18 +119,19 @@ den Kalender, bei örtlichen Terminen steht der Ort direkt darunter.
 
 Zweiter Reiter im Hauptfenster:
 
-<img src="docs/bilder/hauptfenster_einstellungen.png" alt="Hauptfenster, Reiter Einstellungen" width="340">
+<img src="bilder/hauptfenster_einstellungen.png" alt="Hauptfenster, Reiter Einstellungen" width="340">
 
 **Schreibtisch-Widget**
 
 | Schalter | Bedeutung |
 |---|---|
-| Schreibtisch-Widget anzeigen | Ob überhaupt ein Fenster auf dem Schreibtisch liegt. Wirkt erst nach einem Neustart von KALENDERBlick. |
+| Schreibtisch-Widget anzeigen | Ob überhaupt ein Fenster auf dem Schreibtisch liegt. Wirkt sofort beim Speichern; das Leistensymbol bleibt davon unberührt. |
 | Größe | Fünf Stufen von „Sehr klein" bis „Sehr groß". Gesteuert wird damit die Breite des Fensters; die Höhe richtet sich immer nach dem Inhalt - so weit, wie Termine da sind, höchstens bis zum Bildschirmrand. Bei der Uhr-Ansicht steuert die Größe stattdessen die Schriftgröße („Sehr klein" ergibt rund 100 × 110 Pixel, gedacht für ältere Geräte mit 1920er Auflösung). |
 | Ansicht | Welche der vier Ansichten unten gezeigt wird. |
 | Transparenz | Wie durchsichtig der Hintergrund ist - 0 % nur Schrift, 100 % voll deckend. |
 | Erscheinungsbild | Dark-Mode (weiße Schrift) oder Light-Mode (schwarze Schrift) - wirkt nur auf das Widget, nicht auf dieses Fenster. |
 | Stundenformat | 24 Stunden oder 12 Stunden mit AM/PM - nur für die Uhr-Ansicht. |
+| Jahreszahl anzeigen | Nur für die Uhr-Ansicht: stellt die Jahreszahl als eigene Zeile unter das Datum. |
 | Klick öffnet die Termine | Ein Klick auf das Widget öffnet das Hauptfenster. Ausgeschaltet lässt sich das Widget nur noch ziehen oder über das Leistensymbol öffnen. |
 | Position sperren | Einmal an die richtige Stelle gezogen, lässt sich das Fenster nicht mehr versehentlich verschieben - und bleibt auch über einen Neustart von KALENDERBlick an dieser Stelle (nur KDE/KWin, über eine automatisch angelegte Fensterregel). |
 | Auf allen Arbeitsflächen zeigen | Das Widget bleibt sichtbar, egal auf welche Arbeitsfläche gewechselt wird - nur unter KDE/KWin wirksam. |
@@ -147,6 +148,12 @@ Kalender mit Art, Abholfrequenz, wann zuletzt geschrieben wurde und ob er
 abgeschaltet oder nur lesbar ist. Praktisch zum Nachsehen, warum ein
 Kalender nicht wie erwartet auftaucht.
 
+Ganz unten steht die laufende Fassungsnummer - praktisch bei Rückfragen.
+Ein dritter Reiter „Hilfe" enthält genau diese Anleitung samt
+Bildschirmfotos, auch ohne Internet; ein Knopf dort öffnet sie
+zusätzlich im Webbrowser, wo die Bilder in voller Größe erscheinen und
+sich ausdrucken lassen.
+
 Mit „Einstellungen speichern" werden alle Änderungen sofort auf das
 laufende Schreibtischwidget angewendet - ohne Neustart, mit Ausnahme von
 „Schreibtisch-Widget anzeigen" selbst.
@@ -159,27 +166,27 @@ durchscheinender Leerraum stehen.
 
 **Uhr + Datum** - Wochentag, Uhrzeit, Datum, sonst nichts:
 
-<img src="docs/bilder/uhr_dunkel.png" alt="Uhr-Ansicht, Dark-Mode" width="220">
-<img src="docs/bilder/uhr_hell.png" alt="Uhr-Ansicht, Light-Mode" width="220">
+<img src="bilder/uhr_dunkel.png" alt="Uhr-Ansicht, Dark-Mode" width="220">
+<img src="bilder/uhr_hell.png" alt="Uhr-Ansicht, Light-Mode" width="220">
 
 **Nächste 3 Termine** - unabhängig vom Datum immer die drei nächsten
 anstehenden, bereits vergangene Termine des Tages fallen raus:
 
-<img src="docs/bilder/naechste3_dunkel.png" alt="Nächste 3 Termine, Dark-Mode" width="260">
-<img src="docs/bilder/naechste3_hell.png" alt="Nächste 3 Termine, Light-Mode" width="260">
+<img src="bilder/naechste3_dunkel.png" alt="Nächste 3 Termine, Dark-Mode" width="260">
+<img src="bilder/naechste3_hell.png" alt="Nächste 3 Termine, Light-Mode" width="260">
 
 **Nächste 7 Tage** - alle Termine der kommenden Woche, nach Tagen
 gruppiert:
 
-<img src="docs/bilder/woche_dunkel.png" alt="Nächste 7 Tage, Dark-Mode" width="300">
-<img src="docs/bilder/woche_hell.png" alt="Nächste 7 Tage, Light-Mode" width="300">
+<img src="bilder/woche_dunkel.png" alt="Nächste 7 Tage, Dark-Mode" width="300">
+<img src="bilder/woche_hell.png" alt="Nächste 7 Tage, Light-Mode" width="300">
 
 **Nächste 14 Tage** - wie oben, nur zwei Wochen weit. Bei viel Inhalt
 stößt der Kasten an die eingestellte Größen-Obergrenze; der Rest lässt
 sich mit dem Mausrad durchscrollen:
 
-<img src="docs/bilder/14tage_dunkel.png" alt="Nächste 14 Tage, Dark-Mode" width="300">
-<img src="docs/bilder/14tage_hell.png" alt="Nächste 14 Tage, Light-Mode" width="300">
+<img src="bilder/14tage_dunkel.png" alt="Nächste 14 Tage, Dark-Mode" width="300">
+<img src="bilder/14tage_hell.png" alt="Nächste 14 Tage, Light-Mode" width="300">
 
 ## 8. Das Widget auf dem Schreibtisch
 

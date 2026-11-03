@@ -80,6 +80,7 @@ class SchreibtischFenster(QWidget):
             klick_cb=self._oeffne_hauptfenster,
             uhr_groesse=self._e.desktop.groesse,
             klick_aktiv=self._e.desktop.klick_oeffnet,
+            jahr_zeigen=self._e.desktop.jahr_zeigen,
         )
         layout.addWidget(self._liste, stretch=1)
 
@@ -264,6 +265,7 @@ class SchreibtischFenster(QWidget):
         self._liste.setze_stunden_format(self._e.desktop.stunden_format)
         self._liste.setze_position_fixiert(self._e.desktop.position_fixiert)
         self._liste.setze_klick_aktiv(self._e.desktop.klick_oeffnet)
+        self._liste.setze_jahr_zeigen(self._e.desktop.jahr_zeigen)
         self._wende_transparenz_an()
         # Die Schriftgrößen werden per Stylesheet gesetzt, und die rechnet
         # Qt erst nach einem Durchlauf der Ereignisschleife durch. Sofort

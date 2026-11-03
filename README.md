@@ -4,7 +4,7 @@
 
 # KALENDERBlick
 
-[Änderungsprotokoll](CHANGELOG.md) · [Anleitung mit Screenshots](Anleitung.md)
+[Änderungsprotokoll](CHANGELOG.md) · [Anleitung mit Screenshots](src/kalenderblick/hilfe/anleitung.md)
 
 Zeigt die Termine aus **Thunderbird** auf dem Schreibtisch und in der
 Kontrollleiste – ohne Thunderbird offen zu haben und ohne Zugangsdaten
@@ -143,7 +143,7 @@ aufgebaut. Vier Ansichten stehen fürs Schreibtischwidget zur Wahl: Uhr +
 Datum, nächste 3 Termine, nächste 7 Tage, nächste 14 Tage - das
 Hauptfenster zeigt beim Durchklicken 31 Tage. Größe, Transparenz und
 Dark-/Light-Mode lassen sich einstellen; eine Schritt-für-Schritt-Anleitung
-mit Screenshots steht in [Anleitung.md](Anleitung.md).
+mit Screenshots steht in [Anleitung](src/kalenderblick/hilfe/anleitung.md).
 
 ## Lizenz
 
