@@ -1,5 +1,29 @@
 # Änderungsprotokoll
 
+## 1.5.0 – 2026-11-03
+
+**Neu**
+
+- Der Thunderbird-Profilordner lässt sich jetzt in der Oberfläche
+  auswählen: unter „Einstellungen → Kalenderquellen“ steht, welches
+  Profil verwendet wird, daneben die Knöpfe „Profilordner auswählen …“
+  und „Wieder automatisch suchen“. Bisher ging das nur auf der
+  Kommandozeile. Wird eine Ebene zu hoch gewählt, sucht KALENDERBlick
+  den passenden Unterordner selbst.
+
+**Geändert**
+
+- Die Meldung bei fehlendem Profil nennt jetzt den Grund und den Ausweg,
+  statt nur die Liste der durchsuchten Pfade abzuladen. Die gehört in
+  `kalenderblick pruefen`, wo sie beim Suchen nach Fehlern hilft.
+
+**Behoben**
+
+- Im Reiter „Termine“ blieb bei fehlendem Profil nur „Keine Termine im
+  gewählten Zeitraum“ stehen - als wäre alles in Ordnung und bloß nichts
+  eingetragen. Das Hauptfenster hatte das Fehler-Signal gar nicht
+  ausgewertet, anders als Schreibtischwidget und Leistensymbol.
+
 ## 1.4.1 – 2026-11-03
 
 **Behoben**

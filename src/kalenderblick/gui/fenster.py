@@ -13,6 +13,7 @@ from PyQt6.QtGui import (
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
+    QFileDialog,
     QFormLayout,
     QGroupBox,
     QHBoxLayout,
@@ -334,12 +335,39 @@ class _EinstellungenReiter(QWidget):
 
         layout.addWidget(allg_box)
 
-        # --- Kalenderübersicht (rein lesend, kein eigener Schalter) ---
+        # --- Kalenderquellen: Profilwahl und Übersicht ---
         if self._kalender_uebersicht is not None:
             kalender_box = QGroupBox("Kalenderquellen")
             kl = QVBoxLayout(kalender_box)
+
+            # Normalerweise findet KALENDERBlick das Profil von selbst.
+            # Liegt es an einer ungewöhnlichen Stelle - eigene Partition,
+            # verschobener Benutzerordner, fremde Thunderbird-Fassung -,
+            # ging das bisher nur über die Kommandozeile.
+            self._profil_text = QLabel()
+            self._profil_text.setWordWrap(True)
+            self._profil_text.setStyleSheet("font-size: 9pt;")
+            kl.addWidget(self._profil_text)
+
+            knoepfe = QHBoxLayout()
+            waehlen = QPushButton("Profilordner auswählen …")
+            waehlen.setToolTip(
+                "Den Ordner angeben, in dem Thunderbird seine Daten ablegt -\n"
+                "zu erkennen an einem Unterordner namens „calendar-data“.")
+            waehlen.clicked.connect(self._profil_waehlen)
+            knoepfe.addWidget(waehlen)
+
+            self._profil_zuruecksetzen = QPushButton("Wieder automatisch suchen")
+            self._profil_zuruecksetzen.setToolTip(
+                "Die eigene Angabe verwerfen und das Profil wieder selbst\n"
+                "suchen lassen.")
+            self._profil_zuruecksetzen.clicked.connect(self._profil_automatisch)
+            knoepfe.addWidget(self._profil_zuruecksetzen)
+            kl.addLayout(knoepfe)
+
             kl.addWidget(self._kalender_uebersicht)
             layout.addWidget(kalender_box)
+            self._zeige_profil()
 
         layout.addStretch()
 
@@ -367,6 +395,68 @@ class _EinstellungenReiter(QWidget):
             f"{farbe.blue()}, 170);")
         self._version.setTextInteractionFlags(
             Qt.TextInteractionFlag.TextSelectableByMouse)
+
+    def _zeige_profil(self) -> None:
+        """Woher die Termine kommen - und ob das eine eigene Angabe ist."""
+        e = konfig_modul.laden()
+        if e.profil:
+            self._profil_text.setText(
+                f"Von Hand gewählt: <code>{e.profil}</code>")
+            self._profil_zuruecksetzen.setEnabled(True)
+            return
+        self._profil_zuruecksetzen.setEnabled(False)
+        try:
+            gefunden = thunderbird.waehle_profil()
+            self._profil_text.setText(
+                f"Selbst gefunden: <code>{gefunden}</code>")
+        except Exception:
+            self._profil_text.setText(
+                "<b>Kein Thunderbird-Profil gefunden.</b> Ist Thunderbird "
+                "eingerichtet und liegt das Profil an einer ungewöhnlichen "
+                "Stelle, lässt es sich hier von Hand auswählen.")
+
+    def _profil_waehlen(self) -> None:
+        start = str(Path.home())
+        ordner = QFileDialog.getExistingDirectory(
+            self, "Thunderbird-Profilordner auswählen", start)
+        if not ordner:
+            return
+
+        pfad = Path(ordner)
+        # Ein Profilordner erkennt man an „calendar-data“; wer sich
+        # vergreift, bekommt lieber gleich Bescheid als später eine leere
+        # Terminliste. Vielleicht wurde auch eine Ebene zu hoch gewählt.
+        if not (pfad / "calendar-data").is_dir():
+            treffer = sorted(pfad.glob("*/calendar-data"))
+            if len(treffer) == 1:
+                pfad = treffer[0].parent
+            else:
+                self._status.setStyleSheet("color: #e66100;")
+                self._status.setText(
+                    "Dort liegt kein Thunderbird-Profil (kein Ordner "
+                    "„calendar-data“ darin).")
+                return
+
+        e = konfig_modul.laden()
+        e.profil = str(pfad)
+        e.speichern()
+        self._zeige_profil()
+        self._kalender_uebersicht.lade(str(pfad))
+        self._status.setStyleSheet("color: #2ec27e;")
+        self._status.setText("Profil übernommen.")
+        if self._cb:
+            self._cb()
+
+    def _profil_automatisch(self) -> None:
+        e = konfig_modul.laden()
+        e.profil = ""
+        e.speichern()
+        self._zeige_profil()
+        self._kalender_uebersicht.lade(None)
+        self._status.setStyleSheet("color: #2ec27e;")
+        self._status.setText("Es wird wieder selbst gesucht.")
+        if self._cb:
+            self._cb()
 
     def _speichern(self) -> None:
         e = konfig_modul.laden()
@@ -441,7 +531,22 @@ class HauptFenster(QMainWindow):
         self.setCentralWidget(self._tabs)
 
         self._termine_liste = TerminListe(ansicht="monat", schrift=10)
-        self._tabs.addTab(self._termine_liste, "Termine")
+
+        # Meldungen (etwa "kein Thunderbird-Profil gefunden") gehören
+        # über die Liste, sonst bliebe nur ein unverfängliches "Keine
+        # Termine im gewählten Zeitraum" stehen.
+        self._fehler = QLabel("")
+        self._fehler.setStyleSheet(
+            "color: #e66100; padding: 8px; font-weight: bold;")
+        self._fehler.setWordWrap(True)
+        self._fehler.setVisible(False)
+
+        termine_seite = QWidget()
+        tl = QVBoxLayout(termine_seite)
+        tl.setContentsMargins(0, 0, 0, 0)
+        tl.addWidget(self._fehler)
+        tl.addWidget(self._termine_liste, stretch=1)
+        self._tabs.addTab(termine_seite, "Termine")
 
         self._kalender_uebersicht = _KalenderUebersicht()
         self._einstellungen = _EinstellungenReiter(
@@ -497,10 +602,20 @@ class HauptFenster(QMainWindow):
             return
         self._thread = LadeThread(self)
         self._thread.fertig.connect(self._bei_fertig)
+        self._thread.fehler.connect(self._bei_fehler)
         self._thread.start()
 
     def _bei_fertig(self, termine: list[Termin]) -> None:
+        self._fehler.setVisible(False)
         self._termine_liste.setze_termine(termine)
+
+    def _bei_fehler(self, meldung: str) -> None:
+        """Ohne das stünde im Reiter „Termine“ nur „Keine Termine im
+        gewählten Zeitraum" - als wäre alles in Ordnung und bloß nichts
+        eingetragen. Tatsächlich wurde aber etwa gar kein
+        Thunderbird-Profil gefunden."""
+        self._fehler.setText(meldung)
+        self._fehler.setVisible(True)
 
     def _einstellungen_geaendert(self) -> None:
         e = konfig_modul.laden()

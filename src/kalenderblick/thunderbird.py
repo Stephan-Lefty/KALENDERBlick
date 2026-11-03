@@ -184,14 +184,28 @@ def waehle_profil(vorgabe: str = "") -> Path:
     if vorgabe:
         pfad = Path(os.path.expanduser(vorgabe))
         if not pfad.is_dir():
-            raise ThunderbirdFehler(f"Das angegebene Profil gibt es nicht: {pfad}")
+            raise ThunderbirdFehler(
+                "Den eingestellten Profilordner gibt es nicht mehr:\n"
+                f"{pfad}\n\n"
+                "Bitte unter „Einstellungen → Kalenderquellen“ einen anderen "
+                "Ordner auswählen oder wieder automatisch suchen lassen."
+            )
         return pfad
 
     vorschlaege = profil_vorschlaege()
     if not vorschlaege:
+        # Bewusst ohne die Liste der durchsuchten Pfade: Die hilft beim
+        # Suchen nach Fehlern, steht deshalb in `kalenderblick pruefen` -
+        # in der Oberfläche schreckt sie nur ab und sagt niemandem, was
+        # zu tun ist.
         raise ThunderbirdFehler(
-            "Es wurde kein Thunderbird-Profil gefunden.\n"
-            "Gesucht wurde in: " + ", ".join(str(p) for p in profil_wurzeln())
+            "Es wurde kein Thunderbird-Profil gefunden.\n\n"
+            "KALENDERBlick zeigt die Termine aus Thunderbird an. Dafür muss "
+            "Thunderbird eingerichtet sein und mindestens einen Kalender "
+            "enthalten.\n\n"
+            "Ist Thunderbird installiert und liegt das Profil an einer "
+            "ungewöhnlichen Stelle, lässt es sich unter\n"
+            "„Einstellungen → Kalenderquellen“ von Hand auswählen."
         )
 
     mit_terminen = [v for v in vorschlaege if v[2] > 0]

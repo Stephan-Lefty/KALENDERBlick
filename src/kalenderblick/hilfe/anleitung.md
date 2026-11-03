@@ -147,10 +147,19 @@ Zweiter Reiter im Hauptfenster:
 | Aktualisierung | Wie oft die Oberfläche Thunderbirds Daten neu einliest. Ersetzt nicht Thunderbirds eigene Abholfrequenz für entfernte Kalender - erst wenn Thunderbird selbst abgeholt hat, gibt es hier etwas Neues zu sehen. |
 | Beim Anmelden automatisch starten | Legt eine `.desktop`-Datei in `~/.config/autostart/` an oder entfernt sie wieder. |
 
-**Kalenderquellen** - ganz unten, rein lesend: zeigt jeden gefundenen
-Kalender mit Art, Abholfrequenz, wann zuletzt geschrieben wurde und ob er
-abgeschaltet oder nur lesbar ist. Praktisch zum Nachsehen, warum ein
-Kalender nicht wie erwartet auftaucht.
+**Kalenderquellen** - ganz unten: Oben steht, welches
+Thunderbird-Profil verwendet wird. Normalerweise findet KALENDERBlick es
+von selbst; liegt es an einer ungewöhnlichen Stelle (eigene Partition,
+verschobener Benutzerordner), lässt es sich über „Profilordner
+auswählen …“ von Hand angeben. Gesucht wird dabei der Ordner, der einen
+Unterordner namens `calendar-data` enthält - wird eine Ebene zu hoch
+gewählt, findet KALENDERBlick ihn meist trotzdem. „Wieder automatisch
+suchen“ verwirft die eigene Angabe.
+
+Darunter steht jeder gefundene Kalender mit Art, Abholfrequenz, wann
+zuletzt geschrieben wurde und ob er abgeschaltet oder nur lesbar ist.
+Praktisch zum Nachsehen, warum ein Kalender nicht wie erwartet
+auftaucht.
 
 Ganz unten steht die laufende Fassungsnummer - praktisch bei Rückfragen.
 Ein dritter Reiter „Hilfe" enthält genau diese Anleitung samt
@@ -246,7 +255,7 @@ einer Sitzung.
 | Problem | Lösung |
 |---|---|
 | Kein Termin zu sehen | `kalenderblick pruefen` und `kalenderblick kalender` - zeigt, welches Profil gefunden wurde und ob Kalender abgeschaltet sind. |
-| Falsches Profil gefunden | Pfad von Hand eintragen: `kalenderblick einstellungen --profil /pfad/zum/profil`. |
+| Falsches oder gar kein Profil gefunden | Unter „Einstellungen → Kalenderquellen“ auf „Profilordner auswählen …“ - oder auf der Kommandozeile: `kalenderblick einstellungen --profil /pfad/zum/profil`. |
 | Abonnierter Kalender hinkt hinterher | Das ist Thunderbirds eigene Abholfrequenz, nicht KALENDERBlicks Aktualisierung - siehe „Kalenderquellen" in den Einstellungen. |
 | Widget bleibt unsichtbar | In den Einstellungen „Schreibtisch-Widget anzeigen" einschalten und KALENDERBlick neu starten. |
 | Kein Symbol in der Leiste (GNOME) | Die Erweiterung `gnome-shell-extension-appindicator` installieren und sich einmal neu anmelden - siehe Abschnitt 10. |

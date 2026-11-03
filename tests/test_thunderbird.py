@@ -354,3 +354,33 @@ def test_profil_in_betterbird_flatpak_wird_gefunden(heim):
     p.schreibe_prefs()
 
     assert thunderbird.waehle_profil() == p.profil
+
+
+def test_fehlermeldung_ohne_profil_nennt_den_ausweg(heim):
+    """Die Meldung landet in der Oberfläche - sie muss sagen, was zu tun
+    ist, statt nur eine Liste durchsuchter Pfade abzuladen."""
+    from kalenderblick import thunderbird
+
+    try:
+        thunderbird.waehle_profil()
+    except thunderbird.ThunderbirdFehler as fehler:
+        text = str(fehler)
+    else:
+        raise AssertionError("ohne Profil müsste ein Fehler kommen")
+
+    assert "Kalenderquellen" in text, "kein Hinweis, wo man es einstellt"
+    assert str(heim) not in text, "rohe Pfadliste gehört in `pruefen`, nicht hierher"
+
+
+def test_fehlermeldung_bei_verschwundenem_profil(heim):
+    from kalenderblick import thunderbird
+
+    try:
+        thunderbird.waehle_profil("/gibt/es/nicht")
+    except thunderbird.ThunderbirdFehler as fehler:
+        text = str(fehler)
+    else:
+        raise AssertionError("ein nicht vorhandener Pfad müsste auffallen")
+
+    assert "/gibt/es/nicht" in text, "der betroffene Pfad gehört genannt"
+    assert "Kalenderquellen" in text
