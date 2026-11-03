@@ -2,10 +2,29 @@
 
 ## Als Nächstes
 
-- [ ] Nichts Offenes. v1.1.0 ist veröffentlicht (03.11.2026), die
-      Anleitung wurde auf einem bereinigten Rechner durchgespielt.
+- [ ] Nichts Offenes. v1.3.0 ist veröffentlicht (03.11.2026). Unter
+      Cinnamon/X11 (GuideOS) wurde bisher nur die Installation geprüft;
+      das Leistensymbol dort noch einmal ansehen, sobald die Fassung
+      1.3.0 eingespielt ist - der Unschärfe-Fehler ist behoben, aber am
+      Gerät noch nicht gegengeprüft.
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
+
+- [x] Fassungen 1.1.1 bis 1.3.0 an einem Vormittag (03.11.2026), alle
+      aus Stephans Durchspielen auf zwei Systemen entstanden:
+      - 1.1.1: `.deb` führte PyQt6 nur unter `Recommends`; wer mit
+        `dpkg -i` einspielte, bekam keine Oberfläche und beim Klick auf
+        den Menüeintrag passierte wortlos nichts
+      - 1.1.2: AppStream-Angaben ergänzt, sonst taucht das Programm in
+        keiner Software-Verwaltung auf - und lässt sich dort auch nicht
+        ohne Terminal entfernen
+      - 1.2.0: Größenstufe "Sehr klein" für 1920er-Bildschirme
+      - 1.3.0: Reiter "Hilfe" mit der Anleitung offline im Programm,
+        sichtbare Fassungsnummer, Jahreszahl unter dem Datum,
+        Leistensymbol in allen Leistengrößen statt nur 64x64
+      Gelernt: Versionsnummer erst anheben, wenn der Inhalt feststeht -
+      der Eintrag zu 1.2.0 wurde sonst nachträglich um Dinge erweitert,
+      die in der schon veröffentlichten Fassung gar nicht steckten.
 
 - [x] v1.1.0 veröffentlicht (03.11.2026) mit den sieben Fehlern, die
       beim Durchspielen der Anleitung herauskamen - siehe CHANGELOG.md
