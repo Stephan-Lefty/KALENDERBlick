@@ -1,5 +1,20 @@
 # Änderungsprotokoll
 
+## 1.4.1 – 2026-11-03
+
+**Behoben**
+
+- Der Autostart griff nicht: Beim Anmelden erzeugt systemd aus den
+  Dateien in `~/.config/autostart/` eigene Einheiten und löst `Exec=`
+  dabei gegen einen noch sehr kargen Suchpfad auf, in dem
+  `~/.local/bin` fehlt. In der Datei stand nur `kalenderblick`, also
+  meldete systemd „Exec binary does not exist" und legte die Einheit
+  gar nicht erst an - KALENDERBlick startete beim Anmelden schlicht
+  nicht. Jetzt wird der volle Pfad eingetragen.
+
+  **Wer den Autostart schon eingeschaltet hatte, muss ihn einmal aus-
+  und wieder einschalten**, damit die Datei neu geschrieben wird.
+
 ## 1.4.0 – 2026-11-03
 
 **Neu**

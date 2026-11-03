@@ -97,6 +97,16 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.4.1" date="2026-11-03">
+      <description>
+        <p>
+          Der Autostart griff nicht, weil in der Autostart-Datei nur der
+          Programmname statt des vollen Pfades stand. Wer den Autostart
+          schon eingeschaltet hatte, muss ihn einmal aus- und wieder
+          einschalten.
+        </p>
+      </description>
+    </release>
     <release version="1.4.0" date="2026-11-03">
       <description>
         <p>Betterbird wird mitgelesen, auch in der Flatpak-Fassung.</p>
