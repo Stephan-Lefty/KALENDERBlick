@@ -68,7 +68,10 @@ class _AboDialog(QDialog):
     def __init__(self, parent=None, abo=None):
         super().__init__(parent)
         self.setWindowTitle("Kalender abonnieren")
-        self.setMinimumWidth(460)
+
+        # Breit genug, dass der Erklärungstext nicht zur Bleiwüste wird.
+        breite = 560
+        self.setMinimumWidth(breite)
 
         layout = QVBoxLayout(self)
 
@@ -80,6 +83,12 @@ class _AboDialog(QDialog):
             "den Kalender lesen. Sie wird nur für dich lesbar gespeichert.")
         erklaerung.setWordWrap(True)
         erklaerung.setTextFormat(Qt.TextFormat.RichText)
+        # Ein umbrechendes Textfeld meldet seine Höhe zu klein, solange
+        # die Breite noch nicht feststeht - der Text wurde dadurch von den
+        # Eingabefeldern überdeckt. Deshalb die Höhe für die bekannte
+        # Breite ausrechnen lassen und fest vorgeben.
+        rand = 2 * layout.contentsMargins().left()
+        erklaerung.setMinimumHeight(erklaerung.heightForWidth(breite - rand))
         layout.addWidget(erklaerung)
 
         formular = QFormLayout()
@@ -103,6 +112,9 @@ class _AboDialog(QDialog):
         knoepfe.accepted.connect(self._pruefen_und_schliessen)
         knoepfe.rejected.connect(self.reject)
         layout.addWidget(knoepfe)
+
+        # Erst jetzt, mit allen Teilen, die endgültige Größe bestimmen.
+        self.adjustSize()
 
     def _pruefen_und_schliessen(self) -> None:
         """Gleich ausprobieren, statt später eine leere Liste zu zeigen."""
