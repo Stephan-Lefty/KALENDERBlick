@@ -2,16 +2,39 @@
 
 ## Als Nächstes
 
-- [ ] GitHub-Release für 1.0.0 anlegen - erst dann laden PKGBUILD (lädt
-      den Quellcode-Tarball vom Tag) und das Release-Workflow (lädt das
-      gebaute `.deb` an den Release) wirklich etwas Echtes hoch.
-      Fertiger Befehl:
-      `gh release create v1.0.0 --title "1.0.0" --notes-file CHANGELOG.md`
-- [ ] Stephan geht die Installation morgen früh frisch nach
-      `Anleitung.md` durch, nachdem KALENDERBlick zum Testen vollständig
-      vom Rechner entfernt wurde (02.11.2026)
+- [ ] Nichts Offenes gerade - Stephan testet die Installation nach
+      `Anleitung.md` frisch durch (03.11.2026), Rückmeldungen fließen
+      direkt als Fixes ein
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
+
+- [x] Erste öffentliche Fassung: Repo öffentlich gestellt, v1.0.0 und
+      v1.0.1 veröffentlicht (02.11.2026) - v1.0.0 hatte noch ein falsches
+      Versions-Label im `.deb` (0.1.0 statt 1.0.0, `__init__.py` und
+      PKGBUILD pflegen die Versionsnummer getrennt von pyproject.toml und
+      waren nicht mitgezogen worden), mit v1.0.1 korrigiert
+- [x] Echte Neuinstallation nach `Anleitung.md` durchgespielt
+      (03.11.2026) - dabei gefunden und behoben:
+      - Menüeintrag und Symbole fehlten komplett in der Anleitung
+        (`pipx install` legt nur die Befehle an) - Abschnitt ergänzt
+      - Schreibtisch-Widget erschien erst nach Neustart, wenn der
+        Schalter umgelegt wurde - Hauptfenster verwaltet es jetzt live
+      - "Einstellungen speichern" warf das Widget aus einer gezogenen
+        Ecke zurück in die Mitte (Nebenwirkung des hide()/show()-Fixes
+        vom Vortag, griff bei jeder Größenänderung statt nur beim
+        allerersten Laden)
+      - Schließen des Hauptfensters über den X-Knopf hat die ganze
+        Anwendung beendet (Qts quitOnLastWindowClosed zählt das
+        "Tool"-Fenster des Widgets nicht mit)
+      - "Position sperren" hielt nur innerhalb einer laufenden Sitzung,
+        nicht über einen Neustart - neues Modul `gui/position.py` legt
+        dafür eine eigene KWin-Fensterregel an/entfernt sie, dabei auch
+        den wmclass-Fehler behoben, der schon die alten
+        Fenstereigenschaften-Regeln unzuverlässig machte (zweiteiliger
+        wmclass-Wert verlangt einen Abgleich des Instanznamens, der
+        unter Wayland vom tatsächlichen Programmnamen abhängt)
+      - "Einstellungen speichern" war beim Scrollen nicht immer sichtbar
+        - jetzt außerhalb der Scroll-Fläche angeheftet
 
 - [x] GitHub-Repository angelegt und gepusht: github.com/Stephan-Lefty/KALENDERBlick
 - [x] Regulär per `pipx` installiert, Autostart und Startmenü-Eintrag

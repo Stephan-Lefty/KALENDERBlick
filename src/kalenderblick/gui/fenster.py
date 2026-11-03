@@ -196,7 +196,9 @@ class _EinstellungenReiter(QWidget):
         self._position_fixiert.setChecked(e.desktop.position_fixiert)
         self._position_fixiert.setToolTip(
             "Einmal an die richtige Stelle gezogen, lässt sich das Fenster\n"
-            "nicht mehr versehentlich verschieben.")
+            "nicht mehr versehentlich verschieben - und bleibt auch über\n"
+            "einen Neustart von KALENDERBlick an dieser Stelle (nur\n"
+            "KDE/KWin).")
         wl.addRow(self._position_fixiert)
 
         self._alle_arbeitsflaechen = QCheckBox("Auf allen Arbeitsflächen zeigen")
