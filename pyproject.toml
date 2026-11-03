@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kalenderblick"
-version = "1.5.1"
+version = "1.6.0"
 description = "KALENDERBlick - zeigt Thunderbirds Kalender auf dem Schreibtisch und in der Kontrollleiste"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -21,7 +21,7 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Topic :: Office/Business :: Scheduling",
 ]
-dependencies = ["python-dateutil>=2.8"]
+dependencies = ["python-dateutil>=2.8", "icalendar>=5.0"]
 
 [project.optional-dependencies]
 fenster = ["PyQt6>=6.5"]

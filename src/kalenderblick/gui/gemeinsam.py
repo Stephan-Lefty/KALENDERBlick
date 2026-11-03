@@ -12,13 +12,13 @@ from PyQt6.QtGui import QColor, QIcon, QPainter, QPixmap
 
 from .. import bilder
 from .. import config as konfig_modul
-from .. import thunderbird
+from .. import quellen
 from ..modell import Termin
 from .umgebung import umgebung  # noqa: F401 - re-exportiert für bestehende Importe
 
 
 class LadeThread(QThread):
-    """Liest Thunderbirds Termine im Hintergrund.
+    """Liest die Termine im Hintergrund - aus allen gewählten Quellen.
 
     Holt immer so viele Tage, wie die weiteste Ansicht (Monat) braucht -
     "Vorausblick" in den Einstellungen ist eine Kommandozeilen-Angabe und
@@ -33,10 +33,10 @@ class LadeThread(QThread):
         try:
             from .liste import ANSICHT_TAGE
             e = konfig_modul.laden()
-            profil = thunderbird.waehle_profil(e.profil)
             weiteste_ansicht = max(t for t in ANSICHT_TAGE.values() if t)
-            termine = thunderbird.lies_termine(
-                profil,
+            termine = quellen.lies_termine(
+                quelle=e.quelle,
+                profil_vorgabe=e.profil,
                 tage_voraus=max(e.tage_voraus, weiteste_ansicht),
                 tage_zurueck=e.tage_zurueck,
                 versteckt=e.versteckte_kalender,

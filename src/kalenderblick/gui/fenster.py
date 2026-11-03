@@ -30,7 +30,10 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from .. import NAME, __version__, autostart, config as konfig_modul, hilfe as hilfe_modul, thunderbird
+from .. import (
+    NAME, __version__, autostart, config as konfig_modul,
+    hilfe as hilfe_modul, quellen, thunderbird,
+)
 from ..config import ANSICHTEN, GROESSEN
 from ..modell import Termin
 from .gemeinsam import LadeThread, app_symbol
@@ -144,6 +147,7 @@ class _KalenderUebersicht(QScrollArea):
         self.setWidgetResizable(True)
         self.setFrameShape(QScrollArea.Shape.NoFrame)
         self.setMinimumHeight(180)
+        self._haken: dict = {}
         self._inhalt = QWidget()
         self._layout = QVBoxLayout(self._inhalt)
         self._layout.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -156,9 +160,12 @@ class _KalenderUebersicht(QScrollArea):
                 item.widget().deleteLater()
 
         try:
-            from pathlib import Path
-            profil = Path(profil_pfad) if profil_pfad else thunderbird.waehle_profil()
-            kalender = thunderbird.lies_kalender(profil)
+            e = konfig_modul.laden()
+            kalender = quellen.lies_kalender(
+                quelle=e.quelle,
+                profil_vorgabe=profil_pfad or e.profil)
+            if not kalender:
+                raise quellen.KeineQuelle(quellen._keine_quelle_text())
         except Exception as fehler:
             fehler_label = QLabel(str(fehler))
             fehler_label.setStyleSheet("color: #e66100;")
@@ -167,8 +174,18 @@ class _KalenderUebersicht(QScrollArea):
             return
 
         jetzt = datetime.now()
+        versteckt = set(konfig_modul.laden().versteckte_kalender)
+        self._haken = {}
         for kal in sorted(kalender, key=lambda k: (not k.ist_fern, k.name.lower())):
             box = QGroupBox(kal.name or kal.kennung[:16])
+            # Ein abwählbarer Rahmen je Kalender: Wer viele Kalender führt,
+            # will selten alle auf dem Schreibtisch sehen. Abgewählte landen
+            # beim Speichern unter „versteckte_kalender“.
+            box.setCheckable(True)
+            box.setChecked(kal.kennung not in versteckt)
+            box.setToolTip("Abwählen, um diesen Kalender nicht mehr "
+                           "anzuzeigen.")
+            self._haken[kal.kennung] = box
             bl = QFormLayout(box)
             bl.addRow("Art:", QLabel(kal.art))
             bl.addRow("Abholung:", QLabel(kal.abholtext()))
@@ -186,6 +203,15 @@ class _KalenderUebersicht(QScrollArea):
             self._layout.addWidget(box)
 
         self._layout.addStretch()
+
+    def versteckte_kalender(self) -> list[str]:
+        """Die abgewählten Kalender - oder None, wenn noch nichts geladen
+        wurde; dann darf die bestehende Auswahl nicht überschrieben
+        werden."""
+        if not getattr(self, "_haken", None):
+            return None
+        return sorted(kennung for kennung, box in self._haken.items()
+                      if not box.isChecked())
 
 
 class _EinstellungenReiter(QWidget):
@@ -344,6 +370,19 @@ class _EinstellungenReiter(QWidget):
             # Liegt es an einer ungewöhnlichen Stelle - eigene Partition,
             # verschobener Benutzerordner, fremde Thunderbird-Fassung -,
             # ging das bisher nur über die Kommandozeile.
+            self._quelle = QComboBox()
+            for schluessel in quellen.QUELLEN:
+                self._quelle.addItem(quellen.QUELLEN_NAMEN[schluessel], schluessel)
+            jetzige = e.quelle if e.quelle in quellen.QUELLEN else quellen.AUTOMATISCH
+            self._quelle.setCurrentIndex(list(quellen.QUELLEN).index(jetzige))
+            self._quelle.setToolTip(
+                "Aus welchen Programmen die Termine kommen. „Alles, was\n"
+                "gefunden wird“ nimmt Thunderbird und Evolution zusammen -\n"
+                "wer beide nutzt, sieht alle Termine in einer Liste.")
+            quelle_zeile = QFormLayout()
+            quelle_zeile.addRow("Terminquelle:", self._quelle)
+            kl.addLayout(quelle_zeile)
+
             self._profil_text = QLabel()
             self._profil_text.setWordWrap(True)
             self._profil_text.setStyleSheet("font-size: 9pt;")
@@ -471,6 +510,11 @@ class _EinstellungenReiter(QWidget):
         e.desktop.position_fixiert = self._position_fixiert.isChecked()
         e.desktop.alle_arbeitsflaechen = self._alle_arbeitsflaechen.isChecked()
         e.aktualisierung_minuten = self._interval.value()
+        e.quelle = self._quelle.currentData()
+        if self._kalender_uebersicht is not None:
+            abgewaehlt = self._kalender_uebersicht.versteckte_kalender()
+            if abgewaehlt is not None:
+                e.versteckte_kalender = abgewaehlt
         # Größe auch in Pixel übernehmen
         breite, hoehe = GROESSEN[e.desktop.groesse]
         e.desktop.breite = breite

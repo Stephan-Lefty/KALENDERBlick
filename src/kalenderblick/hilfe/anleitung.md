@@ -10,14 +10,19 @@ keine echten Daten.
 
 ## 1. Voraussetzungen
 
-KALENDERBlick braucht ein eingerichtetes Thunderbird-Profil mit
-mindestens einem Kalender - egal ob örtlich gespeichert oder abonniert
-(ICS, CalDAV). Thunderbird selbst muss beim Benutzen von KALENDERBlick
-nicht laufen.
+KALENDERBlick braucht **Thunderbird** oder **Evolution** mit mindestens
+einem eingerichteten Kalender - egal ob örtlich gespeichert oder
+abonniert (ICS, CalDAV). Keines von beiden muss beim Benutzen von
+KALENDERBlick laufen.
 
-Auch **Betterbird** wird gelesen: Der Thunderbird-Abkömmling nutzt
-denselben Profilordner. Andere Kalenderprogramme (Evolution, KOrganizer,
-GNOME Kalender) werden derzeit nicht unterstützt.
+Auch **Betterbird** wird gelesen; der Thunderbird-Abkömmling nutzt
+denselben Profilordner. Wer beide Programme einsetzt, kann sich die
+Termine auch zusammen anzeigen lassen.
+
+**Online-Kalender wie Google, Nextcloud oder Proton** bindet man nicht in
+KALENDERBlick ein, sondern wie gewohnt in Thunderbird oder Evolution -
+von dort werden sie automatisch mitgelesen. KALENDERBlick braucht damit
+nie Zugangsdaten.
 
 ## 2. Installieren
 
@@ -147,7 +152,9 @@ Zweiter Reiter im Hauptfenster:
 | Aktualisierung | Wie oft die Oberfläche Thunderbirds Daten neu einliest. Ersetzt nicht Thunderbirds eigene Abholfrequenz für entfernte Kalender - erst wenn Thunderbird selbst abgeholt hat, gibt es hier etwas Neues zu sehen. |
 | Beim Anmelden automatisch starten | Legt eine `.desktop`-Datei in `~/.config/autostart/` an oder entfernt sie wieder. |
 
-**Kalenderquellen** - ganz unten: Oben steht, welches
+**Kalenderquellen** - ganz unten: Zuoberst lässt sich wählen, woher die
+Termine kommen sollen - aus Thunderbird, aus Evolution oder aus beidem
+zusammen („Alles, was gefunden wird“). Darunter steht, welches
 Thunderbird-Profil verwendet wird. Normalerweise findet KALENDERBlick es
 von selbst; liegt es an einer ungewöhnlichen Stelle (eigene Partition,
 verschobener Benutzerordner), lässt es sich über „Profilordner
@@ -160,6 +167,11 @@ Darunter steht jeder gefundene Kalender mit Art, Abholfrequenz, wann
 zuletzt geschrieben wurde und ob er abgeschaltet oder nur lesbar ist.
 Praktisch zum Nachsehen, warum ein Kalender nicht wie erwartet
 auftaucht.
+
+Jeder Kalender hat ein **Ankreuzfeld**: Abgewählte erscheinen weder im
+Schreibtischwidget noch in der Terminliste. Das betrifft ausschließlich
+die Anzeige in KALENDERBlick - in Thunderbird beziehungsweise Evolution
+bleibt alles unverändert sichtbar.
 
 Ganz unten steht die laufende Fassungsnummer - praktisch bei Rückfragen.
 Ein dritter Reiter „Hilfe" enthält genau diese Anleitung samt

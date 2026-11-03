@@ -1,6 +1,6 @@
 # Maintainer: Stephan Rösner
 pkgname=kalenderblick
-pkgver=1.5.1
+pkgver=1.6.0
 pkgrel=1
 pkgdesc="Zeigt Thunderbirds Kalender auf dem Schreibtisch und in der Kontrollleiste"
 arch=('any')
@@ -8,7 +8,7 @@ url="https://github.com/Stephan-Lefty/KALENDERBlick"
 license=('MIT')
 # PyQt6 ist keine Wahlmöglichkeit: ohne die Oberfläche startet das
 # Programm beim Klick auf den Menüeintrag gar nicht.
-depends=('python' 'python-dateutil' 'python-pyqt6')
+depends=('python' 'python-dateutil' 'python-icalendar' 'python-pyqt6')
 makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
 checkdepends=('python-pytest' 'python-pyqt6')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")

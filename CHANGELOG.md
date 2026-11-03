@@ -1,5 +1,33 @@
 # Änderungsprotokoll
 
+## 1.6.0 – 2026-11-03
+
+**Neu**
+
+- **Evolution wird gelesen.** Neben Thunderbird (samt Betterbird) wertet
+  KALENDERBlick jetzt auch die Kalender des Evolution Data Servers aus -
+  damit ist es unter GNOME auch ohne Thunderbird brauchbar. Unter
+  „Einstellungen → Kalenderquellen“ lässt sich wählen, woher die Termine
+  kommen: aus Thunderbird, aus Evolution oder aus beidem zusammen.
+- **Einzelne Kalender abwählen.** Jeder gefundene Kalender hat ein
+  Ankreuzfeld. Abgewählte erscheinen weder im Schreibtischwidget noch in
+  der Terminliste - im Kalenderprogramm selbst bleibt alles unverändert
+  sichtbar. Bisher ging das nur auf der Kommandozeile.
+
+**Anmerkung zu Online-Kalendern**
+
+Google, Nextcloud, Proton und dergleichen bindet man weiterhin in
+Thunderbird oder Evolution ein; von dort liest KALENDERBlick sie mit.
+Eine eigene Anmeldung wird es nicht geben - sie würde Zugangsdaten
+erfordern und damit die Zusage brechen, dass nirgends welche
+einzutragen sind.
+
+**Neue Abhängigkeit**
+
+- `python-icalendar` (Arch) beziehungsweise `python3-icalendar`
+  (Debian). Fehlt es, sagt KALENDERBlick das jetzt deutlich, statt
+  stillschweigend leere Kalender anzuzeigen.
+
 ## 1.5.1 – 2026-11-03
 
 **Behoben**

@@ -6,9 +6,14 @@
 
 [Änderungsprotokoll](CHANGELOG.md) · [Anleitung mit Screenshots](src/kalenderblick/hilfe/anleitung.md)
 
-Zeigt die Termine aus **Thunderbird** auf dem Schreibtisch und in der
-Kontrollleiste – ohne Thunderbird offen zu haben und ohne Zugangsdaten
-irgendwo einzutragen. Gelesen wird ausschließlich, geschrieben nie.
+Zeigt die Termine aus **Thunderbird** oder **Evolution** auf dem
+Schreibtisch und in der Kontrollleiste – ohne eines der beiden offen zu
+haben und ohne Zugangsdaten irgendwo einzutragen. Gelesen wird
+ausschließlich, geschrieben nie.
+
+Online-Kalender wie Google, Nextcloud oder Proton bindet man dort ein,
+wo sie hingehören – ins Kalenderprogramm. KALENDERBlick liest sie von
+dort mit und braucht selbst nie eine Anmeldung.
 
 Erprobt auf Arch/Manjaro mit KDE Plasma (Wayland), auf Debian mit
 Cinnamon (X11) und auf Debian 13 mit GNOME (Wayland). Den vollen
@@ -25,12 +30,21 @@ einmal, auch rein örtliche, und zwar genau so, wie Thunderbird sie kennt.
 
 ## Wie es an die Daten kommt
 
+**Thunderbird** – SQLite-Dateien im Profil:
+
 ```
 ~/.thunderbird/<profil>/
    ├── prefs.js                     Namen, Farben, Art, Abholfrequenz
    └── calendar-data/
         ├── <kennung>.sqlite        ein Kalender je Datei
         └── …
+```
+
+**Evolution** – iCalendar-Dateien, die der Data Server ablegt:
+
+```
+~/.local/share/evolution/calendar/<kennung>/calendar.ics
+~/.config/evolution/sources/<kennung>.source     Name, Farbe, Art
 ```
 
 * Zeiten stehen als Mikrosekunden seit 1970 in UTC, die Zeitzone getrennt
@@ -46,21 +60,21 @@ einmal, auch rein örtliche, und zwar genau so, wie Thunderbird sie kennt.
 **Manjaro, Arch**
 
 ```bash
-pamac install python-dateutil python-pyqt6 python-pipx
+pamac install python-dateutil python-icalendar python-pyqt6 python-pipx
 pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDERBlick.git
 ```
 
 **Debian, GuideOS, Ubuntu**
 
 ```bash
-sudo apt install python3-dateutil python3-pyqt6 pipx
+sudo apt install python3-dateutil python3-icalendar python3-pyqt6 pipx
 pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDERBlick.git
 ```
 
-KALENDERBlick ist reines Python mit Qt und hat außer `python-dateutil` keine
-Abhängigkeiten. Es läuft überall dort, wo Thunderbird läuft – auch wenn
-Thunderbird als Flatpak oder Snap installiert ist, denn deren Profilordner
-werden mitgesucht. **Betterbird** wird ebenfalls gelesen: Der Fork legt
+KALENDERBlick ist reines Python mit Qt und braucht außer `python-dateutil`
+und `python-icalendar` nichts weiter. Es läuft überall dort, wo Thunderbird
+oder Evolution laufen – auch als Flatpak oder Snap installiert, denn deren
+Ordner werden mitgesucht. **Betterbird** wird ebenfalls gelesen: Der Fork legt
 seine Profile in denselben Ordner `~/.thunderbird` wie Thunderbird, als
 Flatpak unter `~/.var/app/eu.betterbird.Betterbird/`.
 
@@ -148,7 +162,7 @@ Erweiterung; fehlt sie, weist KALENDERBlick beim Start darauf hin und
 | `kalender` | Kalender mit Art, Abholfrequenz und Stand |
 | `liste` | kommende Termine, `--tage`, `--alles`, `--ausfuehrlich` |
 | `naechster` | der nächste Termin in einer Zeile |
-| `einstellungen` | Vorausblick, Aktualisierung, Kalender verstecken |
+| `einstellungen` | Vorausblick, Aktualisierung, Profil, Kalender verstecken |
 | `fenster` | Fenster öffnen |
 | `start` | Leistensymbol und Schreibtischfenster |
 

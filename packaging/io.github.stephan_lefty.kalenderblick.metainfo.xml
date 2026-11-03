@@ -15,7 +15,7 @@
   <id>io.github.stephan_lefty.kalenderblick</id>
 
   <name>KALENDERBlick</name>
-  <summary>Thunderbirds Termine auf dem Schreibtisch und in der Kontrollleiste</summary>
+  <summary>Termine aus Thunderbird und Evolution auf dem Schreibtisch und in der Kontrollleiste</summary>
 
   <metadata_license>MIT</metadata_license>
   <project_license>MIT</project_license>
@@ -97,6 +97,16 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.6.0" date="2026-11-03">
+      <description>
+        <p>
+          Neben Thunderbird werden jetzt auch die Kalender von Evolution
+          gelesen; die Quelle lässt sich in den Einstellungen wählen.
+          Einzelne Kalender können abgewählt werden, ohne sie im
+          Kalenderprogramm selbst auszublenden.
+        </p>
+      </description>
+    </release>
     <release version="1.5.1" date="2026-11-03">
       <description>
         <p>

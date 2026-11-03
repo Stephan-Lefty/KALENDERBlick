@@ -44,6 +44,7 @@ class Fensterlage:
 @dataclass
 class Einstellungen:
     profil: str = ""                     # leer = selbst suchen
+    quelle: str = "automatisch"          # automatisch / thunderbird / evolution
     tage_voraus: int = 14
     tage_zurueck: int = 0
     aktualisierung_minuten: int = 10
