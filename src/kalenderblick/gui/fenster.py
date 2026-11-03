@@ -291,7 +291,10 @@ class _KalenderUebersicht(QScrollArea):
             return "Abonniert"
         if modul.endswith("evolution"):
             return "Evolution / GNOME Kalender"
-        return "Thunderbird"
+        # Betterbird teilt sich den Profilordner mit Thunderbird - von
+        # außen ist nicht zu erkennen, welches der beiden ihn angelegt
+        # hat. Deshalb beide nennen.
+        return "Thunderbird / Betterbird"
 
     def _zeile(self, kal, versteckt: set, jetzt: datetime) -> QWidget:
         zeile = QWidget()

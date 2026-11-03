@@ -22,7 +22,7 @@ QUELLEN = (AUTOMATISCH, NUR_THUNDERBIRD, NUR_EVOLUTION)
 
 QUELLEN_NAMEN = {
     AUTOMATISCH: "Alles, was gefunden wird",
-    NUR_THUNDERBIRD: "Nur Thunderbird",
+    NUR_THUNDERBIRD: "Nur Thunderbird / Betterbird",
     NUR_EVOLUTION: "Nur Evolution / GNOME Kalender",
 }
 
@@ -153,9 +153,9 @@ def lies_kalender(quelle: str = AUTOMATISCH, profil_vorgabe: str = "") -> list:
 def _keine_quelle_text() -> str:
     return (
         "Es wurde kein Kalenderprogramm gefunden.\n\n"
-        "KALENDERBlick zeigt die Termine aus Thunderbird, Evolution oder "
-        "GNOME Kalender an. Eines davon muss eingerichtet sein und "
-        "mindestens einen Kalender enthalten.\n\n"
+        "KALENDERBlick zeigt die Termine aus Thunderbird, Betterbird, "
+        "Evolution oder GNOME Kalender an. Eines davon muss eingerichtet "
+        "sein und mindestens einen Kalender enthalten.\n\n"
         "Wer kein Kalenderprogramm nutzt, kann unter „Einstellungen → "
         "Kalenderquellen“ auch einen Kalender unmittelbar abonnieren - "
         "etwa über die private Adresse eines Google-Kalenders. Dort "

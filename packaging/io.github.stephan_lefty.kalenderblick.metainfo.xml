@@ -15,7 +15,7 @@
   <id>io.github.stephan_lefty.kalenderblick</id>
 
   <name>KALENDERBlick</name>
-  <summary>Termine aus Thunderbird, Evolution und GNOME Kalender auf dem Schreibtisch</summary>
+  <summary>Termine aus Thunderbird, Betterbird, Evolution und GNOME Kalender auf dem Schreibtisch</summary>
 
   <metadata_license>MIT</metadata_license>
   <project_license>MIT</project_license>
@@ -26,16 +26,23 @@
 
   <description>
     <p>
-      KALENDERBlick zeigt die Termine aus Thunderbird auf dem Schreibtisch
-      und in der Kontrollleiste an - ohne dass Thunderbird dafür geöffnet
-      sein muss und ohne dass irgendwo Zugangsdaten eingetragen werden.
-      Gelesen wird ausschließlich, geschrieben nie.
+      KALENDERBlick zeigt die Termine aus deinem Kalenderprogramm auf dem
+      Schreibtisch und in der Kontrollleiste an - ohne dass das Programm
+      dafür geöffnet sein muss. Gelesen wird ausschließlich, geschrieben
+      nie.
     </p>
+    <p>Gelesen werden:</p>
+    <ul>
+      <li>Thunderbird und Betterbird</li>
+      <li>Evolution und GNOME Kalender</li>
+      <li>Kalender, die man unmittelbar über ihre iCalendar-Adresse
+          abonniert - etwa die private Adresse eines Google-Kalenders</li>
+    </ul>
     <p>
-      Anders als andere Schreibtisch-Kalender greift KALENDERBlick direkt
-      auf Thunderbirds eigene Ablage zu. Damit erscheinen alle Kalender auf
-      einmal - auch rein örtlich gespeicherte - und zwar genau so, wie
-      Thunderbird sie kennt.
+      Online-Kalender wie Google, Nextcloud oder Proton bindet man am
+      besten im Kalenderprogramm ein; KALENDERBlick liest sie von dort
+      mit und braucht selbst keine Anmeldung. Wer gar kein
+      Kalenderprogramm einrichten möchte, abonniert den Kalender direkt.
     </p>
     <p>Für das Schreibtischfenster stehen vier Ansichten zur Wahl:</p>
     <ul>
@@ -46,9 +53,10 @@
     </ul>
     <p>
       Größe, Transparenz sowie helle oder dunkle Darstellung lassen sich
-      einstellen. Unter KDE Plasma kann das Fenster hinter allen anderen
-      liegen, aus der Fensterleiste herausgehalten, auf allen
-      Arbeitsflächen angezeigt und an einer festen Stelle verankert werden.
+      einstellen, einzelne Kalender abwählen. Unter KDE Plasma kann das
+      Fenster hinter allen anderen liegen, aus der Fensterleiste
+      herausgehalten, auf allen Arbeitsflächen angezeigt und an einer
+      festen Stelle verankert werden.
     </p>
   </description>
 
@@ -61,6 +69,10 @@
 
   <keywords>
     <keyword>Thunderbird</keyword>
+    <keyword>Betterbird</keyword>
+    <keyword>Evolution</keyword>
+    <keyword>GNOME Kalender</keyword>
+    <keyword>iCalendar</keyword>
     <keyword>Kalender</keyword>
     <keyword>Termine</keyword>
     <keyword>Schreibtisch</keyword>
@@ -97,6 +109,14 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.7.1" date="2026-11-03">
+      <description>
+        <p>
+          Betterbird wird im Programm nun auch benannt. Der Dialog zum
+          Abonnieren öffnet groß genug für seinen Erklärungstext.
+        </p>
+      </description>
+    </release>
     <release version="1.7.0" date="2026-11-03">
       <description>
         <p>

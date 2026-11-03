@@ -1,5 +1,24 @@
 # Änderungsprotokoll
 
+## 1.7.1 – 2026-11-03
+
+**Geändert**
+
+- Betterbird wird im Programm jetzt auch benannt: Die Quellenauswahl
+  heißt „Nur Thunderbird / Betterbird“, und in der Kalenderliste steht
+  beides nebeneinander - von außen ist nicht zu erkennen, welches der
+  beiden den gemeinsamen Profilordner angelegt hat.
+- Die Beschreibung für die Software-Verwaltungen war noch auf
+  Thunderbird allein zugeschnitten und nannte weder Evolution noch
+  GNOME Kalender noch die Abonnements. Jetzt vollständig.
+
+**Behoben**
+
+- Der Dialog zum Abonnieren öffnete zu klein: Der Erklärungstext wurde
+  von den Eingabefeldern überdeckt. Ein umbrechendes Textfeld meldet
+  seine Höhe zu klein, solange die Breite noch nicht feststeht - sie
+  wird jetzt vorab ausgerechnet.
+
 ## 1.7.0 – 2026-11-03
 
 **Neu**

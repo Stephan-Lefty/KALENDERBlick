@@ -6,9 +6,9 @@
 
 [Änderungsprotokoll](CHANGELOG.md) · [Anleitung mit Screenshots](src/kalenderblick/hilfe/anleitung.md)
 
-Zeigt die Termine aus **Thunderbird**, **Evolution** und **GNOME
-Kalender** auf dem Schreibtisch und in der Kontrollleiste – ohne eines
-davon offen zu haben. Gelesen wird ausschließlich, geschrieben nie.
+Zeigt die Termine aus **Thunderbird**, **Betterbird**, **Evolution** und
+**GNOME Kalender** auf dem Schreibtisch und in der Kontrollleiste – ohne
+eines davon offen zu haben. Gelesen wird ausschließlich, geschrieben nie.
 
 Online-Kalender wie Google, Nextcloud oder Proton bindet man am besten
 dort ein, wo sie hingehören – ins Kalenderprogramm; KALENDERBlick liest
@@ -31,7 +31,8 @@ einmal, auch rein örtliche, und zwar genau so, wie Thunderbird sie kennt.
 
 ## Wie es an die Daten kommt
 
-**Thunderbird** – SQLite-Dateien im Profil:
+**Thunderbird und Betterbird** – SQLite-Dateien im Profil (Betterbird
+nutzt denselben Ordner):
 
 ```
 ~/.thunderbird/<profil>/

@@ -10,17 +10,15 @@ keine echten Daten.
 
 ## 1. Voraussetzungen
 
-KALENDERBlick braucht **Thunderbird** oder **Evolution** mit mindestens
-einem eingerichteten Kalender - egal ob örtlich gespeichert oder
+KALENDERBlick braucht **Thunderbird**, **Betterbird**, **Evolution** oder
+**GNOME Kalender** mit mindestens einem eingerichteten Kalender - egal ob örtlich gespeichert oder
 abonniert (ICS, CalDAV). Keines von beiden muss beim Benutzen von
 KALENDERBlick laufen.
 
-Auch **Betterbird** wird gelesen; der Thunderbird-Abkömmling nutzt
-denselben Profilordner. Wer beide Programme einsetzt, kann sich die
-Termine auch zusammen anzeigen lassen.
-
-Auch **GNOME Kalender** wird gelesen: Er legt seine Termine im selben
-Datenserver ab wie Evolution.
+Betterbird nutzt denselben Profilordner wie Thunderbird, GNOME Kalender
+denselben Datenserver wie Evolution - beide werden deshalb
+mitgelesen, ohne dass etwas einzustellen wäre. Wer mehrere Programme
+einsetzt, kann sich die Termine auch zusammen anzeigen lassen.
 
 **Online-Kalender wie Google, Nextcloud oder Proton** bindet man am
 besten wie gewohnt in Thunderbird, Evolution oder GNOME Kalender ein -
