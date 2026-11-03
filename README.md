@@ -10,7 +10,10 @@ Zeigt die Termine aus **Thunderbird** auf dem Schreibtisch und in der
 Kontrollleiste – ohne Thunderbird offen zu haben und ohne Zugangsdaten
 irgendwo einzutragen. Gelesen wird ausschließlich, geschrieben nie.
 
-Gedacht für Manjaro mit KDE Plasma.
+Erprobt auf Arch/Manjaro mit KDE Plasma (Wayland), auf Debian mit
+Cinnamon (X11) und auf Debian 13 mit GNOME (Wayland). Den vollen
+Funktionsumfang gibt es unter KDE Plasma – was unter den anderen
+Arbeitsumgebungen anders ist, steht weiter unten.
 
 ## Warum nicht einfach Rainlendar oder ein Plasma-Widget?
 
@@ -103,24 +106,37 @@ Einrichten in Thunderbird: Kalender → Rechtsklick → Kalender erstellen →
 Im Netzwerk → URL einfügen. Die Abholfrequenz lässt sich dort wie bei jedem
 anderen entfernten Kalender einstellen; `kalenderblick kalender` zeigt sie an.
 
-## Wayland und KWin
+## Was die Arbeitsumgebung beisteuern muss
 
-Unter KDE Plasma/Wayland kann sich ein Fenster nicht selbst positionieren -
-dafür gibt es eine optionale Fensterregel mit Startposition und -größe:
-`packaging/kalenderblick.kwinrule`.
+Wie sich ein Fenster verhalten darf, entscheidet nicht das Programm,
+sondern die Arbeitsumgebung. Daher die Unterschiede:
 
-Einspielen: Systemeinstellungen → Fensterverwaltung → Fensterregeln →
-Regeln importieren → die Datei wählen.
+| | KDE Plasma (Wayland) | Cinnamon (X11) | GNOME (Wayland) |
+|---|---|---|---|
+| Leistensymbol | ✓ | ✓ | braucht `gnome-shell-extension-appindicator` |
+| Feste Position | ✓ über KWin-Regel | ✓ | nicht möglich |
+| Hinter allen Fenstern | ✓ | ✓ | nicht möglich |
+| Nicht in der Fensterleiste | ✓ | ✓ | nicht möglich |
+| Auf allen Arbeitsflächen | ✓ | – | – |
 
-Alles andere (unter anderem Fenstern bleiben, nie in Taskleiste oder
-Fensterwechsler, auf allen Arbeitsflächen zeigen) erzwingt KALENDERBlick
-selbst über ein kurzes KWin-Skript, sobald das Widget erscheint - ganz ohne
-Regel, und unabhängig davon, wie das Programm gestartet wurde.
+**KDE Plasma:** „Hinter anderen bleiben", „nicht in der Fensterleiste"
+und „auf allen Arbeitsflächen" setzt KALENDERBlick selbst über ein kurzes
+KWin-Skript durch, sobald das Widget erscheint - dafür ist nichts
+einzurichten. Wird „Position sperren" eingeschaltet, legt das Programm
+zusätzlich eine eigene KWin-Fensterregel an, damit die Stelle auch einen
+Neustart übersteht; unter Wayland ist das der einzige Weg dorthin.
+Fertig mitgeliefert, aber optional:
+`packaging/kalenderblick.kwinrule` (Startposition und -größe, einzuspielen
+über Systemeinstellungen → Fensterverwaltung → Fensterregeln → Importieren).
 
-Unter GNOME (Wayland) gibt es dafür keine Entsprechung - das
-Schreibtischfenster verhält sich dort wie ein gewöhnliches Fenster. Unter
-X11 (z. B. Cinnamon auf GuideOS) braucht es keine Regel, KALENDERBlick
-positioniert sich dort selbst.
+**Cinnamon/X11:** Hier darf sich das Fenster selbst positionieren, es
+braucht also keine Regel.
+
+**GNOME/Wayland:** Es gibt keine Schnittstelle für Fensterposition oder
+Stapelreihenfolge - das Schreibtischfenster verhält sich wie jedes andere
+Fenster. Das Leistensymbol erscheint nur mit der oben genannten
+Erweiterung; fehlt sie, weist KALENDERBlick beim Start darauf hin und
+öffnet stattdessen das Hauptfenster.
 
 ## Alle Befehle
 
@@ -138,12 +154,15 @@ positioniert sich dort selbst.
 
 Fertig und mit Tests abgedeckt. Die Oberfläche (`src/kalenderblick/gui/`)
 besteht aus Schreibtischfenster, Leistensymbol und einem gewöhnlichen
-Fenster mit zwei Reitern (Termine, Einstellungen), alle auf `TerminListe`
-aufgebaut. Vier Ansichten stehen fürs Schreibtischwidget zur Wahl: Uhr +
-Datum, nächste 3 Termine, nächste 7 Tage, nächste 14 Tage - das
-Hauptfenster zeigt beim Durchklicken 31 Tage. Größe, Transparenz und
-Dark-/Light-Mode lassen sich einstellen; eine Schritt-für-Schritt-Anleitung
-mit Screenshots steht in [Anleitung](src/kalenderblick/hilfe/anleitung.md).
+Fenster mit drei Reitern (Termine, Einstellungen, Hilfe), alle auf
+`TerminListe` aufgebaut. Vier Ansichten stehen fürs Schreibtischwidget
+zur Wahl: Uhr + Datum, nächste 3 Termine, nächste 7 Tage, nächste
+14 Tage - das Hauptfenster zeigt beim Durchklicken 31 Tage. Größe,
+Transparenz und Dark-/Light-Mode lassen sich einstellen.
+
+Die Schritt-für-Schritt-Anleitung mit Bildschirmfotos steht in
+[Anleitung](src/kalenderblick/hilfe/anleitung.md) - und liegt zusätzlich
+im Programm selbst unter „Hilfe", also auch ohne Internet lesbar.
 
 ## Lizenz
 
