@@ -166,6 +166,19 @@
 
 ## Entschieden
 
+- Andere Kalenderquellen als Thunderbird: **vorerst nicht** (03.11.2026).
+  Die Architektur gäbe es her - `Termin` ist generisch, die Oberfläche
+  ruft nur `lies_termine`, `lies_kalender` und `waehle_profil` auf, und
+  `dateutil.rrule` für Wiederholungen ist schon da. Ein Leser für lokale
+  `.ics`-Dateien (`python-icalendar` liegt in Arch wie Debian bereit)
+  würde Evolution/GNOME Kalender fast mit abdecken, weil der seine
+  Kalender ebenfalls als `.ics` ablegt - für DialOS-Nutzer ohne
+  Thunderbird wäre das der interessante Fall. Zurückgestellt, weil es
+  bisher niemanden gibt, der KALENDERBlick will und keinen Thunderbird
+  hat; es wäre Arbeit auf Vorrat. Nicht weiterverfolgt wird ohnehin:
+  ICS-Abos per URL (macht aus dem Anzeiger einen Kalender-Client) und
+  CalDAV direkt (bräuchte Zugangsdaten und bräche damit die Zusage
+  "ohne Zugangsdaten irgendwo einzutragen").
 - Feiertage/Ferien: kein eigener Code - läuft über einen zusätzlich in
   Thunderbird abonnierten Kalender (siehe README). Ein Picker oder
   automatisches Eintragen in `prefs.js` wurde erwogen und verworfen: hätte
