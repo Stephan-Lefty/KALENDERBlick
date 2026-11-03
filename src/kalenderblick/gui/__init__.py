@@ -47,6 +47,11 @@ def _app():
     app.setApplicationName("kalenderblick")
     app.setApplicationDisplayName("KALENDERBlick")
     app.setDesktopFileName("kalenderblick")   # Wayland: Fensterklasse für KWin-Regel
+    # Das Schreibtischwidget zählt als "Tool"-Fenster nicht zu Qts eigener
+    # "letztes Fenster"-Zählung. Ohne das hier würde allein das Schließen
+    # des Hauptfensters (X-Knopf) die ganze Anwendung beenden, obwohl das
+    # Leistensymbol und das Widget noch laufen sollen.
+    app.setQuitOnLastWindowClosed(False)
     return app
 
 
@@ -59,8 +64,14 @@ def starte_fenster() -> int:
         return 5
     from .fenster import HauptFenster
     app = _app()
-    fenster = HauptFenster()
+    # Nur das Fenster - kein Schreibtischwidget, auch wenn es in den
+    # Einstellungen eingeschaltet ist.
+    fenster = HauptFenster(verwalte_desktop=False)
     fenster.show()
+    # Ohne Leistensymbol gibt es hier keinen anderen Weg, die Anwendung
+    # wiederzubeleben - anders als in starte_alles() soll das Schließen
+    # dieses einzigen Fensters die Anwendung also doch beenden.
+    app.lastWindowClosed.connect(app.quit)
     return app.exec()
 
 
@@ -92,36 +103,19 @@ def starte_alles() -> int:
         _bereits_offen_hinweis()
         return 5
 
-    from PyQt6.QtWidgets import QApplication
-    from .. import config as konfig_modul
-    from .desktop import SchreibtischFenster
     from .fenster import HauptFenster
     from .symbol import KalenderSymbol
 
     app = _app()
 
-    hauptfenster = None
-
-    def fenster_umschalten():
-        if hauptfenster is None:
-            return
-        if hauptfenster.isVisible():
-            hauptfenster.hide()
-        else:
-            hauptfenster.zeige_termine_reiter()
-            hauptfenster.show()
-            hauptfenster.raise_()
-            hauptfenster.activateWindow()
-
-    desktop = None
-    if konfig_modul.laden().desktop_an:
-        desktop = SchreibtischFenster(hauptfenster_oeffnen_cb=fenster_umschalten)
-        desktop.show()
-
-    hauptfenster = HauptFenster(desktop_fenster=desktop)
+    # Das Hauptfenster verwaltet das Schreibtischwidget jetzt selbst
+    # (anlegen/entfernen, sobald der Schalter in den Einstellungen
+    # umgelegt wird) - kein Neustart mehr nötig, um es erscheinen oder
+    # verschwinden zu lassen.
+    hauptfenster = HauptFenster()
 
     symbol = KalenderSymbol(
-        fenster_zeigen_cb=fenster_umschalten,
+        fenster_zeigen_cb=hauptfenster.fenster_umschalten,
         beenden_cb=app.quit,
     )
     symbol.show()

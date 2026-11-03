@@ -36,6 +36,7 @@ class SchreibtischFenster(QWidget):
         self._env = umgebung()
         self._thread: LadeThread | None = None
         self._hauptfenster_oeffnen_cb = hauptfenster_oeffnen_cb
+        self._erste_ladung_fertig = False
 
         self._baue_fenster()
         self._wende_groesse_an()
@@ -142,7 +143,17 @@ class SchreibtischFenster(QWidget):
         if self._e.desktop.klick_oeffnet and self._hauptfenster_oeffnen_cb:
             self._hauptfenster_oeffnen_cb()
 
-    def _wende_groesse_an(self) -> None:
+    def _wende_groesse_an(self, zeige_neu: bool = False) -> None:
+        """zeige_neu=True erzwingt ein kurzes Aus-/Wiedereinblenden, damit
+        KWin eine zweite Größenänderung an einem schon sichtbaren Fenster
+        zuverlässig übernimmt (siehe _bei_fertig). Nur beim allerersten
+        Nachladen nötig, direkt nach dem Start - dort hat der Nutzer das
+        Widget noch nicht gezogen, es gibt also keine Position zu
+        verlieren. Bei jeder späteren Größenänderung (z. B. beim
+        Speichern der Einstellungen) NICHT neu einblenden, sonst springt
+        das längst an die richtige Stelle gezogene Widget unter Wayland
+        zurück in die Bildschirmmitte - Wayland kennt keine Methode, die
+        Position vorher auszulesen und hinterher wiederherzustellen."""
         breite_max, hoehe_max = GROESSEN.get(self._e.desktop.groesse, (340, 480))
         if self._e.desktop.ansicht == "uhr":
             # Keine feste Breite mehr - der Kasten soll nur knapp um
@@ -161,16 +172,11 @@ class SchreibtischFenster(QWidget):
             hoehe = self._inhalt_hoehe(hoehe_max)
         self._e.desktop.breite = breite
         self._e.desktop.hoehe = hoehe
-        war_sichtbar = self.isVisible()
-        if war_sichtbar:
-            # Unter Wayland übernimmt ein bereits angezeigtes, randloses
-            # "StaysOnBottom"-Fenster ein zweites resize() nicht zuverlässig -
-            # KWin bestätigt die neue Größe nicht. Kurz aus- und wieder
-            # einblenden erzwingt einen neuen configure/ack-Zyklus, bei dem
-            # die neue Größe diesmal ankommt.
+        neu_mappen = zeige_neu and self.isVisible()
+        if neu_mappen:
             self.hide()
         self.resize(breite, hoehe)
-        if war_sichtbar:
+        if neu_mappen:
             self.show()
         if self._env["x11"]:
             self.move(self._e.desktop.x, self._e.desktop.y)
@@ -219,8 +225,13 @@ class SchreibtischFenster(QWidget):
         self._fehler.setVisible(False)
         self._liste.setze_termine(termine)
         # sizeHint() braucht einen Zwischenstopp im Ereignisumlauf, um die
-        # gerade erst eingefügten Terminzeilen mitzuzählen.
-        QTimer.singleShot(0, self._wende_groesse_an)
+        # gerade erst eingefügten Terminzeilen mitzuzählen. Nur beim
+        # allerersten Laden nach dem Start neu einblenden (zeige_neu) -
+        # da hat der Nutzer noch nicht gezogen, spätere Aktualisierungen
+        # sollen die inzwischen gewählte Position nicht verwerfen.
+        zeige_neu = not self._erste_ladung_fertig
+        self._erste_ladung_fertig = True
+        QTimer.singleShot(0, lambda: self._wende_groesse_an(zeige_neu=zeige_neu))
         # Bei jeder Aktualisierung gleich mit erneuern - so erholt sich das
         # Widget von selbst, falls Plasma die Eigenschaften je zurücksetzt
         # (z. B. nach dem Ruhezustand), ohne dass man neu einstellen muss.

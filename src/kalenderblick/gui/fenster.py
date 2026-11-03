@@ -241,16 +241,17 @@ class _EinstellungenReiter(QWidget):
             kl.addWidget(self._kalender_uebersicht)
             layout.addWidget(kalender_box)
 
-        # --- Speichern ---
-        btn = QPushButton("Einstellungen speichern")
-        btn.clicked.connect(self._speichern)
-        layout.addWidget(btn)
+        layout.addStretch()
+
+        # "Einstellungen speichern" und die Statuszeile gehören nicht in
+        # dieses (scrollbare) Widget, sondern werden vom Hauptfenster
+        # darunter angeheftet - sonst verschwindet der Speichern-Knopf
+        # beim Scrollen und man sieht nicht, ob gespeichert wurde.
+        self._speichern_btn = QPushButton("Einstellungen speichern")
+        self._speichern_btn.clicked.connect(self._speichern)
 
         self._status = QLabel("")
         self._status.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(self._status)
-
-        layout.addStretch()
 
     def _speichern(self) -> None:
         e = konfig_modul.laden()
@@ -286,16 +287,27 @@ class _EinstellungenReiter(QWidget):
 
 
 class HauptFenster(QMainWindow):
-    """Normales Fenster mit zwei Reitern."""
+    """Normales Fenster mit zwei Reitern.
 
-    def __init__(self, desktop_fenster=None):
+    Verwaltet bei Bedarf (verwalte_desktop=True) auch das
+    Schreibtischwidget selbst: legt es an oder entfernt es live, sobald
+    der Schalter "Schreibtisch-Widget anzeigen" umgelegt wird - ohne
+    Neustart von KALENDERBlick.
+    """
+
+    def __init__(self, verwalte_desktop: bool = True):
         super().__init__()
-        self._desktop = desktop_fenster
+        self._verwalte_desktop = verwalte_desktop
+        self._desktop = None
         self._thread: LadeThread | None = None
         self._setze_eigenschaften()
         self._baue_reiter()
         self._starte_ladethread()
         e = konfig_modul.laden()
+        if self._verwalte_desktop and e.desktop_an:
+            from .desktop import SchreibtischFenster
+            self._desktop = SchreibtischFenster(hauptfenster_oeffnen_cb=self.fenster_umschalten)
+            self._desktop.show()
         self._timer = QTimer(self)
         self._timer.timeout.connect(self._starte_ladethread)
         self._timer.start(e.aktualisierung_minuten * 60 * 1000)
@@ -305,7 +317,7 @@ class HauptFenster(QMainWindow):
     def _setze_eigenschaften(self) -> None:
         self.setWindowTitle("KALENDERBlick")
         self.setWindowIcon(app_symbol())
-        self.resize(400, 560)
+        self.resize(400, 680)
         self.setMinimumSize(300, 400)
 
     def _baue_reiter(self) -> None:
@@ -316,17 +328,26 @@ class HauptFenster(QMainWindow):
         self._tabs.addTab(self._termine_liste, "Termine")
 
         self._kalender_uebersicht = _KalenderUebersicht()
-        einstellungen = _EinstellungenReiter(
+        self._einstellungen = _EinstellungenReiter(
             einstellungen_geaendert_cb=self._einstellungen_geaendert,
             kalender_uebersicht=self._kalender_uebersicht)
         # Mit "Klick öffnet", Autostart und den Kalenderquellen passt der
         # Inhalt bei kleinerer Fensterhöhe nicht mehr ohne zu quetschen -
-        # in einer Scroll-Fläche bleibt jede Zeile lesbar.
+        # in einer Scroll-Fläche bleibt jede Zeile lesbar. "Einstellungen
+        # speichern" und die Statuszeile bleiben außerhalb der Scroll-
+        # Fläche angeheftet, damit sie immer sichtbar sind.
         einstellungen_scroll = QScrollArea()
         einstellungen_scroll.setWidgetResizable(True)
         einstellungen_scroll.setFrameShape(QScrollArea.Shape.NoFrame)
-        einstellungen_scroll.setWidget(einstellungen)
-        self._tabs.addTab(einstellungen_scroll, "Einstellungen")
+        einstellungen_scroll.setWidget(self._einstellungen)
+
+        einstellungen_seite = QWidget()
+        el = QVBoxLayout(einstellungen_seite)
+        el.setContentsMargins(0, 0, 0, 0)
+        el.addWidget(einstellungen_scroll, stretch=1)
+        el.addWidget(self._einstellungen._speichern_btn)
+        el.addWidget(self._einstellungen._status)
+        self._tabs.addTab(einstellungen_seite, "Einstellungen")
 
         self._tabs.currentChanged.connect(self._reiter_gewechselt)
 
@@ -336,6 +357,16 @@ class HauptFenster(QMainWindow):
         """Beim Öffnen aus Widget oder Leistensymbol zählt der schnelle
         Blick auf die Termine - nicht der zuletzt offene Reiter."""
         self._tabs.setCurrentIndex(0)
+
+    def fenster_umschalten(self) -> None:
+        """Vom Leistensymbol und vom Schreibtischwidget aus aufgerufen."""
+        if self.isVisible():
+            self.hide()
+        else:
+            self.zeige_termine_reiter()
+            self.show()
+            self.raise_()
+            self.activateWindow()
 
     def _reiter_gewechselt(self, index: int) -> None:
         if index == 1:
@@ -353,8 +384,17 @@ class HauptFenster(QMainWindow):
         self._termine_liste.setze_termine(termine)
 
     def _einstellungen_geaendert(self) -> None:
-        if self._desktop:
-            self._desktop.aktualisiere_einstellungen()
         e = konfig_modul.laden()
+        if self._verwalte_desktop:
+            if e.desktop_an and self._desktop is None:
+                from .desktop import SchreibtischFenster
+                self._desktop = SchreibtischFenster(hauptfenster_oeffnen_cb=self.fenster_umschalten)
+                self._desktop.show()
+            elif not e.desktop_an and self._desktop is not None:
+                self._desktop.close()
+                self._desktop.deleteLater()
+                self._desktop = None
+            elif self._desktop is not None:
+                self._desktop.aktualisiere_einstellungen()
         self._timer.setInterval(e.aktualisierung_minuten * 60 * 1000)
         self._starte_ladethread()
