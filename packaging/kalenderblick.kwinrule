@@ -1,6 +1,7 @@
 [kalenderblick]
 Description=KALENDERBlick – Schreibtischfenster: Startposition und -größe
-wmclass=kalenderblick kalenderblick
+wmclass=kalenderblick
+wmclasscomplete=false
 wmclassmatch=1
 Title=KALENDERBlick
 titlematch=0

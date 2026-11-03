@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
 from .. import config as konfig_modul
 from ..config import GROESSEN
 from ..modell import Termin
+from . import position as positions_modul
 from .gemeinsam import (
     LadeThread, app_symbol, erscheinungsfarben, erzwinge_fenstereigenschaften, umgebung,
 )
@@ -258,7 +259,20 @@ class SchreibtischFenster(QWidget):
         self._wende_groesse_an()
         self._wende_transparenz_an()
         self._erzwinge_kwin_eigenschaften()
+        self._wende_positionssperre_an()
         self._timer.setInterval(self._e.aktualisierung_minuten * 60 * 1000)
+
+    def _wende_positionssperre_an(self) -> None:
+        """"Position sperren" heißt auch: über einen Neustart hinweg an
+        derselben Stelle - dafür sorgt eine eigene KWin-Regel (siehe
+        gui/position.py), da Wayland einer Anwendung weder die eigene
+        Position verrät noch erlaubt, sie selbst zu setzen."""
+        if self._e.desktop.position_fixiert:
+            position = positions_modul.lies_position(_FENSTERTITEL)
+            if position is not None:
+                positions_modul.speichere_feste_position(_FENSTERTITEL, *position)
+        else:
+            positions_modul.entferne_feste_position()
 
     # ------------------------------------------------------------------
 

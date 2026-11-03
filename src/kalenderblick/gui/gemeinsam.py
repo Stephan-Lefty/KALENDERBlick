@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import tempfile
 from pathlib import Path
@@ -15,6 +14,7 @@ from .. import bilder
 from .. import config as konfig_modul
 from .. import thunderbird
 from ..modell import Termin
+from .umgebung import umgebung  # noqa: F401 - re-exportiert für bestehende Importe
 
 
 class LadeThread(QThread):
@@ -131,21 +131,6 @@ def symbol_mit_naechstem_termin(termin: Termin | None) -> QIcon:
 
     maler.end()
     return QIcon(bild)
-
-
-def umgebung() -> dict:
-    """Erkennt X11/Wayland und KDE/GNOME/Cinnamon zur Laufzeit."""
-    session = os.environ.get("XDG_SESSION_TYPE", "").lower()
-    desktop = os.environ.get("XDG_CURRENT_DESKTOP", "").lower()
-    ist_wayland = session == "wayland" or bool(os.environ.get("WAYLAND_DISPLAY"))
-    ist_kde = "kde" in desktop or "plasma" in desktop
-    return {
-        "wayland": ist_wayland,
-        "x11": not ist_wayland,
-        "kde": ist_kde,
-        "gnome": "gnome" in desktop,
-        "cinnamon": "cinnamon" in desktop,
-    }
 
 
 def farbe_als_qt(hex_farbe: str) -> QColor:
