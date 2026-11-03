@@ -2,9 +2,8 @@
 
 ## Als Nächstes
 
-- [ ] Nichts Offenes gerade - Stephan testet die Installation nach
-      `Anleitung.md` frisch durch (03.11.2026), Rückmeldungen fließen
-      direkt als Fixes ein
+- [ ] Release v1.1.0 veröffentlichen (alles vorbereitet, Stand
+      03.11.2026): `gh release create v1.1.0 --title "1.1.0" --notes-file CHANGELOG.md`
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
@@ -35,6 +34,14 @@
         unter Wayland vom tatsächlichen Programmnamen abhängt)
       - "Einstellungen speichern" war beim Scrollen nicht immer sichtbar
         - jetzt außerhalb der Scroll-Fläche angeheftet
+      - In den Listenansichten war der Text unten abgeschnitten: die
+        Höhe war auf die "Größe"-Vorgabe gedeckelt (bei "Klein" 340 px,
+        gebraucht wurden ~870 px), begrenzt wird jetzt nur noch durch
+        den Bildschirmrand
+      - Nach einem Größenwechsel behielt das Fenster die Höhe der
+        vorherigen Einstellung (Stylesheet-Schriftgrößen rechnet Qt erst
+        nach einem Durchlauf der Ereignisschleife durch) - Messung jetzt
+        verzögert, am Gerät über Klein → Sehr groß → Klein nachgemessen
 
 - [x] GitHub-Repository angelegt und gepusht: github.com/Stephan-Lefty/KALENDERBlick
 - [x] Regulär per `pipx` installiert, Autostart und Startmenü-Eintrag
