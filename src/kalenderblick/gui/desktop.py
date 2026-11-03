@@ -250,7 +250,15 @@ class SchreibtischFenster(QWidget):
         self._erzwinge_kwin_eigenschaften()
 
     def _bei_fehler(self, meldung: str) -> None:
-        self._fehler.setText(meldung)
+        """Auf dem Schreibtisch nur die Kurzfassung.
+
+        Die ausführliche Erklärung samt Hinweis auf die Einstellungen
+        steht im Hauptfenster - hier würde sie einen Kasten über den
+        halben Bildschirm aufziehen, der obendrein dauerhaft im Weg
+        liegt.
+        """
+        self._fehler.setText(
+            meldung.split("\n")[0] + "\nNäheres im Fenster von KALENDERBlick.")
         self._fehler.setVisible(True)
 
     # ------------------------------------------------------------------
