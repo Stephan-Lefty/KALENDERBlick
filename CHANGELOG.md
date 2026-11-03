@@ -1,5 +1,23 @@
 # Änderungsprotokoll
 
+## 1.3.1 – 2026-11-03
+
+**Behoben**
+
+- Unter GNOME startete KALENDERBlick wortlos und blieb unsichtbar: Die
+  Arbeitsumgebung zeigt seit Fassung 3.26 keine Leistensymbole mehr von
+  sich aus an, und das Programm hat das nicht geprüft. Jetzt erscheint
+  ein Hinweis samt dem Befehl für die nötige Erweiterung
+  (`gnome-shell-extension-appindicator`); wäre sonst überhaupt nichts
+  zu sehen, öffnet sich stattdessen das Hauptfenster.
+
+**Geändert**
+
+- Die Anleitung hat einen eigenen Abschnitt zu GNOME bekommen: die
+  Erweiterung für das Leistensymbol und die Tatsache, dass sich unter
+  GNOME/Wayland weder eine feste Position noch „hinter allen Fenstern"
+  durchsetzen lässt.
+
 ## 1.3.0 – 2026-11-03
 
 **Neu**

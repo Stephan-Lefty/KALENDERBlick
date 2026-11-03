@@ -97,6 +97,16 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.3.1" date="2026-11-03">
+      <description>
+        <p>
+          Unter GNOME startete das Programm wortlos und blieb unsichtbar,
+          weil die Arbeitsumgebung von sich aus keine Leistensymbole mehr
+          anzeigt. Jetzt erscheint ein Hinweis mit dem Befehl für die
+          nötige Erweiterung.
+        </p>
+      </description>
+    </release>
     <release version="1.3.0" date="2026-11-03">
       <description>
         <p>
