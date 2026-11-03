@@ -8,7 +8,8 @@ from pathlib import Path
 
 from PyQt6.QtCore import Qt, QTimer, QUrl
 from PyQt6.QtGui import (
-    QDesktopServices, QImage, QPalette, QTextCursor, QTextDocument,
+    QDesktopServices, QImage, QPalette, QTextCursor, QTextDocument, QTextLength,
+    QTextTable,
 )
 from PyQt6.QtWidgets import (
     QApplication,
@@ -31,6 +32,7 @@ from PyQt6.QtWidgets import (
     QSpinBox,
     QTabWidget,
     QTextBrowser,
+    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
@@ -162,8 +164,15 @@ class _HilfeReiter(QWidget):
 
         self._browser = QTextBrowser()
         self._browser.setOpenExternalLinks(True)
+        # Die Anleitung enthält breite Tabellen; ohne Vorgabe richtet Qt
+        # deren Spalten nach dem Inhalt aus und das Fenster müsste
+        # seitwärts gescrollt werden.
+        self._browser.setLineWrapMode(QTextEdit.LineWrapMode.WidgetWidth)
+        self._browser.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self._browser.document().setDefaultStyleSheet(
-            "h1 { font-size: 15pt; } h2 { font-size: 13pt; } h3 { font-size: 11pt; }")
+            "h1 { font-size: 15pt; } h2 { font-size: 13pt; } h3 { font-size: 11pt; }"
+            "table { width: 100%; }")
         layout.addWidget(self._browser, stretch=1)
 
         self._browser_btn = QPushButton("Anleitung im Browser öffnen")
@@ -217,11 +226,35 @@ class _HilfeReiter(QWidget):
                 QTextDocument.ResourceType.ImageResource,
                 QUrl(f"bilder/{pfad.name}"), bild)
 
+        self._tabellen_einpassen()
+
         # Nach dem Nachreichen der Bilder muss der Textfluss neu berechnet
         # werden, sonst bleiben die Stellen auf Höhe null stehen.
         self._browser.document().markContentsDirty(
             0, self._browser.document().characterCount())
         self._browser.moveCursor(QTextCursor.MoveOperation.Start)
+
+    def _tabellen_einpassen(self) -> None:
+        """Tabellen auf die Fensterbreite zwingen.
+
+        Die Anleitung erklärt die Einstellungen in Tabellen. Qt richtet
+        deren Spalten nach dem Inhalt aus, wodurch das Dokument breiter
+        wird als das Fenster - und weil seitliches Scrollen hier
+        abgeschaltet ist, wäre der Rest schlicht abgeschnitten. Eine
+        Vorgabe von 100 % im Stylesheet genügt bei Markdown nicht, die
+        Tabellen müssen einzeln umformatiert werden.
+        """
+        for rahmen in self._browser.document().rootFrame().childFrames():
+            if not isinstance(rahmen, QTextTable):
+                continue
+            format_ = rahmen.format().toTableFormat()
+            format_.setWidth(QTextLength(QTextLength.Type.PercentageLength, 100))
+            # Ohne eigene Spaltenbreiten behält Qt die inhaltsbedingten bei.
+            spalten = rahmen.columns()
+            format_.setColumnWidthConstraints(
+                [QTextLength(QTextLength.Type.PercentageLength, 100 / spalten)
+                 for _ in range(spalten)])
+            rahmen.setFormat(format_)
 
 
 class _KalenderUebersicht(QScrollArea):
@@ -234,6 +267,8 @@ class _KalenderUebersicht(QScrollArea):
         self.setWidgetResizable(True)
         self.setFrameShape(QScrollArea.Shape.NoFrame)
         self.setMinimumHeight(180)
+        # Seitwärts scrollen ist mühsam - lieber umbrechen lassen.
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self._nach_aenderung = nach_aenderung
         self._haken: dict = {}
         self._inhalt = QWidget()
@@ -752,8 +787,17 @@ class HauptFenster(QMainWindow):
     def _setze_eigenschaften(self) -> None:
         self.setWindowTitle("KALENDERBlick")
         self.setWindowIcon(app_symbol())
-        self.resize(400, 680)
-        self.setMinimumSize(300, 400)
+        # Am Gerät ausprobiert: Bei dieser Breite kommen alle drei Reiter
+        # ohne seitliches Scrollen aus - die Einstellungen brauchen rund
+        # 380 Punkte, die Bildschirmfotos in der Hilfe 360, dazu die
+        # Tabellen der Anleitung.
+        self.resize(780, 700)
+        # Nicht schmaler: Die Anleitung enthält unteilbare Begriffe wie
+        # „gnome-shell-extension-appindicator“ in Tabellenzellen; darunter
+        # bricht nichts mehr um und der Text würde seitlich abgeschnitten,
+        # weil waagerechtes Scrollen abgeschaltet ist. Am Gerät gemessen:
+        # Die Hilfe braucht 655 Punkte, das Fenster also gut 690.
+        self.setMinimumSize(700, 400)
 
     def _baue_reiter(self) -> None:
         self._tabs = QTabWidget()
@@ -790,6 +834,8 @@ class HauptFenster(QMainWindow):
         einstellungen_scroll = QScrollArea()
         einstellungen_scroll.setWidgetResizable(True)
         einstellungen_scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+        einstellungen_scroll.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         einstellungen_scroll.setWidget(self._einstellungen)
 
         einstellungen_seite = QWidget()

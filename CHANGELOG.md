@@ -14,6 +14,13 @@
 
 **Behoben**
 
+- Kein seitliches Scrollen mehr. In allen drei Reitern war das Fenster
+  schmaler als sein Inhalt, besonders in der Hilfe: Qt richtet die
+  Spalten von Tabellen nach deren Inhalt aus, wodurch die Anleitung
+  breiter wurde als das Fenster. Die Tabellen werden jetzt auf die
+  Fensterbreite gezwungen, waagerechtes Scrollen ist abgeschaltet, und
+  das Fenster öffnet in einer Größe, in der alle drei Reiter
+  hineinpassen (780 × 700, mindestens 700 breit).
 - Der Dialog zum Abonnieren öffnete zu klein: Der Erklärungstext wurde
   von den Eingabefeldern überdeckt. Ein umbrechendes Textfeld meldet
   seine Höhe zu klein, solange die Breite noch nicht feststeht - sie
