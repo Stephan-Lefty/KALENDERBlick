@@ -49,6 +49,9 @@ class Einstellungen:
     tage_zurueck: int = 0
     aktualisierung_minuten: int = 10
     versteckte_kalender: list[str] = field(default_factory=list)
+    # Abonnierte Kalender: je Eintrag name/url/farbe/abgeschaltet.
+    # Die Adressen sind Geheimnisse - siehe speichern().
+    ics_abos: list[dict] = field(default_factory=list)
     schriftgroesse: int = 10
     vergangene_zeigen: bool = False
     symbol_an: bool = True
@@ -79,6 +82,13 @@ class Einstellungen:
         vorlaeufig = ziel.with_suffix(".json.neu")
         vorlaeufig.write_text(
             json.dumps(asdict(self), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        # Abonnierte Adressen sind Geheimnisse: Wer sie kennt, sieht den
+        # Kalender. Deshalb bleibt die Datei dem eigenen Benutzer
+        # vorbehalten.
+        try:
+            os.chmod(vorlaeufig, 0o600)
+        except OSError:
+            pass
         os.replace(vorlaeufig, ziel)
         return ziel
 

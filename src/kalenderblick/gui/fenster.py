@@ -11,14 +11,19 @@ from PyQt6.QtGui import (
     QDesktopServices, QImage, QPalette, QTextCursor, QTextDocument,
 )
 from PyQt6.QtWidgets import (
+    QApplication,
     QCheckBox,
     QComboBox,
+    QDialog,
+    QDialogButtonBox,
     QFileDialog,
     QFormLayout,
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QMainWindow,
+    QMessageBox,
     QPushButton,
     QScrollArea,
     QSlider,
@@ -32,7 +37,7 @@ from PyQt6.QtWidgets import (
 
 from .. import (
     NAME, __version__, autostart, config as konfig_modul,
-    hilfe as hilfe_modul, quellen, thunderbird,
+    hilfe as hilfe_modul, ics_abo, quellen, thunderbird,
 )
 from ..config import ANSICHTEN, GROESSEN
 from ..modell import Termin
@@ -55,6 +60,76 @@ _GROESSE_NAMEN = {
 
 
 _REPO = "https://github.com/Stephan-Lefty/KALENDERBlick"
+
+
+class _AboDialog(QDialog):
+    """Name und Adresse eines zu abonnierenden Kalenders erfragen."""
+
+    def __init__(self, parent=None, abo=None):
+        super().__init__(parent)
+        self.setWindowTitle("Kalender abonnieren")
+        self.setMinimumWidth(460)
+
+        layout = QVBoxLayout(self)
+
+        erklaerung = QLabel(
+            "Viele Anbieter stellen zu jedem Kalender eine Adresse im "
+            "iCalendar-Format bereit - bei Google etwa die „private "
+            "Adresse im iCal-Format“ in den Kalendereinstellungen.\n\n"
+            "<b>Diese Adresse ist ein Geheimnis:</b> Wer sie kennt, kann "
+            "den Kalender lesen. Sie wird nur für dich lesbar gespeichert.")
+        erklaerung.setWordWrap(True)
+        erklaerung.setTextFormat(Qt.TextFormat.RichText)
+        layout.addWidget(erklaerung)
+
+        formular = QFormLayout()
+        self._name = QLineEdit(abo.name if abo else "")
+        self._name.setPlaceholderText("z. B. Google – Privat")
+        formular.addRow("Name:", self._name)
+
+        self._url = QLineEdit(abo.url if abo else "")
+        self._url.setPlaceholderText("https://…/basic.ics")
+        formular.addRow("Adresse:", self._url)
+        layout.addLayout(formular)
+
+        self._hinweis = QLabel("")
+        self._hinweis.setWordWrap(True)
+        layout.addWidget(self._hinweis)
+
+        knoepfe = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        knoepfe.button(QDialogButtonBox.StandardButton.Ok).setText("Abonnieren")
+        knoepfe.button(QDialogButtonBox.StandardButton.Cancel).setText("Abbrechen")
+        knoepfe.accepted.connect(self._pruefen_und_schliessen)
+        knoepfe.rejected.connect(self.reject)
+        layout.addWidget(knoepfe)
+
+    def _pruefen_und_schliessen(self) -> None:
+        """Gleich ausprobieren, statt später eine leere Liste zu zeigen."""
+        name = self._name.text().strip()
+        url = self._url.text().strip()
+        if not url:
+            self._hinweis.setStyleSheet("color: #e66100;")
+            self._hinweis.setText("Bitte eine Adresse angeben.")
+            return
+
+        self._hinweis.setStyleSheet("color: palette(mid);")
+        self._hinweis.setText("Wird abgerufen …")
+        QApplication.processEvents()
+
+        probe = ics_abo.Abo(name=name or "Abonnierter Kalender", url=url)
+        try:
+            ics_abo.hole(probe, erzwingen=True)
+        except Exception as fehler:
+            self._hinweis.setStyleSheet("color: #e66100;")
+            self._hinweis.setText(str(fehler))
+            return
+        self.accept()
+
+    def abo(self):
+        return ics_abo.Abo(
+            name=self._name.text().strip() or "Abonnierter Kalender",
+            url=self._url.text().strip())
 
 
 class _HilfeReiter(QWidget):
@@ -142,11 +217,12 @@ class _KalenderUebersicht(QScrollArea):
     im Reiter "Einstellungen". Ein eigener Reiter "Kalender" neben
     "Termine" ließ vermuten, dahinter verberge sich eine Kalenderansicht."""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, nach_aenderung=None):
         super().__init__(parent)
         self.setWidgetResizable(True)
         self.setFrameShape(QScrollArea.Shape.NoFrame)
         self.setMinimumHeight(180)
+        self._nach_aenderung = nach_aenderung
         self._haken: dict = {}
         self._inhalt = QWidget()
         self._layout = QVBoxLayout(self._inhalt)
@@ -198,8 +274,12 @@ class _KalenderUebersicht(QScrollArea):
     @staticmethod
     def _herkunft(kal) -> str:
         """Aus welchem Programm der Kalender stammt."""
-        return "Evolution" if type(kal).__module__.endswith("evolution") \
-            else "Thunderbird"
+        modul = type(kal).__module__
+        if modul.endswith("ics_abo"):
+            return "Abonniert"
+        if modul.endswith("evolution"):
+            return "Evolution / GNOME Kalender"
+        return "Thunderbird"
 
     def _zeile(self, kal, versteckt: set, jetzt: datetime) -> QWidget:
         zeile = QWidget()
@@ -240,7 +320,32 @@ class _KalenderUebersicht(QScrollArea):
         hinweis = "\n".join(teile)
         for widget in (zeile, haken, name, punkt):
             widget.setToolTip(hinweis)
+
+        # Abonnierte Kalender hat der Nutzer selbst eingetragen - also
+        # soll er sie auch wieder loswerden können.
+        if self._herkunft(kal) == "Abonniert":
+            weg = QPushButton("✕")
+            weg.setFixedWidth(28)
+            weg.setToolTip("Dieses Abonnement entfernen.")
+            weg.clicked.connect(lambda _, k=kal: self._abo_entfernen(k))
+            wl.addWidget(weg)
         return zeile
+
+    def _abo_entfernen(self, abo) -> None:
+        antwort = QMessageBox.question(
+            self, "Abonnement entfernen",
+            f"„{abo.name}“ nicht mehr abonnieren?\n\n"
+            "Der Kalender beim Anbieter bleibt unberührt - nur "
+            "KALENDERBlick ruft ihn nicht mehr ab.")
+        if antwort != QMessageBox.StandardButton.Yes:
+            return
+        e = konfig_modul.laden()
+        e.ics_abos = [roh for roh in e.ics_abos if roh.get("url") != abo.url]
+        e.speichern()
+        ics_abo.entferne_abschrift(abo)
+        self.lade()
+        if self._nach_aenderung:
+            self._nach_aenderung()
 
     def versteckte_kalender(self) -> list[str]:
         """Die abgewählten Kalender - oder None, wenn noch nichts geladen
@@ -442,6 +547,15 @@ class _EinstellungenReiter(QWidget):
             knoepfe.addWidget(self._profil_zuruecksetzen)
             kl.addLayout(knoepfe)
 
+            abonnieren = QPushButton("Kalender abonnieren …")
+            abonnieren.setToolTip(
+                "Einen Kalender unmittelbar über seine Internetadresse\n"
+                "einbinden - etwa die private Adresse eines Google-\n"
+                "Kalenders. Nützlich, wenn gar kein Kalenderprogramm\n"
+                "eingerichtet ist.")
+            abonnieren.clicked.connect(self._abo_hinzufuegen)
+            kl.addWidget(abonnieren)
+
             kl.addWidget(self._kalender_uebersicht)
             layout.addWidget(kalender_box)
             self._zeige_profil()
@@ -472,6 +586,24 @@ class _EinstellungenReiter(QWidget):
             f"{farbe.blue()}, 170);")
         self._version.setTextInteractionFlags(
             Qt.TextInteractionFlag.TextSelectableByMouse)
+
+    def _abo_hinzufuegen(self) -> None:
+        dialog = _AboDialog(self)
+        if dialog.exec() != QDialog.DialogCode.Accepted:
+            return
+        neu = dialog.abo()
+        e = konfig_modul.laden()
+        if any(roh.get("url") == neu.url for roh in e.ics_abos):
+            self._status.setStyleSheet("color: #e66100;")
+            self._status.setText("Dieser Kalender ist bereits abonniert.")
+            return
+        e.ics_abos = list(e.ics_abos) + [neu.als_dict()]
+        e.speichern()
+        self._kalender_uebersicht.lade()
+        self._status.setStyleSheet("color: #2ec27e;")
+        self._status.setText(f"„{neu.name}“ abonniert.")
+        if self._cb:
+            self._cb()
 
     def _zeige_profil(self) -> None:
         """Woher die Termine kommen - und ob das eine eigene Angabe ist."""
@@ -630,7 +762,8 @@ class HauptFenster(QMainWindow):
         tl.addWidget(self._termine_liste, stretch=1)
         self._tabs.addTab(termine_seite, "Termine")
 
-        self._kalender_uebersicht = _KalenderUebersicht()
+        self._kalender_uebersicht = _KalenderUebersicht(
+            nach_aenderung=self._einstellungen_geaendert)
         self._einstellungen = _EinstellungenReiter(
             einstellungen_geaendert_cb=self._einstellungen_geaendert,
             kalender_uebersicht=self._kalender_uebersicht)

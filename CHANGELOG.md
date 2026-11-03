@@ -1,5 +1,33 @@
 # Änderungsprotokoll
 
+## 1.7.0 – 2026-11-03
+
+**Neu**
+
+- **Kalender unmittelbar abonnieren.** Unter „Einstellungen →
+  Kalenderquellen“ lässt sich ein Kalender über seine Adresse im
+  iCalendar-Format einbinden - etwa die „private Adresse“ eines
+  Google-Kalenders. Damit ist KALENDERBlick auch ohne jedes
+  Kalenderprogramm brauchbar. Abgerufen wird höchstens alle 30 Minuten;
+  fällt das Netz aus, bleibt die zuletzt geholte Fassung stehen, statt
+  dass alle Termine verschwinden.
+- **GNOME Kalender** wird gelesen. Er legt seine Termine im selben
+  Datenserver ab wie Evolution und war damit faktisch schon seit 1.6.0
+  dabei - jetzt ist es auch so benannt.
+
+**Zur Sicherheit**
+
+Eine abonnierte Adresse ist ein Geheimnis: Wer sie kennt, kann den
+Kalender lesen. Sie steht in der Konfigurationsdatei, die deshalb nur
+noch für den eigenen Benutzer lesbar angelegt wird (0600). In Kennungen
+und Dateinamen taucht sie nicht auf.
+
+**Intern**
+
+- Die iCalendar-Auswertung liegt jetzt in einem gemeinsamen Modul
+  (`ical.py`), das sich Evolution und Abonnements teilen; `evolution.py`
+  schrumpfte dadurch von 295 auf 181 Zeilen.
+
 ## 1.6.0 – 2026-11-03
 
 **Neu**

@@ -15,7 +15,7 @@
   <id>io.github.stephan_lefty.kalenderblick</id>
 
   <name>KALENDERBlick</name>
-  <summary>Termine aus Thunderbird und Evolution auf dem Schreibtisch und in der Kontrollleiste</summary>
+  <summary>Termine aus Thunderbird, Evolution und GNOME Kalender auf dem Schreibtisch</summary>
 
   <metadata_license>MIT</metadata_license>
   <project_license>MIT</project_license>
@@ -97,6 +97,16 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.7.0" date="2026-11-03">
+      <description>
+        <p>
+          Kalender lassen sich jetzt auch unmittelbar über ihre
+          iCalendar-Adresse abonnieren - damit ist KALENDERBlick auch ohne
+          Kalenderprogramm brauchbar. GNOME Kalender wird ebenfalls
+          gelesen.
+        </p>
+      </description>
+    </release>
     <release version="1.6.0" date="2026-11-03">
       <description>
         <p>

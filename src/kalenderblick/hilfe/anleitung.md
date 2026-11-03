@@ -19,10 +19,20 @@ Auch **Betterbird** wird gelesen; der Thunderbird-Abkömmling nutzt
 denselben Profilordner. Wer beide Programme einsetzt, kann sich die
 Termine auch zusammen anzeigen lassen.
 
-**Online-Kalender wie Google, Nextcloud oder Proton** bindet man nicht in
-KALENDERBlick ein, sondern wie gewohnt in Thunderbird oder Evolution -
-von dort werden sie automatisch mitgelesen. KALENDERBlick braucht damit
-nie Zugangsdaten.
+Auch **GNOME Kalender** wird gelesen: Er legt seine Termine im selben
+Datenserver ab wie Evolution.
+
+**Online-Kalender wie Google, Nextcloud oder Proton** bindet man am
+besten wie gewohnt in Thunderbird, Evolution oder GNOME Kalender ein -
+von dort werden sie automatisch mitgelesen, ohne dass KALENDERBlick je
+Zugangsdaten bräuchte.
+
+Wer gar kein Kalenderprogramm einrichten möchte, kann einen Kalender
+unter „Einstellungen → Kalenderquellen“ auch **unmittelbar abonnieren**:
+Viele Anbieter stellen dafür eine Adresse im iCalendar-Format bereit, bei
+Google etwa die „private Adresse im iCal-Format“. Bedenke dabei: Eine
+solche Adresse ist ein Geheimnis - wer sie kennt, kann den Kalender
+lesen. Sie wird nur für dich lesbar gespeichert.
 
 ## 2. Installieren
 
@@ -169,6 +179,12 @@ will, hält den Mauszeiger darüber: Art, Abholfrequenz, wann zuletzt
 geschrieben wurde und ob der Kalender abgeschaltet oder nur lesbar ist.
 Praktisch zum Nachsehen, warum ein Kalender nicht wie erwartet
 auftaucht.
+
+Mit **„Kalender abonnieren …“** lässt sich ein Kalender unmittelbar über
+seine Internetadresse einbinden - ohne Kalenderprogramm. KALENDERBlick
+ruft ihn dann selbst ab, höchstens alle 30 Minuten. Abonnierte Kalender
+erscheinen in der Liste unter „Abonniert“ und lassen sich dort mit dem
+Kreuz wieder entfernen; beim Anbieter ändert sich dadurch nichts.
 
 Jeder Kalender hat ein **Ankreuzfeld**: Abgewählte erscheinen weder im
 Schreibtischwidget noch in der Terminliste. Das betrifft ausschließlich

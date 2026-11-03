@@ -20,31 +20,13 @@ from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
 from pathlib import Path
 
+from . import ical
+from .ical import BibliothekFehlt  # noqa: F401 - für bestehende Importe
 from .modell import Termin
-
-try:
-    from icalendar import Calendar as _ICalendar
-except ImportError:                                    # pragma: no cover
-    _ICalendar = None                                  # type: ignore[assignment]
-
-try:
-    from dateutil.rrule import rrulestr
-except ImportError:                                    # pragma: no cover
-    rrulestr = None                                    # type: ignore[assignment]
 
 
 class EvolutionFehler(Exception):
     """Daten nicht auffindbar oder unlesbar."""
-
-
-class BibliothekFehlt(EvolutionFehler):
-    """Das Paket „icalendar“ ist nicht da.
-
-    Eigene Ausnahme, damit sie nicht zusammen mit kaputten Einzeldateien
-    abgefangen wird: Ein unbrauchbarer Termin darf übersprungen werden,
-    eine fehlende Bibliothek niemals - sonst stünde da ein Kalender ganz
-    ohne Termine, und niemand erführe den Grund.
-    """
 
 
 # ----------------------------------------------------------------------
@@ -158,8 +140,7 @@ def lies_kalender() -> list[Kalender]:
         except OSError:
             pass
         try:
-            eintrag.anzahl = sum(
-                1 for teil in _oeffne(datei).walk("VEVENT"))
+            eintrag.anzahl = ical.zaehle_termine(datei)
         except BibliothekFehlt:
             raise
         except Exception:
@@ -172,97 +153,6 @@ def lies_kalender() -> list[Kalender]:
 # ----------------------------------------------------------------------
 #  Termine lesen
 # ----------------------------------------------------------------------
-
-def _oeffne(datei: Path):
-    if _ICalendar is None:
-        raise BibliothekFehlt(
-            "Zum Lesen der Evolution-Kalender fehlt das Paket „icalendar“.\n"
-            "Installation: pamac install python-icalendar  (Arch/Manjaro)\n"
-            "              sudo apt install python3-icalendar  (Debian)")
-    try:
-        return _ICalendar.from_ical(datei.read_bytes())
-    except (OSError, ValueError) as fehler:
-        raise EvolutionFehler(f"{datei.name} ist unlesbar: {fehler}") from fehler
-
-
-def _als_naiv(wert):
-    """Zeitpunkte auf Ortszeit ohne Zeitzone bringen.
-
-    Der Rest des Programms rechnet durchgehend mit naiven Zeitpunkten in
-    Ortszeit; iCalendar liefert je nach Eintrag mit oder ohne Zone.
-    """
-    if isinstance(wert, datetime):
-        if wert.tzinfo is not None:
-            return wert.astimezone().replace(tzinfo=None)
-        return wert
-    # reines Datum = ganztägiger Termin
-    return datetime.combine(wert, time(0, 0))
-
-
-def _termine_eines_eintrags(teil, kalender: Kalender,
-                            von: datetime, bis: datetime) -> list[Termin]:
-    beginn_feld = teil.get("DTSTART")
-    if beginn_feld is None:
-        return []
-    beginn = _als_naiv(beginn_feld.dt)
-    ganztags = not isinstance(beginn_feld.dt, datetime)
-
-    ende_feld = teil.get("DTEND")
-    if ende_feld is not None:
-        ende = _als_naiv(ende_feld.dt)
-    else:
-        dauer_feld = teil.get("DURATION")
-        ende = beginn + (dauer_feld.dt if dauer_feld is not None else timedelta())
-    if ende < beginn:
-        ende = beginn
-    dauer = ende - beginn
-
-    titel = str(teil.get("SUMMARY", "")).strip() or "(ohne Titel)"
-    ort = str(teil.get("LOCATION", "")).strip()
-    kennung = str(teil.get("UID", ""))
-
-    zeitpunkte = _entfalte(teil, beginn, von, bis)
-
-    return [
-        Termin(
-            titel=titel,
-            beginn=zeitpunkt,
-            ende=zeitpunkt + dauer,
-            ganztags=ganztags,
-            ort=ort,
-            kalender_id=kalender.kennung,
-            kalender_name=kalender.name,
-            farbe=kalender.farbe,
-            kennung=f"{kennung}@{zeitpunkt.isoformat()}",
-        )
-        for zeitpunkt in zeitpunkte
-    ]
-
-
-def _entfalte(teil, beginn: datetime, von: datetime, bis: datetime) -> list[datetime]:
-    """Wiederholungen auflösen, Ausnahmen abziehen."""
-    regel = teil.get("RRULE")
-    if regel is None or rrulestr is None:
-        return [beginn] if von <= beginn <= bis else []
-
-    try:
-        satz = rrulestr(regel.to_ical().decode(), dtstart=beginn, forceset=True)
-    except (ValueError, TypeError):
-        return [beginn] if von <= beginn <= bis else []
-
-    ausnahmen = set()
-    exdate = teil.get("EXDATE")
-    for eintrag in (exdate if isinstance(exdate, list) else [exdate] if exdate else []):
-        for wert in getattr(eintrag, "dts", []):
-            ausnahmen.add(_als_naiv(wert.dt).replace(microsecond=0))
-
-    try:
-        zeitpunkte = list(satz.between(von, bis, inc=True))
-    except (ValueError, TypeError):
-        return [beginn] if von <= beginn <= bis else []
-
-    return [z for z in zeitpunkte if z.replace(microsecond=0) not in ausnahmen]
-
 
 def lies_termine(tage_voraus: int = 14, tage_zurueck: int = 0,
                  versteckt: list[str] | None = None) -> list[Termin]:
@@ -278,17 +168,13 @@ def lies_termine(tage_voraus: int = 14, tage_zurueck: int = 0,
         if kalender.datei is None:
             continue
         try:
-            kal = _oeffne(kalender.datei)
+            daten = ical.oeffne_datei(kalender.datei)
         except BibliothekFehlt:
             raise
-        except EvolutionFehler:
+        except ical.ICalFehler:
             continue
-        for teil in kal.walk("VEVENT"):
-            try:
-                alle += _termine_eines_eintrags(teil, kalender, von, bis)
-            except Exception:
-                # Ein kaputter Eintrag soll nicht die ganze Liste kippen.
-                continue
+        alle += ical.termine_aus(daten, kalender.kennung, kalender.name,
+                                 kalender.farbe, von, bis)
 
     gefiltert = [t for t in alle if von <= t.beginn <= bis]
     gefiltert.sort(key=lambda t: (t.beginn, not t.ganztags, t.titel))

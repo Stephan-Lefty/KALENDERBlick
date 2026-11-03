@@ -6,14 +6,15 @@
 
 [Änderungsprotokoll](CHANGELOG.md) · [Anleitung mit Screenshots](src/kalenderblick/hilfe/anleitung.md)
 
-Zeigt die Termine aus **Thunderbird** oder **Evolution** auf dem
-Schreibtisch und in der Kontrollleiste – ohne eines der beiden offen zu
-haben und ohne Zugangsdaten irgendwo einzutragen. Gelesen wird
-ausschließlich, geschrieben nie.
+Zeigt die Termine aus **Thunderbird**, **Evolution** und **GNOME
+Kalender** auf dem Schreibtisch und in der Kontrollleiste – ohne eines
+davon offen zu haben. Gelesen wird ausschließlich, geschrieben nie.
 
-Online-Kalender wie Google, Nextcloud oder Proton bindet man dort ein,
-wo sie hingehören – ins Kalenderprogramm. KALENDERBlick liest sie von
-dort mit und braucht selbst nie eine Anmeldung.
+Online-Kalender wie Google, Nextcloud oder Proton bindet man am besten
+dort ein, wo sie hingehören – ins Kalenderprogramm; KALENDERBlick liest
+sie von dort mit und braucht selbst keine Anmeldung. Wer gar kein
+Kalenderprogramm einrichten will, kann einen Kalender auch unmittelbar
+über seine iCalendar-Adresse abonnieren.
 
 Erprobt auf Arch/Manjaro mit KDE Plasma (Wayland), auf Debian mit
 Cinnamon (X11) und auf Debian 13 mit GNOME (Wayland). Den vollen
@@ -40,12 +41,18 @@ einmal, auch rein örtliche, und zwar genau so, wie Thunderbird sie kennt.
         └── …
 ```
 
-**Evolution** – iCalendar-Dateien, die der Data Server ablegt:
+**Evolution und GNOME Kalender** – iCalendar-Dateien, die der Data
+Server ablegt (GNOME Kalender nutzt denselben Dienst):
 
 ```
 ~/.local/share/evolution/calendar/<kennung>/calendar.ics
 ~/.config/evolution/sources/<kennung>.source     Name, Farbe, Art
 ```
+
+**Abonnierte Kalender** – von KALENDERBlick selbst abgerufen, höchstens
+alle 30 Minuten, mit Abschrift unter `~/.local/state/kalenderblick/abos/`.
+Die Adresse ist ein Geheimnis und steht in der Konfigurationsdatei, die
+deshalb nur für den eigenen Benutzer lesbar angelegt wird.
 
 * Zeiten stehen als Mikrosekunden seit 1970 in UTC, die Zeitzone getrennt
   daneben – deshalb wird mit Zeitzone gerechnet und erst zur Anzeige auf

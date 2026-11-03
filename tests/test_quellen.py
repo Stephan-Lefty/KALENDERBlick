@@ -63,8 +63,9 @@ def test_ohne_jede_quelle_kommt_ein_sprechender_fehler(heim):
     with pytest.raises(quellen.KeineQuelle) as fehler:
         quellen.lies_termine()
     text = str(fehler.value)
-    assert "Thunderbird oder Evolution" in text
+    assert "Thunderbird" in text and "Evolution" in text
     assert "Kalenderquellen" in text
+    assert "abonnieren" in text, "der Ausweg ohne Kalenderprogramm fehlt"
 
 
 def test_termine_aus_evolution_allein(nur_evolution):
