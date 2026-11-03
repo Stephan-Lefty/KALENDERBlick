@@ -384,3 +384,48 @@ def test_fehlermeldung_bei_verschwundenem_profil(heim):
 
     assert "/gibt/es/nicht" in text, "der betroffene Pfad gehört genannt"
     assert "Kalenderquellen" in text
+
+
+def test_gesperrte_datei_bremst_nicht(profil):
+    """Läuft Thunderbird, sind seine Dateien dauerhaft gesperrt. Früher
+    wartete jeder Zugriff zwei Sekunden auf eine Sperre, die nie
+    aufgeht, und wich dann ohnehin auf eine Kopie aus - das Umschalten
+    zwischen den Reitern dauerte dadurch mehrere Sekunden."""
+    import sqlite3
+    import time
+
+    from kalenderblick import thunderbird
+
+    datei = thunderbird.kalenderdateien(profil.profil)[0]
+    sperre = sqlite3.connect(datei)
+    sperre.execute("BEGIN EXCLUSIVE")
+    try:
+        start = time.perf_counter()
+        kalender = thunderbird.lies_kalender(profil.profil)
+        gebraucht = time.perf_counter() - start
+    finally:
+        sperre.rollback()
+        sperre.close()
+
+    assert gebraucht < 1.0, f"{gebraucht:.1f} s trotz gesperrter Datei - wird gewartet?"
+    assert kalender, "trotz Sperre müssen die Kalender über die Kopie lesbar sein"
+
+
+def test_termine_trotz_gesperrter_datei_vollstaendig(profil):
+    """Das Ausweichen auf die Kopie darf keine Termine verschlucken."""
+    import sqlite3
+
+    from kalenderblick import thunderbird
+
+    ohne_sperre = thunderbird.lies_termine(profil.profil, tage_voraus=14)
+
+    datei = thunderbird.kalenderdateien(profil.profil)[0]
+    sperre = sqlite3.connect(datei)
+    sperre.execute("BEGIN EXCLUSIVE")
+    try:
+        mit_sperre = thunderbird.lies_termine(profil.profil, tage_voraus=14)
+    finally:
+        sperre.rollback()
+        sperre.close()
+
+    assert {t.titel for t in mit_sperre} == {t.titel for t in ohne_sperre}

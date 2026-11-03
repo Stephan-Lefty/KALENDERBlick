@@ -39,6 +39,15 @@ FLAG_WIEDERHOLUNG = 16
 
 STANDARDFARBEN = ["#3584e4", "#2ec27e", "#e5a50a", "#c061cb", "#e66100", "#c01c28"]
 
+# Gar nicht auf eine gesperrte Datei warten, sondern sofort auf die
+# Kopie ausweichen. Läuft Thunderbird, sind seine Dateien dauerhaft
+# gesperrt - Warten hilft dann nie, es verzögert nur. Gemessen am
+# echten Profil: mit zwei Sekunden Wartezeit brauchte die Kalenderliste
+# 6000 ms und die Profilsuche 4000 ms, ohne Wartezeit 21 ms und 2 ms.
+# Das Lesen einer Kopie kostet 1-19 ms, ist also kein Nachteil; und
+# eine freie Datei liegt ohnehin binnen einer Millisekunde offen.
+SPERRE_WARTEN = 0
+
 
 class ThunderbirdFehler(Exception):
     """Profil oder Daten nicht auffindbar."""
@@ -149,7 +158,8 @@ def termin_anzahl(profil: Path) -> int:
     gesamt = 0
     for datei in kalenderdateien(profil):
         try:
-            verbindung = sqlite3.connect(f"file:{datei}?mode=ro", uri=True, timeout=2)
+            verbindung = sqlite3.connect(f"file:{datei}?mode=ro", uri=True,
+                                         timeout=SPERRE_WARTEN)
             try:
                 gesamt += verbindung.execute("SELECT count(*) FROM cal_events").fetchone()[0]
             finally:
@@ -655,7 +665,8 @@ def _verteilung(datei: Path) -> dict[str, int]:
                 pfad = quelle
             else:
                 kopie = pfad = _kopiere(datei)
-            verbindung = sqlite3.connect(f"file:{pfad}?mode=ro", uri=True, timeout=3)
+            verbindung = sqlite3.connect(f"file:{pfad}?mode=ro", uri=True,
+                                         timeout=SPERRE_WARTEN)
             try:
                 zeilen = verbindung.execute(
                     "SELECT cal_id, count(*) FROM cal_events GROUP BY cal_id").fetchall()

@@ -1,5 +1,17 @@
 # Änderungsprotokoll
 
+## 1.5.1 – 2026-11-03
+
+**Behoben**
+
+- Das Umschalten zwischen den Reitern dauerte mehrere Sekunden. Ursache:
+  Läuft Thunderbird, hält es seine Kalenderdateien dauerhaft gesperrt.
+  KALENDERBlick wartete bei jedem Zugriff zwei Sekunden auf diese Sperre
+  und zog danach ohnehin eine Kopie - die binnen Millisekunden lesbar
+  ist. Jetzt wird sofort auf die Kopie ausgewichen. Am echten Profil
+  gemessen: die Kalenderliste von 6000 ms auf 21 ms, die Profilsuche von
+  4000 ms auf 2 ms, bei unveränderten Ergebnissen.
+
 ## 1.5.0 – 2026-11-03
 
 **Neu**
