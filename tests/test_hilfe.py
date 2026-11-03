@@ -1,5 +1,7 @@
 """Die Anleitung muss im Paket liegen, sonst ist die Hilfe im Programm leer."""
 
+import pytest
+
 from kalenderblick import hilfe
 
 
@@ -37,3 +39,13 @@ def test_img_elemente_werden_zu_markdown_bildern():
     text = hilfe.anleitung_text()
     assert "<img" not in text, "es blieben <img>-Elemente stehen, Qt zeigt sie nicht"
     assert text.count("](bilder/") >= 10
+
+
+def test_kein_html_block_bleibt_stehen():
+    """HTML-Blöcke zeigt Qt in Markdown als Rohtext an - der mittig
+    gesetzte Logo-Block am Anfang muss deshalb entfernt sein."""
+    text = hilfe.anleitung_text()
+    assert "<p align" not in text
+    assert "assets/" not in text, \
+        "Verweis auf assets/ - liegt nicht im Paket, bliebe eine leere Stelle"
+

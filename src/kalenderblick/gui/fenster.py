@@ -7,7 +7,9 @@ from datetime import datetime
 from pathlib import Path
 
 from PyQt6.QtCore import Qt, QTimer, QUrl
-from PyQt6.QtGui import QDesktopServices, QImage, QTextCursor, QTextDocument
+from PyQt6.QtGui import (
+    QDesktopServices, QImage, QPalette, QTextCursor, QTextDocument,
+)
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -106,6 +108,11 @@ class _HilfeReiter(QWidget):
             self._browser_btn.setEnabled(False)
             return
 
+        # Reihenfolge ist wesentlich: setMarkdown() räumt das Dokument leer
+        # und wirft dabei auch zuvor eingehängte Bilder weg. Erst den Text
+        # setzen, dann die Bilder - andersherum bleiben nur leere Stellen.
+        self._browser.setMarkdown(text)
+
         # Die Bildschirmfotos sind breiter als dieses Fenster. Qt verkleinert
         # nicht von selbst, deshalb werden sie vorab verkleinert eingehängt.
         for pfad in hilfe_modul.bild_dateien():
@@ -119,7 +126,10 @@ class _HilfeReiter(QWidget):
                 QTextDocument.ResourceType.ImageResource,
                 QUrl(f"bilder/{pfad.name}"), bild)
 
-        self._browser.setMarkdown(text)
+        # Nach dem Nachreichen der Bilder muss der Textfluss neu berechnet
+        # werden, sonst bleiben die Stellen auf Höhe null stehen.
+        self._browser.document().markContentsDirty(
+            0, self._browser.document().characterCount())
         self._browser.moveCursor(QTextCursor.MoveOperation.Start)
 
 
@@ -347,7 +357,14 @@ class _EinstellungenReiter(QWidget):
         # der Kommandozeile nachsehen, ein Bildschirmfoto genügt.
         self._version = QLabel(f"{NAME} {__version__}")
         self._version.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._version.setStyleSheet("font-size: 8pt; color: palette(mid);")
+        # Gedämpft, aber lesbar: "palette(mid)" ist eine Rahmenfarbe und
+        # je nach Thema kaum vom Hintergrund zu unterscheiden. Stattdessen
+        # die echte Textfarbe mit etwas weniger Deckkraft - das wirkt in
+        # hellen wie dunklen Themen.
+        farbe = self.palette().color(QPalette.ColorRole.WindowText)
+        self._version.setStyleSheet(
+            f"font-size: 9pt; color: rgba({farbe.red()}, {farbe.green()}, "
+            f"{farbe.blue()}, 170);")
         self._version.setTextInteractionFlags(
             Qt.TextInteractionFlag.TextSelectableByMouse)
 

@@ -20,9 +20,16 @@ BILDER = ORDNER / "bilder"
 # umgeschrieben.
 _IMG = re.compile(r'<img\s+src="([^"]+)"[^>]*alt="([^"]*)"[^>]*/?>')
 
+# Die Anleitung beginnt mit dem mittig gesetzten Programmsymbol. Dieser
+# Block muss weg, bevor der Rest umgeschrieben wird: Qt zeigt HTML-Blöcke
+# in Markdown unverändert als Rohtext an, und das Symbol liegt zudem unter
+# assets/ im Projektordner, nicht im Paket - es wäre also ohnehin nur eine
+# leere Stelle. Im Programm steht das Symbol ja ohnehin schon im Fenster.
+_LOGOBLOCK = re.compile(r'<p align="center">\s*<img[^>]*>\s*</p>\s*', re.IGNORECASE)
+
 
 def _als_markdown_bilder(text: str) -> str:
-    return _IMG.sub(r'![\2](\1)', text)
+    return _IMG.sub(r'![\2](\1)', _LOGOBLOCK.sub("", text))
 
 
 def anleitung_datei() -> Path | None:
