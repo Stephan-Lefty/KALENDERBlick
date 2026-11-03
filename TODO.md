@@ -2,11 +2,14 @@
 
 ## Als Nächstes
 
-- [ ] Nichts Offenes. v1.3.0 ist veröffentlicht (03.11.2026). Unter
-      Cinnamon/X11 (GuideOS) wurde bisher nur die Installation geprüft;
-      das Leistensymbol dort noch einmal ansehen, sobald die Fassung
-      1.3.0 eingespielt ist - der Unschärfe-Fehler ist behoben, aber am
-      Gerät noch nicht gegengeprüft.
+- [ ] Bildschirmfotos der Anleitung neu aufnehmen (Stand 03.11.2026
+      veraltet): Sie zeigen die Einstellungen von vor 1.6.0 - ohne
+      Terminquelle, Kalenderauswahl, Abonnieren-Knopf und Jahreszahl,
+      dazu in der alten Fenstergröße. Vorgehen wie am 03.11.2026: Fake-
+      Profil über `tests/hilfe.py` bauen, `profil` in den Einstellungen
+      darauf zeigen lassen, mit `spectacle -f -b -n -o` aufnehmen und
+      über die KWin-Fensterliste zuschneiden. Niemals mit echten
+      Terminen.
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
