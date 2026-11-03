@@ -13,6 +13,11 @@
   Ankreuzfeld. Abgewählte erscheinen weder im Schreibtischwidget noch in
   der Terminliste - im Kalenderprogramm selbst bleibt alles unverändert
   sichtbar. Bisher ging das nur auf der Kommandozeile.
+- **Übersichtlichere Kalenderliste.** Statt eines Rahmens mit vier
+  Angaben je Kalender nun eine Zeile mit Farbpunkt und Namen, nach
+  Herkunft gruppiert; die Einzelheiten stehen im Tooltip. Bei zwölf
+  Kalendern schrumpft die Liste damit von rund 1500 auf knapp 400
+  Bildpunkte Höhe.
 
 **Anmerkung zu Online-Kalendern**
 

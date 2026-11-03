@@ -163,8 +163,10 @@ Unterordner namens `calendar-data` enthält - wird eine Ebene zu hoch
 gewählt, findet KALENDERBlick ihn meist trotzdem. „Wieder automatisch
 suchen“ verwirft die eigene Angabe.
 
-Darunter steht jeder gefundene Kalender mit Art, Abholfrequenz, wann
-zuletzt geschrieben wurde und ob er abgeschaltet oder nur lesbar ist.
+Darunter stehen alle gefundenen Kalender, nach Herkunft gruppiert -
+eine Zeile je Kalender mit Farbpunkt und Namen. Wer es genauer wissen
+will, hält den Mauszeiger darüber: Art, Abholfrequenz, wann zuletzt
+geschrieben wurde und ob der Kalender abgeschaltet oder nur lesbar ist.
 Praktisch zum Nachsehen, warum ein Kalender nicht wie erwartet
 auftaucht.
 

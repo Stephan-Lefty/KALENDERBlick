@@ -176,33 +176,71 @@ class _KalenderUebersicht(QScrollArea):
         jetzt = datetime.now()
         versteckt = set(konfig_modul.laden().versteckte_kalender)
         self._haken = {}
-        for kal in sorted(kalender, key=lambda k: (not k.ist_fern, k.name.lower())):
-            box = QGroupBox(kal.name or kal.kennung[:16])
-            # Ein abwählbarer Rahmen je Kalender: Wer viele Kalender führt,
-            # will selten alle auf dem Schreibtisch sehen. Abgewählte landen
-            # beim Speichern unter „versteckte_kalender“.
-            box.setCheckable(True)
-            box.setChecked(kal.kennung not in versteckt)
-            box.setToolTip("Abwählen, um diesen Kalender nicht mehr "
-                           "anzuzeigen.")
-            self._haken[kal.kennung] = box
-            bl = QFormLayout(box)
-            bl.addRow("Art:", QLabel(kal.art))
-            bl.addRow("Abholung:", QLabel(kal.abholtext()))
-            if kal.zuletzt_geschrieben:
-                alter_min = int((jetzt - kal.zuletzt_geschrieben).total_seconds() // 60)
-                wann = kal.zuletzt_geschrieben.strftime("%d.%m.%Y %H:%M")
-                bl.addRow("Zuletzt:", QLabel(f"{wann}  (vor {alter_min} min)"))
-            kennzeichen = []
-            if kal.abgeschaltet:
-                kennzeichen.append("abgeschaltet")
-            if kal.nur_lesen:
-                kennzeichen.append("nur lesen")
-            if kennzeichen:
-                bl.addRow("Status:", QLabel(", ".join(kennzeichen)))
-            self._layout.addWidget(box)
+
+        # Eine Zeile je Kalender statt eines Rahmens mit vier Angaben:
+        # Bei einem Dutzend Kalendern wäre das sonst eine endlose Rolle.
+        # Die Einzelheiten stehen im Tooltip.
+        nach_herkunft: dict[str, list] = {}
+        for kal in kalender:
+            nach_herkunft.setdefault(self._herkunft(kal), []).append(kal)
+
+        for herkunft in sorted(nach_herkunft):
+            gruppe = QGroupBox(herkunft)
+            gl = QVBoxLayout(gruppe)
+            gl.setSpacing(2)
+            for kal in sorted(nach_herkunft[herkunft],
+                              key=lambda k: (not k.ist_fern, k.name.lower())):
+                gl.addWidget(self._zeile(kal, versteckt, jetzt))
+            self._layout.addWidget(gruppe)
 
         self._layout.addStretch()
+
+    @staticmethod
+    def _herkunft(kal) -> str:
+        """Aus welchem Programm der Kalender stammt."""
+        return "Evolution" if type(kal).__module__.endswith("evolution") \
+            else "Thunderbird"
+
+    def _zeile(self, kal, versteckt: set, jetzt: datetime) -> QWidget:
+        zeile = QWidget()
+        wl = QHBoxLayout(zeile)
+        wl.setContentsMargins(2, 1, 2, 1)
+        wl.setSpacing(6)
+
+        haken = QCheckBox()
+        haken.setChecked(kal.kennung not in versteckt)
+        self._haken[kal.kennung] = haken
+        wl.addWidget(haken)
+
+        punkt = QLabel("●")
+        punkt.setStyleSheet(f"color: {kal.farbe}; font-size: 13pt;")
+        wl.addWidget(punkt)
+
+        name = QLabel(kal.name or kal.kennung[:16])
+        if kal.abgeschaltet:
+            name.setStyleSheet("font-style: italic; color: palette(mid);")
+        wl.addWidget(name, stretch=1)
+
+        # Einzelheiten nur auf Nachfrage - sonst wird die Liste wieder lang.
+        teile = [f"Art: {kal.art}", kal.abholtext()]
+        if getattr(kal, "zuletzt_geschrieben", None):
+            alter = int((jetzt - kal.zuletzt_geschrieben).total_seconds() // 60)
+            teile.append(kal.zuletzt_geschrieben.strftime("Zuletzt: %d.%m.%Y %H:%M")
+                         + f"  (vor {alter} min)")
+        kennzeichen = []
+        if kal.abgeschaltet:
+            kennzeichen.append("im Kalenderprogramm abgeschaltet")
+        if getattr(kal, "nur_lesen", False):
+            kennzeichen.append("nur lesen")
+        if kennzeichen:
+            teile.append(", ".join(kennzeichen))
+        teile.append("")
+        teile.append("Haken entfernen, um diesen Kalender in KALENDERBlick\n"
+                     "auszublenden - im Kalenderprogramm bleibt er sichtbar.")
+        hinweis = "\n".join(teile)
+        for widget in (zeile, haken, name, punkt):
+            widget.setToolTip(hinweis)
+        return zeile
 
     def versteckte_kalender(self) -> list[str]:
         """Die abgewählten Kalender - oder None, wenn noch nichts geladen
