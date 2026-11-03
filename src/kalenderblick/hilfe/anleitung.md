@@ -39,7 +39,7 @@ Bei jeder Fassung liegt unter
 entfällt damit:
 
 ```bash
-sudo apt install ./kalenderblick_1.1.1_all.deb
+sudo apt install ./kalenderblick_*_all.deb
 ```
 
 Wichtig ist `apt install ./…` und **nicht** `dpkg -i`: Nur apt holt die
@@ -211,12 +211,33 @@ KALENDERBlick selbst über ein kurzes KWin-Skript, sobald das Widget
 erscheint. Dafür ist keine Regel nötig, das funktioniert unabhängig davon,
 wie das Programm gestartet wurde.
 
-Unter GNOME (Wayland) gibt es dafür keine Entsprechung - das
-Schreibtischfenster verhält sich dort wie ein gewöhnliches Fenster. Unter
-X11 (z. B. Cinnamon) braucht es keine Regel, KALENDERBlick positioniert
-sich dort selbst.
+Unter X11 (z. B. Cinnamon) braucht es keine Regel, KALENDERBlick
+positioniert sich dort selbst.
 
-## 10. Wenn etwas nicht passt
+## 10. GNOME
+
+Unter GNOME gelten zwei Einschränkungen, beide liegen an der
+Arbeitsumgebung selbst und nicht an KALENDERBlick:
+
+**Das Leistensymbol braucht eine Erweiterung.** GNOME zeigt seit Fassung
+3.26 keine Leistensymbole mehr von sich aus an. Abhilfe:
+
+```bash
+sudo apt install gnome-shell-extension-appindicator
+```
+
+Danach einmal ab- und wieder anmelden. Ohne diese Erweiterung läuft
+KALENDERBlick zwar, aber ohne Symbol in der Leiste - dann erscheint beim
+Start stattdessen das Hauptfenster, damit überhaupt etwas zu sehen ist.
+
+**Das Schreibtischwidget ist ein gewöhnliches Fenster.** Unter
+GNOME/Wayland lässt sich weder eine feste Position noch „hinter allen
+anderen Fenstern" durchsetzen - dafür gibt es dort keine Schnittstelle.
+Das Widget verhält sich deshalb wie jedes andere Fenster. „Position
+sperren" verhindert immerhin das versehentliche Verschieben innerhalb
+einer Sitzung.
+
+## 11. Wenn etwas nicht passt
 
 | Problem | Lösung |
 |---|---|
@@ -224,4 +245,5 @@ sich dort selbst.
 | Falsches Profil gefunden | Pfad von Hand eintragen: `kalenderblick einstellungen --profil /pfad/zum/profil`. |
 | Abonnierter Kalender hinkt hinterher | Das ist Thunderbirds eigene Abholfrequenz, nicht KALENDERBlicks Aktualisierung - siehe „Kalenderquellen" in den Einstellungen. |
 | Widget bleibt unsichtbar | In den Einstellungen „Schreibtisch-Widget anzeigen" einschalten und KALENDERBlick neu starten. |
+| Kein Symbol in der Leiste (GNOME) | Die Erweiterung `gnome-shell-extension-appindicator` installieren und sich einmal neu anmelden - siehe Abschnitt 10. |
 | Zweites Fenster lässt sich nicht öffnen | KALENDERBlick läuft schon - ein Blick ins Leistensymbol genügt, ein zweiter gleichzeitiger Start ist bewusst gesperrt. |

@@ -41,6 +41,19 @@ def _bereits_offen_hinweis() -> None:
           "doppeln.", file=sys.stderr)
 
 
+def _kein_leistensymbol_hinweis() -> None:
+    print(
+        "Diese Arbeitsumgebung zeigt keine Leistensymbole an.\n"
+        "Unter GNOME ist dafür die Erweiterung \"AppIndicator and "
+        "KStatusNotifierItem Support\" nötig:\n"
+        "  sudo apt install gnome-shell-extension-appindicator\n"
+        "Danach einmal abmelden und wieder anmelden.\n"
+        "KALENDERBlick läuft auch ohne - nur eben ohne Symbol in der "
+        "Leiste.",
+        file=sys.stderr,
+    )
+
+
 def _app():
     from PyQt6.QtWidgets import QApplication
     app = QApplication.instance() or QApplication(sys.argv)
@@ -103,6 +116,8 @@ def starte_alles() -> int:
         _bereits_offen_hinweis()
         return 5
 
+    from PyQt6.QtWidgets import QSystemTrayIcon
+    from .. import config as konfig_modul
     from .fenster import HauptFenster
     from .symbol import KalenderSymbol
 
@@ -113,6 +128,20 @@ def starte_alles() -> int:
     # umgelegt wird) - kein Neustart mehr nötig, um es erscheinen oder
     # verschwinden zu lassen.
     hauptfenster = HauptFenster()
+
+    # GNOME bringt seit Fassung 3.26 keine Unterstützung für
+    # Leistensymbole mehr mit; ohne die Erweiterung "AppIndicator and
+    # KStatusNotifierItem Support" erscheint schlicht nichts. Ohne diese
+    # Prüfung liefe das Programm dann unsichtbar weiter - für jemanden,
+    # der nicht im Terminal nachsieht, einfach kaputt.
+    if not QSystemTrayIcon.isSystemTrayAvailable():
+        _kein_leistensymbol_hinweis()
+        if not konfig_modul.laden().desktop_an:
+            # Ohne Leistensymbol und ohne Schreibtischwidget wäre gar
+            # nichts zu sehen - dann wenigstens das Fenster zeigen.
+            hauptfenster.zeige_termine_reiter()
+            hauptfenster.show()
+        return app.exec()
 
     symbol = KalenderSymbol(
         fenster_zeigen_cb=hauptfenster.fenster_umschalten,

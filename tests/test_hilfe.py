@@ -13,8 +13,8 @@ def test_anleitung_wird_mitgeliefert():
 def test_anleitung_hat_inhalt():
     text = hilfe.anleitung_text()
     assert text is not None
-    assert "## 1. Voraussetzungen" in text
-    assert "## 10. Wenn etwas nicht passt" in text
+    assert "Voraussetzungen" in text
+    assert "Wenn etwas nicht passt" in text
 
 
 def test_bildschirmfotos_werden_mitgeliefert():
