@@ -35,7 +35,42 @@ Danach stehen zwei Befehle zur Verfügung: `kalenderblick` (Kommandozeile)
 und `kalenderblick-fenster` (nur das Hauptfenster, ohne Leistensymbol und
 Schreibtischwidget).
 
-## 3. Kurz prüfen, ob das Profil gefunden wird
+## 3. Menüeintrag und Symbole einrichten
+
+`pipx install` legt nur die beiden Befehle an, keinen Eintrag im
+Anwendungsmenü und keine Symbole. Das holt dieser Block nach - einmalig,
+unabhängig vom Betriebssystem:
+
+```bash
+VENV=$(pipx environment --value PIPX_LOCAL_VENVS)/kalenderblick
+BILDER=$(find "$VENV" -type d -name bilder | head -1)
+
+for groesse in 16 22 24 32 48 64 128 256 512; do
+  mkdir -p ~/.local/share/icons/hicolor/${groesse}x${groesse}/apps
+  cp "$BILDER/symbol-${groesse}.png" \
+     ~/.local/share/icons/hicolor/${groesse}x${groesse}/apps/kalenderblick.png
+done
+
+mkdir -p ~/.local/share/applications
+cat > ~/.local/share/applications/kalenderblick.desktop << 'EOF'
+[Desktop Entry]
+Type=Application
+Name=KALENDERBlick
+Comment=Thunderbirds Termine auf dem Schreibtisch und in der Kontrollleiste
+Exec=kalenderblick start
+Icon=kalenderblick
+Terminal=false
+Categories=Office;Calendar;Utility;
+StartupNotify=false
+EOF
+update-desktop-database ~/.local/share/applications
+```
+
+Danach steht „KALENDERBlick" im Anwendungsmenü - meist ohne Neustart von
+Plasma. Wer lieber das fertige `.deb`- oder Arch-Paket nutzt (siehe
+`packaging/`), bekommt Menüeintrag und Symbole automatisch mit.
+
+## 4. Kurz prüfen, ob das Profil gefunden wird
 
 ```bash
 kalenderblick pruefen
@@ -49,7 +84,7 @@ sein. Wenn hier nichts oder das falsche Profil erscheint, lässt sich ein
 bestimmtes Profil von Hand vorgeben (siehe Abschnitt „Kalenderquellen"
 weiter unten).
 
-## 4. Starten
+## 5. Starten
 
 ```bash
 kalenderblick start
@@ -66,7 +101,7 @@ Reiter „Termine":
 Die Termine der nächsten 31 Tage, nach Tagen gruppiert. Farbpunkt zeigt
 den Kalender, bei örtlichen Terminen steht der Ort direkt darunter.
 
-## 5. Einstellungen
+## 6. Einstellungen
 
 Zweiter Reiter im Hauptfenster:
 
@@ -102,7 +137,7 @@ Mit „Einstellungen speichern" werden alle Änderungen sofort auf das
 laufende Schreibtischwidget angewendet - ohne Neustart, mit Ausnahme von
 „Schreibtisch-Widget anzeigen" selbst.
 
-## 6. Die vier Ansichten des Schreibtischwidgets
+## 7. Die vier Ansichten des Schreibtischwidgets
 
 Jede Ansicht gibt es in Dark- und Light-Mode. Der Kasten ist bei allen
 Ansichten nur so groß wie der Inhalt - bei wenig Terminen bleibt kein
@@ -132,7 +167,7 @@ sich mit dem Mausrad durchscrollen:
 <img src="docs/bilder/14tage_dunkel.png" alt="Nächste 14 Tage, Dark-Mode" width="300">
 <img src="docs/bilder/14tage_hell.png" alt="Nächste 14 Tage, Light-Mode" width="300">
 
-## 7. Das Widget auf dem Schreibtisch
+## 8. Das Widget auf dem Schreibtisch
 
 Nach dem Einschalten liegt das Widget hinter allen anderen Fenstern. Zum
 Verschieben an eine freie Stelle klicken und ziehen (falls „Position
@@ -140,7 +175,7 @@ sperren" aus ist) - unter KDE/Plasma rastet es dabei wie jedes andere
 Fenster am Bildschirmrand ein. Danach „Position sperren" einschalten,
 damit es nicht mehr versehentlich verrutscht.
 
-## 8. Wayland und KWin (nur KDE Plasma)
+## 9. Wayland und KWin (nur KDE Plasma)
 
 Unter Wayland kann sich ein Fenster nicht selbst positionieren - dafür
 gibt es eine optionale Fensterregel mit Startposition und -größe:
@@ -160,7 +195,7 @@ Schreibtischfenster verhält sich dort wie ein gewöhnliches Fenster. Unter
 X11 (z. B. Cinnamon) braucht es keine Regel, KALENDERBlick positioniert
 sich dort selbst.
 
-## 9. Wenn etwas nicht passt
+## 10. Wenn etwas nicht passt
 
 | Problem | Lösung |
 |---|---|
