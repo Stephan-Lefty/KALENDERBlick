@@ -323,3 +323,34 @@ def test_exdate_in_utc_wird_auch_erkannt(heim):
             if t.titel == "Jour fixe"}
     assert ausgelassen not in tage
     assert len(tage) == 3
+
+
+# ----------------------------------------------------------------------
+#  Profilorte: Flatpak, Snap, Betterbird
+
+def test_profilwurzeln_decken_die_ueblichen_orte_ab(heim):
+    from kalenderblick import thunderbird
+
+    orte = {str(p) for p in thunderbird.profil_wurzeln()}
+    erwartet = {
+        str(heim / ".thunderbird"),
+        str(heim / ".var" / "app" / "org.mozilla.Thunderbird" / ".thunderbird"),
+        str(heim / ".var" / "app" / "eu.betterbird.Betterbird" / ".thunderbird"),
+        str(heim / "snap" / "thunderbird" / "common" / ".thunderbird"),
+    }
+    assert erwartet <= orte, f"nicht gesucht wird in: {erwartet - orte}"
+
+
+def test_profil_in_betterbird_flatpak_wird_gefunden(heim):
+    """Betterbird teilt sich sonst ~/.thunderbird mit Thunderbird; als
+    Flatpak liegt das Profil wegen der Abschottung woanders."""
+    from kalenderblick import thunderbird
+    from hilfe import Profil
+
+    wurzel = heim / ".var" / "app" / "eu.betterbird.Betterbird"
+    wurzel.mkdir(parents=True)
+    p = Profil(wurzel)
+    p.kalender("bb001", "Betterbird-Kalender")
+    p.schreibe_prefs()
+
+    assert thunderbird.waehle_profil() == p.profil

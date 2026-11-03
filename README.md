@@ -60,7 +60,9 @@ pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDE
 KALENDERBlick ist reines Python mit Qt und hat außer `python-dateutil` keine
 Abhängigkeiten. Es läuft überall dort, wo Thunderbird läuft – auch wenn
 Thunderbird als Flatpak oder Snap installiert ist, denn deren Profilordner
-werden mitgesucht.
+werden mitgesucht. **Betterbird** wird ebenfalls gelesen: Der Fork legt
+seine Profile in denselben Ordner `~/.thunderbird` wie Thunderbird, als
+Flatpak unter `~/.var/app/eu.betterbird.Betterbird/`.
 
 ## Zuerst ausprobieren
 

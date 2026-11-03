@@ -49,12 +49,20 @@ class ThunderbirdFehler(Exception):
 # ----------------------------------------------------------------------
 
 def profil_wurzeln() -> list[Path]:
-    """Mögliche Orte des Thunderbird-Profilordners."""
+    """Mögliche Orte des Thunderbird-Profilordners.
+
+    Betterbird, der verbreitetste Thunderbird-Abkömmling, legt seine
+    Profile in denselben Ordner `~/.thunderbird` und wird deshalb schon
+    vom ersten Eintrag miterfasst - nur als Flatpak liegt es wegen der
+    Abschottung woanders (belegt in blog.betterbird.eu, "Mozilla
+    Profiles").
+    """
     heim = Path.home()
     return [
         heim / ".thunderbird",
         heim / ".mozilla-thunderbird",
         heim / ".var" / "app" / "org.mozilla.Thunderbird" / ".thunderbird",   # Flatpak
+        heim / ".var" / "app" / "eu.betterbird.Betterbird" / ".thunderbird",  # Betterbird, Flatpak
         heim / "snap" / "thunderbird" / "common" / ".thunderbird",            # Snap
     ]
 

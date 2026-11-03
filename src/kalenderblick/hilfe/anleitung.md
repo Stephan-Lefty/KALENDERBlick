@@ -15,6 +15,10 @@ mindestens einem Kalender - egal ob örtlich gespeichert oder abonniert
 (ICS, CalDAV). Thunderbird selbst muss beim Benutzen von KALENDERBlick
 nicht laufen.
 
+Auch **Betterbird** wird gelesen: Der Thunderbird-Abkömmling nutzt
+denselben Profilordner. Andere Kalenderprogramme (Evolution, KOrganizer,
+GNOME Kalender) werden derzeit nicht unterstützt.
+
 ## 2. Installieren
 
 **Manjaro, Arch**

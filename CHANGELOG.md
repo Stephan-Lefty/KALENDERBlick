@@ -1,5 +1,14 @@
 # Änderungsprotokoll
 
+## 1.4.0 – 2026-11-03
+
+**Neu**
+
+- Betterbird wird mitgelesen. Der Thunderbird-Abkömmling nutzt denselben
+  Profilordner `~/.thunderbird` und funktionierte deshalb schon bisher;
+  neu hinzugekommen ist der abweichende Pfad der Flatpak-Fassung
+  (`~/.var/app/eu.betterbird.Betterbird/`).
+
 ## 1.3.1 – 2026-11-03
 
 **Behoben**
