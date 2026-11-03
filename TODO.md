@@ -175,11 +175,10 @@
 
 ## Pflege
 
-- [ ] Repo ist jetzt öffentlich (02.11.2026) - englische Fassung von
-      README.md und Anleitung.md nachziehen (Konvention: zweisprachig,
-      gleicher Zug). In dieser Runde bewusst zurückgestellt, um die
-      deutsche Anleitung samt Screenshots und die Deinstallation/den
-      Neuinstallations-Test noch heute abzuschließen.
+- Englische Fassung von README und Anleitung: **entfällt**, von Stephan
+  am 03.11.2026 entschieden. Weicht bewusst von der sonstigen
+  Zweisprachigkeits-Konvention ab - nicht wieder aufmachen.
 - [x] Changelog im README verlinkt (CHANGELOG.md, 02.11.2026)
-- [ ] Hilfe-Zugang in der Oberfläche einbauen (Konvention: wer nicht
-      weiterkommt, klickt auf Hilfe - noch nicht vorhanden)
+- [x] Hilfe-Zugang in der Oberfläche: Reiter „Hilfe" mit der
+      mitgelieferten Anleitung samt Bildschirmfotos, dazu ein Knopf, der
+      sie als HTML im Browser öffnet (1.3.0)
