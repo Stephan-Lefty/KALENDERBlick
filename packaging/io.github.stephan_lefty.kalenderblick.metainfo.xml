@@ -97,15 +97,22 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
-    <release version="1.2.0" date="2026-11-03">
+    <release version="1.3.0" date="2026-11-03">
       <description>
         <p>
           Neu: ein Reiter „Hilfe" mit der vollständigen Anleitung samt
           Bildschirmfotos, auch ohne Internet lesbar; eine sichtbare
-          Fassungsnummer; eine Größenstufe „Sehr klein" für ältere
-          Geräte; die Jahreszahl wahlweise unter dem Datum. Behoben: das
-          Leistensymbol wurde nur in einer Auflösung erzeugt und von der
-          Kontrollleiste unscharf heruntergerechnet.
+          Fassungsnummer; die Jahreszahl wahlweise unter dem Datum.
+          Behoben: das Leistensymbol wurde nur in einer Auflösung erzeugt
+          und von der Kontrollleiste unscharf heruntergerechnet.
+        </p>
+      </description>
+    </release>
+    <release version="1.2.0" date="2026-11-03">
+      <description>
+        <p>
+          Eine Größenstufe „Sehr klein" für ältere Geräte, auf denen
+          schon die bisherige kleinste Stufe viel Platz einnahm.
         </p>
       </description>
     </release>

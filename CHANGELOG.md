@@ -1,6 +1,6 @@
 # Änderungsprotokoll
 
-## 1.2.0 – 2026-11-03
+## 1.3.0 – 2026-11-03
 
 **Neu**
 
@@ -10,10 +10,6 @@
   Bilder in voller Größe erscheinen und sich ausdrucken lassen.
 - Die Fassungsnummer steht jetzt sichtbar unter den Einstellungen – bei
   Rückfragen genügt ein Bildschirmfoto.
-- Eine weitere Größenstufe „Sehr klein" unterhalb von „Klein" – gedacht
-  für ältere Geräte mit 1920er Auflösung, wo schon die bisherige
-  kleinste Stufe viel Platz einnahm. Die Uhr misst damit rund
-  100 × 110 Pixel statt 174 × 172.
 - Die Jahreszahl lässt sich wahlweise als eigene Zeile unter das Datum
   stellen (nur Uhr-Ansicht).
 
@@ -29,6 +25,15 @@
 - Der Hinweis zu „Schreibtisch-Widget anzeigen" behauptete noch, die
   Einstellung wirke erst nach einem Neustart. Seit Fassung 1.1.0 greift
   sie sofort.
+
+## 1.2.0 – 2026-11-03
+
+**Neu**
+
+- Eine weitere Größenstufe „Sehr klein" unterhalb von „Klein" – gedacht
+  für ältere Geräte mit 1920er Auflösung, wo schon die bisherige
+  kleinste Stufe viel Platz einnahm. Die Uhr misst damit rund
+  100 × 110 Pixel statt 174 × 172.
 
 ## 1.1.2 – 2026-11-03
 
