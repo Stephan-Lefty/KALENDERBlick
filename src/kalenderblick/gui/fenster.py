@@ -36,10 +36,10 @@ _ANSICHT_NAMEN = {
     "14tage":    "Nächste 14 Tage",
 }
 _GROESSE_NAMEN = {
-    "klein":      "Klein (280 × 340)",
-    "mittel":     "Mittel (340 × 480)",
-    "gross":      "Groß (420 × 600)",
-    "sehr_gross": "Sehr groß (520 × 740)",
+    "klein":      "Klein",
+    "mittel":     "Mittel",
+    "gross":      "Groß",
+    "sehr_gross": "Sehr groß",
 }
 
 
@@ -129,9 +129,10 @@ class _EinstellungenReiter(QWidget):
         idx = list(_GROESSE_NAMEN).index(e.desktop.groesse) if e.desktop.groesse in _GROESSE_NAMEN else 1
         self._groesse.setCurrentIndex(idx)
         self._groesse.setToolTip(
-            "Breite und Höhe des Schreibtischfensters. Bei der Uhr-Ansicht\n"
-            "wird daraus nur die Breite übernommen - die Höhe richtet sich\n"
-            "dort nach dem Inhalt, nicht nach dieser Vorgabe.")
+            "Breite des Schreibtischfensters. Die Höhe richtet sich immer\n"
+            "nach dem Inhalt - sie reicht so weit, wie Termine da sind,\n"
+            "höchstens aber bis zum Bildschirmrand. Bei der Uhr-Ansicht\n"
+            "steuert die Größe stattdessen die Schriftgröße.")
         wl.addRow("Größe:", self._groesse)
 
         self._ansicht = QComboBox()

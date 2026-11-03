@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from PyQt6.QtCore import QEvent, Qt, QTimer
-from PyQt6.QtGui import QColor
+from PyQt6.QtGui import QColor, QGuiApplication
 from PyQt6.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
 
 from .. import config as konfig_modul
@@ -167,10 +167,10 @@ class SchreibtischFenster(QWidget):
             hoehe = max(150, hinweis.height() + rand)
         else:
             # Der Kasten soll nur unwesentlich größer sein als der Inhalt -
-            # "Größe" ist hier nur noch die Obergrenze, bei wenig Terminen
-            # bleibt viel durchscheinende Leerfläche sonst stehen.
+            # bei wenig Terminen bliebe sonst viel durchscheinende
+            # Leerfläche stehen. "Größe" steuert hier nur die Breite.
             breite = breite_max
-            hoehe = self._inhalt_hoehe(hoehe_max)
+            hoehe = self._inhalt_hoehe()
         self._e.desktop.breite = breite
         self._e.desktop.hoehe = hoehe
         neu_mappen = zeige_neu and self.isVisible()
@@ -182,7 +182,7 @@ class SchreibtischFenster(QWidget):
         if self._env["x11"]:
             self.move(self._e.desktop.x, self._e.desktop.y)
 
-    def _inhalt_hoehe(self, obergrenze: int) -> int:
+    def _inhalt_hoehe(self) -> int:
         rand = 2 * 8 + 8   # Fensterrand oben/unten + etwas Luft
         # Nach dem Austauschen der Terminzeilen hat Qt das Layout noch nicht
         # zwangsläufig neu berechnet - invalidate()+activate() erzwingt das
@@ -192,6 +192,12 @@ class SchreibtischFenster(QWidget):
         inhalt_layout.invalidate()
         inhalt_layout.activate()
         gewuenscht = self._liste._inhalt.sizeHint().height() + rand
+        # Begrenzt wird nur durch den Bildschirm, nicht durch die Höhe aus
+        # der "Größe"-Vorgabe: sonst schneidet der Kasten Termine ab,
+        # obwohl daneben noch viel Platz frei wäre. 90 %, damit unten noch
+        # Luft zur Kontrollleiste bleibt.
+        schirm = self.screen() or QGuiApplication.primaryScreen()
+        obergrenze = int(schirm.availableGeometry().height() * 0.9) if schirm else 800
         return max(80, min(gewuenscht, obergrenze))
 
     def _wende_transparenz_an(self) -> None:
@@ -254,12 +260,16 @@ class SchreibtischFenster(QWidget):
         self._liste.setze_stunden_format(self._e.desktop.stunden_format)
         self._liste.setze_position_fixiert(self._e.desktop.position_fixiert)
         self._liste.setze_klick_aktiv(self._e.desktop.klick_oeffnet)
-        # Erst die Schrift setzen, dann die Fenstergröße danach ausrichten -
-        # sizeHint() der Uhr-Ansicht hängt von der gerade gesetzten Schrift ab.
-        self._wende_groesse_an()
         self._wende_transparenz_an()
-        self._erzwinge_kwin_eigenschaften()
-        self._wende_positionssperre_an()
+        # Die Schriftgrößen werden per Stylesheet gesetzt, und die rechnet
+        # Qt erst nach einem Durchlauf der Ereignisschleife durch. Sofort
+        # gemessen liefert sizeHint() noch die Höhe der vorherigen
+        # Schriftgröße - die Fensterhöhe hinkte dadurch jedem
+        # Größenwechsel einen Schritt hinterher (Breite stimmte sofort,
+        # Höhe erst beim nächsten Speichern).
+        QTimer.singleShot(0, self._wende_groesse_an)
+        QTimer.singleShot(0, self._erzwinge_kwin_eigenschaften)
+        QTimer.singleShot(0, self._wende_positionssperre_an)
         self._timer.setInterval(self._e.aktualisierung_minuten * 60 * 1000)
 
     def _wende_positionssperre_an(self) -> None:

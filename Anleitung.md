@@ -112,7 +112,7 @@ Zweiter Reiter im Hauptfenster:
 | Schalter | Bedeutung |
 |---|---|
 | Schreibtisch-Widget anzeigen | Ob überhaupt ein Fenster auf dem Schreibtisch liegt. Wirkt erst nach einem Neustart von KALENDERBlick. |
-| Größe | Breite/Höhe-Obergrenze für die Listenansichten; die Uhr-Ansicht richtet sich allein nach der Schrift. |
+| Größe | Die Breite des Fensters. Die Höhe richtet sich immer nach dem Inhalt - so weit, wie Termine da sind, höchstens bis zum Bildschirmrand. Bei der Uhr-Ansicht steuert die Größe stattdessen die Schriftgröße. |
 | Ansicht | Welche der vier Ansichten unten gezeigt wird. |
 | Transparenz | Wie durchsichtig der Hintergrund ist - 0 % nur Schrift, 100 % voll deckend. |
 | Erscheinungsbild | Dark-Mode (weiße Schrift) oder Light-Mode (schwarze Schrift) - wirkt nur auf das Widget, nicht auf dieses Fenster. |
