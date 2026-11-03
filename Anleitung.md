@@ -31,6 +31,20 @@ sudo apt install python3-dateutil python3-pyqt6 pipx
 pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDERBlick.git
 ```
 
+**Debian, GuideOS, Ubuntu – fertiges Paket statt pipx**
+
+Bei jeder Fassung liegt unter
+[Releases](https://github.com/Stephan-Lefty/KALENDERBlick/releases) eine
+`.deb`-Datei. Sie bringt Menüeintrag und Symbole gleich mit, Schritt 3
+entfällt damit:
+
+```bash
+sudo apt install ./kalenderblick_1.1.1_all.deb
+```
+
+Wichtig ist `apt install ./…` und **nicht** `dpkg -i`: Nur apt holt die
+benötigten Pakete (`python3-dateutil`, `python3-pyqt6`) selbst dazu.
+
 Danach stehen zwei Befehle zur Verfügung: `kalenderblick` (Kommandozeile)
 und `kalenderblick-fenster` (nur das Hauptfenster, ohne Leistensymbol und
 Schreibtischwidget).

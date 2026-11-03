@@ -1,5 +1,20 @@
 # Änderungsprotokoll
 
+## 1.1.1 – 2026-11-03
+
+**Behoben**
+
+- Das `.deb`-Paket führte `python3-pyqt6` nur unter `Recommends` statt
+  unter `Depends`. Wer es mit `dpkg -i` einspielte, bekam die Oberfläche
+  gar nicht mit – ein Klick auf den Menüeintrag tat dann schlicht
+  nichts, und die Fehlermeldung war nirgends zu sehen, weil der Eintrag
+  ohne Terminal startet. Beim Arch-Paket (`PKGBUILD`) stand PyQt6
+  entsprechend unter `optdepends`; auch dort ist es jetzt eine feste
+  Abhängigkeit.
+- `Anleitung.md` beschrieb nur den Weg über pipx. Der Abschnitt zum
+  fertigen `.deb` fehlte, samt des Hinweises, dass `apt install ./datei.deb`
+  und nicht `dpkg -i` zu verwenden ist.
+
 ## 1.1.0 – 2026-11-03
 
 Alle Fehler dieser Fassung kamen heraus, als die Installation nach

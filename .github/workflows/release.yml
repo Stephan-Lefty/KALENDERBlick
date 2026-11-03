@@ -45,8 +45,12 @@ jobs:
             echo "Priority: optional"
             echo "Architecture: all"
             echo "Maintainer: Stephan Roesner <stephan.roesner@protonmail.com>"
-            echo "Depends: python3 (>= 3.10), python3-dateutil"
-            echo "Recommends: python3-pyqt6"
+            # PyQt6 gehört zu Depends, nicht zu Recommends: ohne die
+            # Oberfläche startet das Programm beim Klick auf den
+            # Menüeintrag gar nicht, und die Fehlermeldung ist nicht zu
+            # sehen (Terminal=false). Recommends wird bei "dpkg -i" zudem
+            # gar nicht mitinstalliert.
+            echo "Depends: python3 (>= 3.10), python3-dateutil, python3-pyqt6"
             echo "Description: Thunderbirds Kalender auf dem Schreibtisch und in der Kontrollleiste"
             echo " Zeigt Termine aus Thunderbirds eigener Ablage an - nur lesen, nie schreiben."
           } > "${PKG}/DEBIAN/control"
