@@ -97,6 +97,14 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.2.0" date="2026-11-03">
+      <description>
+        <p>
+          Eine weitere Größenstufe „Sehr klein" für ältere Geräte, auf
+          denen schon die bisherige kleinste Stufe viel Platz einnahm.
+        </p>
+      </description>
+    </release>
     <release version="1.1.2" date="2026-11-03">
       <description>
         <p>

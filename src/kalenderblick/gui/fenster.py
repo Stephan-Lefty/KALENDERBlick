@@ -36,6 +36,7 @@ _ANSICHT_NAMEN = {
     "14tage":    "Nächste 14 Tage",
 }
 _GROESSE_NAMEN = {
+    "sehr_klein": "Sehr klein",
     "klein":      "Klein",
     "mittel":     "Mittel",
     "gross":      "Groß",

@@ -16,6 +16,7 @@ from .gemeinsam import (
 from .liste import TerminListe
 
 _SCHRIFT_PRO_GROESSE = {
+    "sehr_klein": 8,
     "klein":      9,
     "mittel":     10,
     "gross":      11,
@@ -163,8 +164,11 @@ class SchreibtischFenster(QWidget):
             # wächst mit der gewählten "Größe").
             rand = 2 * 8
             hinweis = self._liste._uhr.sizeHint()
-            breite = max(150, hinweis.width() + rand)
-            hoehe = max(150, hinweis.height() + rand)
+            # Untergrenze nur als Notnagel gegen ein entartetes Fenster -
+            # die Stufe "sehr_klein" liegt bewusst deutlich darunter, was
+            # eine Schranke von 150 wieder aufgeblasen hätte.
+            breite = max(70, hinweis.width() + rand)
+            hoehe = max(70, hinweis.height() + rand)
         else:
             # Der Kasten soll nur unwesentlich größer sein als der Inhalt -
             # bei wenig Terminen bliebe sonst viel durchscheinende

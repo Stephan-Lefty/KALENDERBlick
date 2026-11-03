@@ -1,5 +1,14 @@
 # Änderungsprotokoll
 
+## 1.2.0 – 2026-11-03
+
+**Neu**
+
+- Eine weitere Größenstufe „Sehr klein" unterhalb von „Klein" – gedacht
+  für ältere Geräte mit 1920er Auflösung, wo schon die bisherige
+  kleinste Stufe viel Platz einnahm. Die Uhr misst damit rund
+  100 × 110 Pixel statt 174 × 172.
+
 ## 1.1.2 – 2026-11-03
 
 **Neu**

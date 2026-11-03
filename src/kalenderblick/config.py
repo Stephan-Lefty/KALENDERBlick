@@ -15,6 +15,7 @@ class KonfigFehler(Exception):
 
 ANSICHTEN = ("uhr", "naechste3", "woche", "14tage")
 GROESSEN = {
+    "sehr_klein": (220, 260),
     "klein":      (280, 340),
     "mittel":     (340, 480),
     "gross":      (420, 600),

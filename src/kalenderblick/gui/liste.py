@@ -30,6 +30,9 @@ ANSICHT_TAGE = {
 # kleinen Listen-Schrift (9-12pt), sonst bleibt bei größeren "Größe"-Stufen
 # viel leere Fläche um den Text stehen, die das Quadrat nicht ausfüllt.
 _UHR_SCHRIFT = {
+    # "sehr_klein" ist für ältere Geräte mit 1920er Auflösung gedacht, wo
+    # schon "klein" viel Platz einnimmt - etwa halb so groß wie "klein".
+    "sehr_klein": {"wochentag":  8, "zeit": 22, "datum":  9},
     "klein":      {"wochentag": 14, "zeit": 44, "datum": 16},
     "mittel":     {"wochentag": 18, "zeit": 59, "datum": 19},
     "gross":      {"wochentag": 22, "zeit": 74, "datum": 24},
