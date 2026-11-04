@@ -109,6 +109,22 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.7.3" date="2026-11-04">
+      <description>
+        <p>
+          Von Evolution wurden bisher nur die örtlich gespeicherten
+          Kalender gelesen. Entfernte - CalDAV, Google, Nextcloud,
+          abonnierte Adressen - legt Evolution an einem anderen Ort und
+          in einem anderen Format ab; sie fehlten deshalb ganz. Jetzt
+          werden beide Ablageorte gelesen.
+        </p>
+        <p>
+          Außerdem nennt das Schreibtischfenster in der Kalenderliste,
+          dass entfernte Thunderbird-Kalender nur abgeholt werden,
+          solange Thunderbird läuft.
+        </p>
+      </description>
+    </release>
     <release version="1.7.2" date="2026-11-04">
       <description>
         <p>

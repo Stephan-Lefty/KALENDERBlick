@@ -2,5 +2,5 @@
 
 NAME = "KALENDERBlick"
 
-__version__ = "1.7.2"
+__version__ = "1.7.3"
 __all__ = ["__version__", "NAME"]
