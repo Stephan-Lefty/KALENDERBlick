@@ -2,6 +2,32 @@
 
 ## Unveröffentlicht
 
+**Neu**
+
+- Schalter **„Thunderbird im Hintergrund mitlaufen lassen"**. Thunderbird
+  holt entfernte Kalender nur ab, solange es läuft - wer es selten
+  öffnet, sieht einen alten Stand. Eingeschaltet startet KALENDERBlick
+  es alle 30 Minuten für anderthalb Minuten ohne Fenster; damit werden
+  auch CalDAV-Kalender erreicht, für die nur Thunderbird die
+  Zugangsdaten hat.
+
+  Bewusst kein Dauerbetrieb: Ein laufender kopfloser Thunderbird hält
+  die Profilsperre, und dann öffnet ein Klick auf Thunderbird gar kein
+  Fenster mehr - ohne Meldung. In den kurzen Abholfenstern tritt das
+  zwar auch auf, aber selten genug, dass ein zweiter Versuch eine
+  Minute später genügt.
+
+  Der Schalter ist von Haus aus aus, lässt sich jederzeit umlegen und
+  endet zusammen mit KALENDERBlick. Beendet wird nur der selbst
+  gestartete Prozess: Vor jedem Signal wird geprüft, ob dahinter
+  wirklich noch der eigene kopflose Thunderbird steckt - sonst träfe es
+  nach einer wiederverwendeten Prozessnummer womöglich ein fremdes
+  Programm oder den von Hand geöffneten Thunderbird mitsamt
+  ungesicherter Nachricht. Bleibt nach einem Absturz ein Prozess übrig,
+  wird er beim nächsten Start eingesammelt.
+
+## Unveröffentlicht
+
 **Geändert**
 
 - Ein Test bildet nach, wie ein Kalender aus den GNOME Online-Konten

@@ -27,6 +27,13 @@ Dienst weiterläuft. Thunderbird und Betterbird tun das nur, solange
 das Programm läuft – danach bleibt der Stand stehen. Angezeigt wird in
 beiden Fällen ohne geöffnetes Programm.
 
+Für Thunderbird lässt sich das abschalten: Der Schalter „Thunderbird im
+Hintergrund mitlaufen lassen“ startet es alle 30 Minuten für anderthalb
+Minuten ohne Fenster (`--headless`). Bewusst nicht durchgehend – ein
+laufender Thunderbird hält die Profilsperre, und dann öffnet ein Klick
+auf Thunderbird gar kein Fenster mehr. In den kurzen Abholfenstern ist
+das derselbe Effekt, nur selten genug, um nicht zu stören.
+
 Erprobt auf Arch/Manjaro mit KDE Plasma (Wayland), auf Debian mit
 Cinnamon (X11), auf Debian 13 mit GNOME (Wayland) und auf Debian mit
 Xfce (X11). Den vollen Funktionsumfang gibt es unter KDE Plasma – was

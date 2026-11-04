@@ -39,7 +39,7 @@ from PyQt6.QtWidgets import (
 
 from .. import (
     NAME, __version__, autostart, config as konfig_modul,
-    hilfe as hilfe_modul, ics_abo, quellen, thunderbird,
+    hilfe as hilfe_modul, ics_abo, quellen, tb_dienst, thunderbird,
 )
 from ..config import ANSICHTEN, GROESSEN
 from ..modell import Termin
@@ -568,6 +568,24 @@ class _EinstellungenReiter(QWidget):
             "entfernt sie) - unabhängig vom Startmenü-Eintrag.")
         al.addRow(self._autostart)
 
+        # Thunderbird holt entfernte Kalender nur ab, solange es läuft.
+        # Dieser Schalter lässt es ohne Fenster mitlaufen - bewusst von
+        # Hand, denn das kostet mehrere hundert Megabyte.
+        self._tb_hintergrund = QCheckBox(
+            "Thunderbird im Hintergrund mitlaufen lassen")
+        self._tb_hintergrund.setChecked(e.tb_hintergrund)
+        self._tb_hintergrund.setToolTip(
+            "Startet Thunderbird alle 30 Minuten kurz ohne Fenster, damit\n"
+            "entfernte Kalender (CalDAV, abonnierte Adressen) auch dann\n"
+            "abgeholt werden, wenn das Programm nicht geöffnet ist.\n\n"
+            "Das Fenster bleibt nur anderthalb Minuten offen: In dieser\n"
+            "Zeit hält Thunderbird die Profilsperre, ein Klick auf\n"
+            "Thunderbird öffnet dann kein Fenster. Trifft man es, hilft\n"
+            "ein zweiter Versuch eine Minute später.\n\n"
+            "Endet zusammen mit KALENDERBlick. Für Evolution unnötig -\n"
+            "dessen Dienst läuft ohnehin weiter.")
+        al.addRow(self._tb_hintergrund)
+
         layout.addWidget(allg_box)
 
         # --- Kalenderquellen: Profilwahl und Übersicht ---
@@ -747,6 +765,7 @@ class _EinstellungenReiter(QWidget):
         e.desktop.alle_arbeitsflaechen = self._alle_arbeitsflaechen.isChecked()
         e.aktualisierung_minuten = self._interval.value()
         e.quelle = self._quelle.currentData()
+        e.tb_hintergrund = self._tb_hintergrund.isChecked()
         if self._kalender_uebersicht is not None:
             abgewaehlt = self._kalender_uebersicht.versteckte_kalender()
             if abgewaehlt is not None:
@@ -762,14 +781,41 @@ class _EinstellungenReiter(QWidget):
                 autostart.aktiviere()
             else:
                 autostart.deaktiviere()
+
+            # Sofort umsetzen, statt erst beim nächsten Start - sonst
+            # legt man den Schalter um und nichts geschieht.
+            hinweis = self._takt_abgleichen(e.tb_hintergrund)
+
             self._status.setStyleSheet("color: #2ec27e;")
-            self._status.setText("Gespeichert.")
+            self._status.setText(f"Gespeichert. {hinweis}".strip())
         except Exception as fehler:
             self._status.setStyleSheet("color: #e66100;")
             self._status.setText(str(fehler))
             return
         if self._cb:
             self._cb()
+
+
+    @staticmethod
+    def _takt_abgleichen(an: bool) -> str:
+        """Den Abholtakt mit der Einstellung in Einklang bringen.
+
+        Den Taktgeber gibt es nur im vollen Betrieb (Leistensymbol und
+        Widget). Wer bloß das Fenster geöffnet hat, speichert die
+        Einstellung - wirksam wird sie beim nächsten vollen Start.
+        """
+        from PyQt6.QtWidgets import QApplication
+        takt = getattr(QApplication.instance(), "_abhol_takt", None)
+        if takt is None:
+            return ("Der Hintergrundabruf greift beim nächsten Start."
+                    if an else "")
+        if an:
+            takt.an()
+            if tb_dienst.offen_ohne_uns():
+                return "Thunderbird ist offen und holt gerade selbst ab."
+            return "Thunderbird wird alle 30 Minuten kurz abgefragt."
+        takt.aus()
+        return ""
 
 
 class HauptFenster(QMainWindow):

@@ -188,3 +188,51 @@ def erscheinungsfarben(erscheinung: str) -> dict:
         "gedaempft": "rgba(255, 255, 255, 160)",
         "schwach": "rgba(255, 255, 255, 110)",
     }
+
+
+class AbholTakt:
+    """Öffnet in festem Abstand ein kurzes Abholfenster für Thunderbird.
+
+    Kein Dauerbetrieb: Ein laufender kopfloser Thunderbird hält die
+    Profilsperre, und dann öffnet ein Klick auf Thunderbird kein
+    Fenster mehr. Deshalb nur kurz starten, abholen lassen, beenden.
+
+    Gewartet wird mit Zeitgebern statt mit sleep - sonst stünde die
+    Oberfläche anderthalb Minuten still.
+    """
+
+    def __init__(self, parent=None):
+        from PyQt6.QtCore import QTimer
+        self._parent = parent
+        self._takt = QTimer(parent)
+        self._takt.timeout.connect(self.oeffne_fenster)
+        self._schliesser = QTimer(parent)
+        self._schliesser.setSingleShot(True)
+        self._schliesser.timeout.connect(self._schliesse_fenster)
+
+    def an(self) -> None:
+        from .. import tb_dienst
+        if self._takt.isActive():
+            return
+        self._takt.start(int(tb_dienst.ABSTAND_MINUTEN * 60 * 1000))
+        # Nicht erst in einer halben Stunde anfangen - wer den Schalter
+        # umlegt, möchte jetzt aktuelle Termine.
+        self.oeffne_fenster()
+
+    def aus(self) -> None:
+        from .. import tb_dienst
+        self._takt.stop()
+        self._schliesser.stop()
+        tb_dienst.beende()
+
+    def oeffne_fenster(self) -> None:
+        from .. import tb_dienst
+        if tb_dienst.offen_ohne_uns():
+            return      # Thunderbird ist auf, holt also selbst ab
+        geklappt, _ = tb_dienst.starte()
+        if geklappt:
+            self._schliesser.start(int(tb_dienst.FENSTER_SEKUNDEN * 1000))
+
+    def _schliesse_fenster(self) -> None:
+        from .. import tb_dienst
+        tb_dienst.beende()

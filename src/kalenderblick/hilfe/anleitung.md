@@ -188,6 +188,7 @@ Kalenderauswahl und der Knopf zum Abonnieren kamen erst mit 1.6.0 und
 |---|---|
 | Terminquelle | Aus welchem Kalenderprogramm gelesen wird: alles, was gefunden wird, oder gezielt nur Thunderbird/Betterbird beziehungsweise nur Evolution/GNOME Kalender. Abonnierte Kalender kommen unabhängig davon immer dazu. |
 | Aktualisierung | Wie oft die Oberfläche die Daten neu einliest. Bei Thunderbird und Evolution ersetzt das nicht deren eigene Abholfrequenz - erst wenn das Kalenderprogramm selbst abgeholt hat, gibt es hier etwas Neues zu sehen. Abonnierte Kalender ruft KALENDERBlick selbst ab, höchstens alle 30 Minuten. |
+| Thunderbird im Hintergrund mitlaufen lassen | Startet Thunderbird alle 30 Minuten für anderthalb Minuten ohne Fenster, damit entfernte Kalender auch ohne geöffnetes Programm abgeholt werden. Aus, solange nichts anderes eingestellt ist. Näheres unten unter „Wann kommen neue Termine an?". |
 | Beim Anmelden automatisch starten | Legt eine `.desktop`-Datei in `~/.config/autostart/` an oder entfernt sie wieder. |
 
 **Kalenderquellen** - ganz unten: Zuoberst lässt sich wählen, woher die
@@ -227,6 +228,21 @@ Das hängt davon ab, wer den Kalender abholt:
 
 Für Betterbird gilt dasselbe wie für Thunderbird - es ist derselbe
 Programmkern mit demselben Profil.
+
+Für Thunderbird gibt es dagegen den Schalter **„Thunderbird im
+Hintergrund mitlaufen lassen"**. Er startet Thunderbird alle 30 Minuten
+für anderthalb Minuten ohne Fenster; in dieser Zeit holt es ab wie
+sonst auch - samt der CalDAV-Kalender, für die nur Thunderbird die
+Zugangsdaten hat. Danach wird es wieder beendet.
+
+Zwei Dinge dazu:
+
+- Der Schalter ist von Haus aus **aus** und bleibt es, bis man ihn
+  selbst umlegt. Er endet außerdem zusammen mit KALENDERBlick.
+- Während eines solchen Abholfensters hält Thunderbird die
+  Profilsperre. Klickt man **genau dann** auf Thunderbird, öffnet sich
+  kein Fenster - ein zweiter Versuch eine Minute später hilft. Darum
+  dauern die Fenster nur anderthalb Minuten statt durchzulaufen.
 
 Wer sein Kalenderprogramm selten öffnet, aber trotzdem aktuelle Termine
 sehen will, abonniert den Kalender besser unmittelbar hier. Das geht
@@ -357,6 +373,7 @@ einer Sitzung.
 | Kalender hinkt hinterher | Bei Thunderbird und Evolution ist das deren eigene Abholfrequenz, nicht KALENDERBlicks Aktualisierung - siehe „Kalenderquellen" in den Einstellungen. Direkt abonnierte Kalender holt KALENDERBlick höchstens alle 30 Minuten. |
 | Widget bleibt unsichtbar | In den Einstellungen „Schreibtisch-Widget anzeigen" einschalten und KALENDERBlick neu starten. |
 | Widget fast leer, Hauptfenster voll | Kein Fehler: Das Widget zeigt nur den Zeitraum der gewählten Ansicht (7 oder 14 Tage), der Reiter „Termine" dagegen einen ganzen Monat. Liegt im Zeitraum nichts mehr, nennt das Widget unten das Datum, bis zu dem es schaut, und den nächsten Termin dahinter. |
+| Thunderbird öffnet kein Fenster | Läuft der Schalter „Thunderbird im Hintergrund mitlaufen lassen", ist das Programm alle 30 Minuten für anderthalb Minuten belegt. Eine Minute warten und erneut versuchen - oder den Schalter ausschalten. |
 | Termine aus Evolution fehlen | Prüfen, ob unter „Terminquelle" nicht versehentlich „Nur Thunderbird / Betterbird" eingestellt ist. |
 | Abonnierter Kalender zeigt nichts | Die Adresse muss auf eine iCalendar-Datei zeigen (endet meist auf `.ics`). Bei Google ist es die **private** Adresse, nicht die öffentliche. |
 | Kein Symbol in der Leiste (GNOME) | Die Erweiterung `gnome-shell-extension-appindicator` installieren und sich einmal neu anmelden - siehe Abschnitt 10. |

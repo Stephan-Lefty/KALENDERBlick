@@ -117,11 +117,27 @@ def starte_alles() -> int:
         return 5
 
     from PyQt6.QtWidgets import QSystemTrayIcon
-    from .. import config as konfig_modul
+    from .. import config as konfig_modul, tb_dienst
     from .fenster import HauptFenster
+    from .gemeinsam import AbholTakt
     from .symbol import KalenderSymbol
 
     app = _app()
+
+    # Ein kopfloser Thunderbird aus einem abgestürzten Durchlauf hinge
+    # sonst für immer im Speicher - und hielte die Profilsperre, sodass
+    # sich Thunderbird nicht mehr öffnen ließe.
+    tb_dienst.raeume_verwaistes_auf()
+
+    # Am Programm aufgehängt, damit der Taktgeber nicht eingesammelt wird.
+    app._abhol_takt = AbholTakt(app)
+    if konfig_modul.laden().tb_hintergrund:
+        app._abhol_takt.an()
+
+    # Was wir starten, räumen wir auch wieder weg - an aboutToQuit
+    # gehängt, damit es bei jedem Weg aus dem Programm greift: über das
+    # Leistenmenü, über das Fenster, über ein Abmelden.
+    app.aboutToQuit.connect(app._abhol_takt.aus)
 
     # Das Hauptfenster verwaltet das Schreibtischwidget jetzt selbst
     # (anlegen/entfernen, sobald der Schalter in den Einstellungen

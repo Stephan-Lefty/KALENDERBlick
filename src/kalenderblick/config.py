@@ -56,6 +56,11 @@ class Einstellungen:
     vergangene_zeigen: bool = False
     symbol_an: bool = True
     desktop_an: bool = False
+    # Thunderbird ohne Fenster im Hintergrund mitlaufen lassen, damit
+    # entfernte Kalender auch ohne geöffnetes Programm abgeholt werden.
+    # Vorgabe aus: Ein laufender Thunderbird kostet mehrere hundert
+    # Megabyte, das soll niemand ungefragt bekommen.
+    tb_hintergrund: bool = False
     desktop: Fensterlage = field(default_factory=Fensterlage)
 
     def pruefe(self) -> None:
