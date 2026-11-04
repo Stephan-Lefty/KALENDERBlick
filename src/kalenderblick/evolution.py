@@ -5,9 +5,14 @@ Der Evolution Data Server legt jeden Kalender als iCalendar-Datei ab:
     ~/.local/share/evolution/calendar/<kennung>/calendar.ics
     ~/.config/evolution/sources/<kennung>.source     Name, Farbe, Art
 
-Damit erreicht man auch alles, was in Evolution eingebunden ist -
-Google, Nextcloud, CalDAV-Konten -, ohne einen einzigen dieser Anbieter
-selbst zu kennen: Evolution hat die Termine bereits örtlich abgelegt.
+Entfernte Kalender - CalDAV, Google, Nextcloud, abonnierte Adressen -
+liegen dagegen *nicht* dort, sondern als SQLite-Zwischenspeicher:
+
+    ~/.cache/evolution/calendar/<kennung>/cache.db
+
+Beide Orte werden gelesen. Damit erreicht man alles, was in Evolution
+eingebunden ist, ohne einen einzigen dieser Anbieter selbst zu kennen:
+Evolution hat die Termine bereits örtlich abgelegt.
 
 Gelesen wird ausschließlich, geschrieben nie - wie bei Thunderbird.
 """
@@ -16,6 +21,9 @@ from __future__ import annotations
 
 import configparser
 import os
+import shutil
+import sqlite3
+import tempfile
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
 from pathlib import Path
@@ -60,9 +68,84 @@ def quellen_ordner() -> list[Path]:
     return [o for o in orte if o.is_dir()]
 
 
+def cache_ordner() -> list[Path]:
+    """Wo Evolution entfernte Kalender zwischenspeichert.
+
+    Entfernte Kalender landen nicht unter den Daten, sondern im
+    Zwischenspeicher - als SQLite statt als iCalendar-Datei. Ohne
+    diesen Ort blieben Google-, Nextcloud- und CalDAV-Kalender
+    unsichtbar, obwohl Evolution sie längst geholt hat.
+    """
+    orte = [
+        _basis("XDG_CACHE_HOME", ".cache") / "evolution" / "calendar",
+        Path.home() / ".var" / "app" / "org.gnome.Evolution" / "cache"
+        / "evolution" / "calendar",
+    ]
+    return [o for o in orte if o.is_dir()]
+
+
+def cachedateien() -> list[Path]:
+    dateien: list[Path] = []
+    for ordner in cache_ordner():
+        dateien += sorted(ordner.glob("*/cache.db"))
+    return dateien
+
+
+def _kopiere(datei: Path) -> Path:
+    """Kopie in einem eigenen Ordner - wie bei Thunderbird, aus
+    demselben Grund: Der laufende Dienst hält die Datei offen, und
+    zwei gleichzeitige Lesevorgänge dürfen sich nicht überschreiben."""
+    from . import paths
+    paths.lege_ordner_an()
+    eigener = Path(tempfile.mkdtemp(prefix="ev-", dir=paths.arbeits_ordner()))
+    ziel = eigener / datei.name
+    shutil.copy2(datei, ziel)
+    for anhang in ("-wal", "-shm"):
+        begleiter = datei.with_name(datei.name + anhang)
+        if begleiter.exists():
+            shutil.copy2(begleiter, ziel.with_name(ziel.name + anhang))
+    return ziel
+
+
+def _cache_als_ical(datei: Path) -> str:
+    """Den Zwischenspeicher in einen iCalendar-Text umschreiben.
+
+    In `ECacheObjects` steht je Zeile ein vollständiger VEVENT, aber
+    ohne umgebendes VCALENDAR - das muss hier ergänzt werden, sonst
+    versteht es kein Parser. Die Zeitzonendefinitionen stehen in einer
+    eigenen Tabelle und gehören mit vorn hinein, sonst lassen sich
+    Zeiten mit TZID nicht auflösen.
+    """
+    kopie = None
+    try:
+        verbindung = sqlite3.connect(f"file:{datei}?mode=ro", uri=True, timeout=0)
+    except sqlite3.Error:
+        kopie = _kopiere(datei)
+        verbindung = sqlite3.connect(f"file:{kopie}?mode=ro", uri=True, timeout=0)
+
+    teile = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//KALENDERBlick//Cache//DE"]
+    try:
+        try:
+            for (zone,) in verbindung.execute("SELECT zone FROM timezones"):
+                if zone:
+                    teile.append(zone.strip())
+        except sqlite3.Error:
+            pass        # ältere Fassungen ohne diese Tabelle
+        for (obj,) in verbindung.execute("SELECT ECacheOBJ FROM ECacheObjects"):
+            if obj:
+                teile.append(obj.strip())
+    finally:
+        verbindung.close()
+        if kopie is not None:
+            shutil.rmtree(kopie.parent, ignore_errors=True)
+
+    teile.append("END:VCALENDAR")
+    return "\r\n".join(teile)
+
+
 def vorhanden() -> bool:
     """Ob überhaupt Evolution-Kalender zu finden sind."""
-    return bool(kalenderdateien())
+    return bool(kalenderdateien()) or bool(cachedateien())
 
 
 def kalenderdateien() -> list[Path]:
@@ -84,6 +167,7 @@ class Kalender:
     art: str = "local"
     abgeschaltet: bool = False
     datei: Path | None = None
+    cache: Path | None = None       # entfernte Kalender: SQLite statt .ics
     anzahl: int = 0
     zuletzt_geschrieben: datetime | None = None
 
@@ -125,15 +209,33 @@ def lies_quellen() -> dict[str, Kalender]:
     return kalender
 
 
+# Evolutions eingebaute Kalender haben keine .source-Datei - ihr Name
+# steht allein im Data Server, den wir nicht befragen (das zöge die
+# GObject-Bindings als Abhängigkeit nach). Ohne diese Zuordnung hieße
+# der Standardkalender "(ohne Namen, system)" statt "Persönlich", so
+# wie Evolution selbst ihn zeigt.
+EINGEBAUTE_NAMEN = {
+    "system": "Persönlich",
+}
+
+
 def lies_kalender() -> list[Kalender]:
-    """Alle Kalender mit Name, Farbe, Art und Datei."""
+    """Alle Kalender mit Name, Farbe, Art und Ablageort.
+
+    Örtliche Kalender liegen als iCalendar-Datei, entfernte als
+    SQLite-Zwischenspeicher an einem ganz anderen Ort - beide gehören
+    in dieselbe Liste.
+    """
     quellen = lies_quellen()
     ergebnis: list[Kalender] = []
 
+    def _eintrag(kennung: str) -> Kalender:
+        return quellen.get(kennung) or Kalender(
+            kennung=kennung,
+            name=EINGEBAUTE_NAMEN.get(kennung, f"(ohne Namen, {kennung[:8]})"))
+
     for datei in kalenderdateien():
-        kennung = datei.parent.name
-        eintrag = quellen.get(kennung) or Kalender(
-            kennung=kennung, name=f"(ohne Namen, {kennung[:8]})")
+        eintrag = _eintrag(datei.parent.name)
         eintrag.datei = datei
         try:
             eintrag.zuletzt_geschrieben = datetime.fromtimestamp(datei.stat().st_mtime)
@@ -144,6 +246,28 @@ def lies_kalender() -> list[Kalender]:
         except BibliothekFehlt:
             raise
         except Exception:
+            eintrag.anzahl = 0
+        ergebnis.append(eintrag)
+
+    gesehen = {k.kennung for k in ergebnis}
+    for datei in cachedateien():
+        kennung = datei.parent.name
+        if kennung in gesehen:
+            continue        # derselbe Kalender hat beides - die Datei gewinnt
+        eintrag = _eintrag(kennung)
+        eintrag.cache = datei
+        try:
+            eintrag.zuletzt_geschrieben = datetime.fromtimestamp(datei.stat().st_mtime)
+        except OSError:
+            pass
+        try:
+            verbindung = sqlite3.connect(f"file:{datei}?mode=ro", uri=True, timeout=0)
+            try:
+                eintrag.anzahl = verbindung.execute(
+                    "SELECT count(*) FROM ECacheObjects").fetchone()[0]
+            finally:
+                verbindung.close()
+        except sqlite3.Error:
             eintrag.anzahl = 0
         ergebnis.append(eintrag)
 
@@ -165,13 +289,16 @@ def lies_termine(tage_voraus: int = 14, tage_zurueck: int = 0,
     for kalender in lies_kalender():
         if kalender.abgeschaltet or kalender.kennung in versteckt:
             continue
-        if kalender.datei is None:
-            continue
         try:
-            daten = ical.oeffne_datei(kalender.datei)
+            if kalender.datei is not None:
+                daten = ical.oeffne_datei(kalender.datei)
+            elif kalender.cache is not None:
+                daten = ical.oeffne_text(_cache_als_ical(kalender.cache))
+            else:
+                continue
         except BibliothekFehlt:
             raise
-        except ical.ICalFehler:
+        except (ical.ICalFehler, sqlite3.Error, OSError):
             continue
         alle += ical.termine_aus(daten, kalender.kennung, kalender.name,
                                  kalender.farbe, von, bis)

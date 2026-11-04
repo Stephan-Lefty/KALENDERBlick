@@ -2,7 +2,24 @@
 
 ## Unveröffentlicht
 
+**Behoben**
+
+- Von Evolution wurden nur die örtlichen Kalender gelesen. Entfernte -
+  CalDAV, Google, Nextcloud, abonnierte Adressen - legt Evolution nicht
+  als iCalendar-Datei ab, sondern als SQLite-Zwischenspeicher an einem
+  anderen Ort; sie blieben deshalb unsichtbar, obwohl README, Anleitung
+  und die Beschreibung für die Software-Verwaltungen genau das
+  versprachen. Beide Ablageorte werden jetzt gelesen. Aufgefallen beim
+  Durchspielen mit einem frisch eingerichteten Evolution 3.60.2.
+
 **Geändert**
+
+- Evolutions eingebauter Kalender hieß „(ohne Namen, system)" statt
+  „Persönlich". Seine Bezeichnung steht als einzige nicht in einer
+  Datei, sondern nur im Data Server.
+- Die Anleitung sagt jetzt belegt, dass Evolution auch bei
+  geschlossenem Fenster abholt - gemessen an einem Testserver, dessen
+  Zugriffe im Minutentakt eintrafen, während Evolution nicht lief.
 
 - In der Kalenderliste steht bei entfernten Thunderbird-Kalendern im
   Mauszeiger-Hinweis, dass sie nur abgeholt werden, solange Thunderbird

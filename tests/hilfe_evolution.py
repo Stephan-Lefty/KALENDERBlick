@@ -1,7 +1,13 @@
-"""Baut eine Evolution-Ablage nach, wie sie auf der Platte aussieht."""
+"""Baut eine Evolution-Ablage nach, wie sie auf der Platte aussieht.
+
+Zwei Ablageorte, weil Evolution zwei benutzt: örtliche Kalender als
+iCalendar-Datei unter den Daten, entfernte als SQLite-Zwischenspeicher
+unter dem Cache. Beide Formen wurden an Evolution 3.60.2 abgeglichen.
+"""
 
 from __future__ import annotations
 
+import sqlite3
 from datetime import datetime
 from pathlib import Path
 
@@ -11,6 +17,7 @@ class EvolutionAblage:
         self.wurzel = wurzel
         self.kalender = wurzel / ".local" / "share" / "evolution" / "calendar"
         self.quellen = wurzel / ".config" / "evolution" / "sources"
+        self.cache = wurzel / ".cache" / "evolution" / "calendar"
         self.kalender.mkdir(parents=True, exist_ok=True)
         self.quellen.mkdir(parents=True, exist_ok=True)
 
@@ -72,3 +79,45 @@ class EvolutionAblage:
         datei.write_text(
             inhalt.replace("END:VCALENDAR", eintrag + "END:VCALENDAR"),
             encoding="utf-8")
+
+    def lege_fernkalender_an(self, kennung: str, name: str,
+                             farbe: str = "#2ec27e", art: str = "caldav",
+                             abgeschaltet: bool = False) -> Path:
+        """Entfernter Kalender: .source wie sonst, Termine aber in einer
+        cache.db unter ~/.cache - so legt Evolution CalDAV, Google und
+        abonnierte Adressen ab."""
+        self.lege_kalender_an(kennung, name, farbe, art, abgeschaltet)
+        # Die .ics-Datei gibt es bei entfernten Kalendern nicht
+        (self.kalender / kennung / "calendar.ics").unlink(missing_ok=True)
+        (self.kalender / kennung).rmdir()
+
+        ordner = self.cache / kennung
+        ordner.mkdir(parents=True, exist_ok=True)
+        db = ordner / "cache.db"
+        with sqlite3.connect(db) as c:
+            c.execute("CREATE TABLE IF NOT EXISTS ECacheObjects ("
+                      "ECacheUID TEXT PRIMARY KEY, ECacheREV TEXT, "
+                      "ECacheOBJ TEXT, ECacheState INTEGER)")
+            c.execute("CREATE TABLE IF NOT EXISTS timezones ("
+                      "tzid TEXT PRIMARY KEY, zone TEXT, refs INTEGER)")
+        return db
+
+    def fern_termin(self, kennung: str, uid: str, titel: str,
+                    beginn: datetime, ende: datetime, ort: str = "",
+                    ganztags: bool = False) -> None:
+        """Ein Termin im Zwischenspeicher - als nackter VEVENT ohne
+        VCALENDAR-Hülle, genau wie Evolution ihn dort ablegt."""
+        if ganztags:
+            zeiten = (f"DTSTART;VALUE=DATE:{beginn:%Y%m%d}\r\n"
+                      f"DTEND;VALUE=DATE:{ende:%Y%m%d}")
+        else:
+            zeiten = (f"DTSTART:{beginn:%Y%m%dT%H%M%S}\r\n"
+                      f"DTEND:{ende:%Y%m%dT%H%M%S}")
+        teile = ["BEGIN:VEVENT", f"UID:{uid}", f"SUMMARY:{titel}", zeiten]
+        if ort:
+            teile.append(f"LOCATION:{ort}")
+        teile.append("END:VEVENT")
+        with sqlite3.connect(self.cache / kennung / "cache.db") as c:
+            c.execute("INSERT OR REPLACE INTO ECacheObjects "
+                      "(ECacheUID, ECacheREV, ECacheOBJ, ECacheState) "
+                      "VALUES (?, ?, ?, 0)", (uid, "1", "\r\n".join(teile)))

@@ -146,3 +146,100 @@ def test_kaputter_eintrag_kippt_nicht_die_ganze_liste(ablage):
     termine = evolution.lies_termine(tage_voraus=14)
     assert [t for t in termine if t.titel == "Zahnarzt"], \
         "der gültige Termin fehlt, ein kaputter Eintrag hat alles gekippt"
+
+
+# ----------------------------------------------------------------------
+#  Entfernte Kalender liegen woanders
+# ----------------------------------------------------------------------
+#
+#  Am 04.11.2026 an Evolution 3.60.2 geprüft: CalDAV-, Google- und
+#  abonnierte Kalender landen nicht als calendar.ics unter den Daten,
+#  sondern als SQLite unter ~/.cache/evolution/calendar/<uid>/cache.db.
+#  Solange nur der erste Ort gelesen wurde, blieben sie unsichtbar -
+#  während README und Anleitung genau das Gegenteil versprachen.
+
+def test_entfernter_kalender_wird_gefunden(heim):
+    from kalenderblick import evolution
+    heute = date.today()
+
+    a = EvolutionAblage(heim)
+    a.lege_fernkalender_an("fern01", "Arbeit (CalDAV)", art="caldav")
+    a.fern_termin("fern01", "f1", "Aus dem Zwischenspeicher",
+                  datetime(heute.year, heute.month, heute.day, 11, 0),
+                  datetime(heute.year, heute.month, heute.day, 12, 0),
+                  ort="Büro")
+
+    namen = {k.name for k in evolution.lies_kalender()}
+    assert "Arbeit (CalDAV)" in namen
+
+    titel = {t.titel for t in evolution.lies_termine(tage_voraus=7)}
+    assert "Aus dem Zwischenspeicher" in titel
+
+
+def test_ort_kommt_aus_dem_zwischenspeicher_mit(heim):
+    from kalenderblick import evolution
+    heute = date.today()
+
+    a = EvolutionAblage(heim)
+    a.lege_fernkalender_an("fern01", "Arbeit")
+    a.fern_termin("fern01", "f1", "Besprechung",
+                  datetime(heute.year, heute.month, heute.day, 11, 0),
+                  datetime(heute.year, heute.month, heute.day, 12, 0),
+                  ort="Raum 3")
+
+    termine = [t for t in evolution.lies_termine(tage_voraus=7)
+               if t.titel == "Besprechung"]
+    assert termine and termine[0].ort == "Raum 3"
+
+
+def test_beide_ablageorte_nebeneinander(heim):
+    """Ein örtlicher und ein entfernter Kalender gleichzeitig - der
+    häufige Fall, wenn jemand Google in Evolution eingebunden hat."""
+    from kalenderblick import evolution
+    heute = date.today()
+
+    a = EvolutionAblage(heim)
+    a.lege_kalender_an("ort01", "Privat")
+    a.termin("ort01", "o1", "Örtlich",
+             datetime(heute.year, heute.month, heute.day, 9, 0),
+             datetime(heute.year, heute.month, heute.day, 10, 0))
+    a.lege_fernkalender_an("fern01", "Google")
+    a.fern_termin("fern01", "f1", "Entfernt",
+                  datetime(heute.year, heute.month, heute.day, 14, 0),
+                  datetime(heute.year, heute.month, heute.day, 15, 0))
+
+    titel = [t.titel for t in evolution.lies_termine(tage_voraus=7)]
+    assert "Örtlich" in titel and "Entfernt" in titel
+    assert titel.index("Örtlich") < titel.index("Entfernt"), "nicht sortiert"
+
+
+def test_vorhanden_erkennt_auch_reine_fernkalender(heim):
+    """Wer in Evolution ausschließlich Google eingebunden hat, besitzt
+    überhaupt keine .ics-Datei - trotzdem ist Evolution vorhanden."""
+    from kalenderblick import evolution
+
+    a = EvolutionAblage(heim)
+    a.lege_fernkalender_an("fern01", "Nur Google")
+    assert evolution.vorhanden()
+
+
+def test_abgeschalteter_fernkalender_bleibt_draussen(heim):
+    """Zwei Fernkalender, einer abgeschaltet: Nur so prüft der Test
+    wirklich die Abschaltung. Mit nur einem Kalender wäre er auch dann
+    grün, wenn Fernkalender überhaupt nicht gelesen würden."""
+    from kalenderblick import evolution
+    heute = date.today()
+
+    a = EvolutionAblage(heim)
+    a.lege_fernkalender_an("fern01", "Aus", abgeschaltet=True)
+    a.fern_termin("fern01", "f1", "Unsichtbar",
+                  datetime(heute.year, heute.month, heute.day, 11, 0),
+                  datetime(heute.year, heute.month, heute.day, 12, 0))
+    a.lege_fernkalender_an("fern02", "An")
+    a.fern_termin("fern02", "f2", "Sichtbar",
+                  datetime(heute.year, heute.month, heute.day, 13, 0),
+                  datetime(heute.year, heute.month, heute.day, 14, 0))
+
+    titel = {t.titel for t in evolution.lies_termine(tage_voraus=7)}
+    assert "Sichtbar" in titel, "Fernkalender werden gar nicht gelesen"
+    assert "Unsichtbar" not in titel

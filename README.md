@@ -42,12 +42,17 @@ nutzt denselben Ordner):
         └── …
 ```
 
-**Evolution und GNOME Kalender** – iCalendar-Dateien, die der Data
-Server ablegt (GNOME Kalender nutzt denselben Dienst):
+**Evolution und GNOME Kalender** – was der Data Server ablegt (GNOME
+Kalender nutzt denselben Dienst), und zwar an zwei verschiedenen Orten:
+örtliche Kalender als iCalendar-Datei unter den Daten, entfernte
+(CalDAV, Google, abonnierte Adressen) als SQLite unter dem
+Zwischenspeicher. Anders als Thunderbird holt Evolution auch dann ab,
+wenn das Fenster geschlossen ist – der Dienst läuft weiter:
 
 ```
-~/.local/share/evolution/calendar/<kennung>/calendar.ics
-~/.config/evolution/sources/<kennung>.source     Name, Farbe, Art
+~/.local/share/evolution/calendar/<kennung>/calendar.ics   örtliche Kalender
+~/.cache/evolution/calendar/<kennung>/cache.db            entfernte Kalender
+~/.config/evolution/sources/<kennung>.source              Name, Farbe, Art
 ```
 
 **Abonnierte Kalender** – von KALENDERBlick selbst abgerufen, höchstens

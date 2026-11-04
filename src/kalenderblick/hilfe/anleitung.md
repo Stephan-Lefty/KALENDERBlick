@@ -202,7 +202,7 @@ Das hängt davon ab, wer den Kalender abholt:
 |---|---|
 | Thunderbird oder Betterbird, örtlich gespeichert | sofort, sobald das Programm sie geschrieben hat |
 | Thunderbird oder Betterbird, entfernt (CalDAV oder ICS) | erst wenn **das Programm läuft** und abgeholt hat - es ist kein Hintergrunddienst, bei geschlossenem Programm bleibt die Datei stehen |
-| Evolution oder GNOME Kalender | nicht geprüft: Evolution bringt mit dem Data Server einen eigenen Hintergrunddienst mit, der möglicherweise auch ohne geöffnetes Fenster abholt |
+| Evolution oder GNOME Kalender | **auch bei geschlossenem Fenster** - der Evolution Data Server läuft als eigener Dienst weiter und holt nach dem eingestellten Takt ab |
 | in KALENDERBlick abonniert | unabhängig von jedem Kalenderprogramm, höchstens alle 30 Minuten |
 
 Für Betterbird gilt dasselbe wie für Thunderbird - es ist derselbe

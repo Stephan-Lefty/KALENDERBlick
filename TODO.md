@@ -20,13 +20,6 @@
       Cinnamon - nachgemessen ist keiner davon.
 
 
-- [ ] Klären, ob Evolution seine entfernten Kalender auch bei
-      geschlossenem Fenster abholt (der Data Server läuft als eigener
-      Dienst). Solange das ungeprüft ist, macht weder der Hinweis in der
-      Kalenderliste noch die Tabelle in der Anleitung eine Aussage
-      darüber. Braucht einen Rechner mit Evolution - hier ist keines
-      installiert.
-
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
 - [x] Fassungen 1.1.1 bis 1.3.0 an einem Vormittag (03.11.2026), alle
