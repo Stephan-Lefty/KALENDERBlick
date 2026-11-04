@@ -6,7 +6,9 @@
       veraltet): Sie zeigen die Einstellungen von vor 1.6.0 - ohne
       Terminquelle, Kalenderauswahl, Abonnieren-Knopf und Jahreszahl,
       dazu in der alten Fenstergröße. Vorgehen wie am 03.11.2026: Fake-
-      Profil über `tests/hilfe.py` bauen, `profil` in den Einstellungen
+      Profil mit `python3 werkzeuge/fakeprofil.py` bauen (liegt seit
+      04.11.2026 im Repo, erzeugt vier Kalender und fünfzehn erfundene
+      Termine auf passenden Wochentagen), `profil` in den Einstellungen
       darauf zeigen lassen, mit `spectacle -f -b -n -o` aufnehmen und
       über die KWin-Fensterliste zuschneiden. Niemals mit echten
       Terminen. Beim Austausch den Kursiv-Hinweis unter dem
