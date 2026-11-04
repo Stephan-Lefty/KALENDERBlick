@@ -41,8 +41,10 @@
     <p>
       Online-Kalender wie Google, Nextcloud oder Proton bindet man am
       besten im Kalenderprogramm ein; KALENDERBlick liest sie von dort
-      mit und braucht selbst keine Anmeldung. Wer gar kein
-      Kalenderprogramm einrichten möchte, abonniert den Kalender direkt.
+      mit und braucht selbst keine Anmeldung. Unter GNOME genügt dafür
+      ein Konto in den Online-Konten der Systemeinstellungen - die
+      Anmeldung erledigt das System. Wer gar kein Kalenderprogramm
+      einrichten möchte, abonniert den Kalender direkt.
     </p>
     <p>Für das Schreibtischfenster stehen vier Ansichten zur Wahl:</p>
     <ul>
@@ -73,6 +75,7 @@
     <keyword>Evolution</keyword>
     <keyword>GNOME Kalender</keyword>
     <keyword>iCalendar</keyword>
+    <keyword>GNOME Online-Konten</keyword>
     <keyword>Kalender</keyword>
     <keyword>Termine</keyword>
     <keyword>Schreibtisch</keyword>

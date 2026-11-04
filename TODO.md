@@ -20,14 +20,28 @@
       Cinnamon - nachgemessen ist keiner davon.
 
 
-- [ ] GNOME Online Konten durchspielen: Ein Konto (z. B. Google) in den
-      Systemeinstellungen eintragen, „Kalender" ankreuzen und prüfen, ob
-      KALENDERBlick die Termine anzeigt. Die Kette ist nur in Teilen
-      belegt - dass der Data Server entfernte Kalender als cache.db
-      ablegt und wir die lesen, ist seit 04.11.2026 geprüft; dass ein
-      GOA-Konto dort tatsächlich ankommt, noch nicht. Die Anleitung
-      beschreibt den Weg bereits, also möglichst bald nachholen.
-      Braucht ein GNOME-System mit evolution-data-server.
+- [ ] GNOME Online Konten einmal am lebenden System durchspielen: Konto
+      in den Systemeinstellungen eintragen, „Kalender" ankreuzen,
+      nachsehen ob KALENDERBlick die Termine zeigt. Nur noch eine
+      Bestätigung, kein offenes Risiko: Der Data Server kennt kein
+      eigenes Google-Verfahren, sondern legt solche Kalender über das
+      CalDAV-Backend als cache.db ab (GOA liefert bloß die Zugangsdaten
+      über module-credentials-goa.so) - und genau das lesen wir seit
+      1.7.3. Ein Test bildet den Fall samt GOA-Abschnitt in der
+      .source-Datei nach. Am einfachsten auf DialOS.
+
+- [ ] Schalter für einen kopflosen Thunderbird im Hintergrund
+      (`thunderbird --headless`, am 04.11.2026 nachgewiesen: holt ab,
+      ohne Oberfläche). Stephans Vorgaben vom 04.11.2026:
+      * niemals von selbst an - ein dauerhafter Thunderbird kostet
+        200-400 MB Arbeitsspeicher
+      * von Hand ein- und ausschaltbar
+      * an KALENDERBlick gekoppelt: Ist das Programm aus, muss auch
+        der Dienst aus sein
+      Lohnt vor allem für CalDAV-Kalender, die nur in Thunderbird
+      stehen; für Google und Nextcloud ist der Weg über die GNOME
+      Online-Konten besser. Offen: Verhalten bei Absturz und bei einem
+      Thunderbird-Update im laufenden Betrieb.
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 

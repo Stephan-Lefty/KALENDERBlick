@@ -121,3 +121,20 @@ class EvolutionAblage:
             c.execute("INSERT OR REPLACE INTO ECacheObjects "
                       "(ECacheUID, ECacheREV, ECacheOBJ, ECacheState) "
                       "VALUES (?, ?, ?, 0)", (uid, "1", "\r\n".join(teile)))
+
+    def lege_goa_kalender_an(self, kennung: str, name: str, konto: str,
+                             farbe: str = "#3584e4") -> Path:
+        """Ein Kalender aus den GNOME Online-Konten.
+
+        Der Data Server kennt kein eigenes Google-Backend - solche
+        Kalender laufen über CalDAV, GOA steuert nur die Zugangsdaten
+        bei (module-credentials-goa.so). In der .source-Datei steht
+        dafür ein zusätzlicher Abschnitt, der uns nicht stören darf.
+        """
+        self.lege_fernkalender_an(kennung, name, farbe, art="caldav")
+        datei = self.quellen / f"{kennung}.source"
+        datei.write_text(
+            datei.read_text(encoding="utf-8")
+            + f"\n[GNOME Online Accounts]\nId={konto}\nCalendarEnabled=true\n",
+            encoding="utf-8")
+        return datei

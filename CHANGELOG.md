@@ -2,6 +2,15 @@
 
 ## Unveröffentlicht
 
+**Geändert**
+
+- Ein Test bildet nach, wie ein Kalender aus den GNOME Online-Konten
+  abgelegt wird: Der Data Server kennt dafür kein eigenes Verfahren,
+  sondern nutzt CalDAV und lässt sich die Zugangsdaten über GOA
+  reichen; in der `.source`-Datei steht dann ein zusätzlicher
+  Abschnitt. Der darf das Einlesen nicht stören - sonst bliebe
+  ausgerechnet der bequemste Weg zu Google unsichtbar.
+
 **Dokumentation**
 
 - Der Weg über die **GNOME Online-Konten** ist beschrieben: Konto einmal
@@ -12,6 +21,8 @@
   abhängt; das Programm Evolution wird dafür nicht gebraucht.
   Thunderbird nimmt an diesem Verfahren nicht teil und verwaltet seine
   Konten selbst.
+- Für die Software-Verwaltungen ist der Weg ebenfalls genannt, samt
+  Schlagwort „GNOME Online-Konten".
 - README: Der Unterschied beim Aktualisieren steht jetzt auch dort -
   Evolution holt bei geschlossenem Fenster ab, Thunderbird nicht.
   Angezeigt wird in beiden Fällen ohne geöffnetes Programm.

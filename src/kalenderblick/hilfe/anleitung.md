@@ -36,6 +36,12 @@ ist. Auf anderen Arbeitsumgebungen lässt er sich nachinstallieren
 (Paket `evolution-data-server`) - das Programm Evolution selbst wird
 dafür nicht gebraucht.
 
+Für KALENDERBlick sieht ein solcher Kalender aus wie jeder andere:
+Der Data Server kennt gar kein eigenes Google-Verfahren, sondern
+nutzt CalDAV und lässt sich die Zugangsdaten von den Online-Konten
+reichen. Deshalb taucht er in der Kalenderliste schlicht als
+CalDAV-Kalender auf.
+
 Thunderbird nimmt daran nicht teil: Es verwaltet seine Konten
 ausschließlich selbst.
 

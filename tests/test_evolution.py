@@ -243,3 +243,29 @@ def test_abgeschalteter_fernkalender_bleibt_draussen(heim):
     titel = {t.titel for t in evolution.lies_termine(tage_voraus=7)}
     assert "Sichtbar" in titel, "Fernkalender werden gar nicht gelesen"
     assert "Unsichtbar" not in titel
+
+
+def test_kalender_aus_gnome_online_konten(heim):
+    """Trägt jemand sein Google-Konto in den GNOME-Systemeinstellungen
+    ein, legt der Data Server daraus einen CalDAV-Kalender an - mit
+    einem zusätzlichen Abschnitt in der .source-Datei. Der darf das
+    Einlesen nicht stören, sonst bliebe der bequemste Weg zu Google
+    ausgerechnet unsichtbar."""
+    from kalenderblick import evolution
+    heute = date.today()
+
+    a = EvolutionAblage(heim)
+    a.lege_goa_kalender_an("goa01", "Privat (Google)",
+                           konto="account_1700000000_0")
+    a.fern_termin("goa01", "g1", "Aus dem Google-Konto",
+                  datetime(heute.year, heute.month, heute.day, 16, 0),
+                  datetime(heute.year, heute.month, heute.day, 17, 0))
+
+    kalender = {k.name: k for k in evolution.lies_kalender()}
+    assert "Privat (Google)" in kalender, \
+        "der GOA-Abschnitt hat das Einlesen gestört"
+    assert kalender["Privat (Google)"].art == "caldav"
+    assert kalender["Privat (Google)"].ist_fern
+
+    titel = {t.titel for t in evolution.lies_termine(tage_voraus=7)}
+    assert "Aus dem Google-Konto" in titel
