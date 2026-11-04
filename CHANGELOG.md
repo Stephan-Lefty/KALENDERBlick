@@ -1,6 +1,6 @@
 # Änderungsprotokoll
 
-## Unveröffentlicht
+## 1.7.2 – 2026-11-04
 
 **Geändert**
 
