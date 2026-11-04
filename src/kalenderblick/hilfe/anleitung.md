@@ -169,7 +169,7 @@ erscheint also zunächst **nur** das Leistensymbol, kein Fenster auf dem
 Schreibtisch. Ein Klick auf das Symbol öffnet das Hauptfenster mit dem
 Reiter „Termine":
 
-<img src="bilder/hauptfenster_termine.png" alt="Hauptfenster, Reiter Termine" width="340">
+<img src="bilder/hauptfenster_termine.png" alt="Hauptfenster, Reiter Termine" width="420">
 
 Die Termine der nächsten 31 Tage, nach Tagen gruppiert. Farbpunkt zeigt
 den Kalender, bei örtlichen Terminen steht der Ort direkt darunter.
@@ -178,11 +178,7 @@ den Kalender, bei örtlichen Terminen steht der Ort direkt darunter.
 
 Zweiter Reiter im Hauptfenster:
 
-<img src="bilder/hauptfenster_einstellungen.png" alt="Hauptfenster, Reiter Einstellungen" width="340">
-
-*Die Aufnahme stammt aus einer früheren Fassung: „Terminquelle", die
-Kalenderauswahl und der Knopf zum Abonnieren kamen erst mit 1.6.0 und
-1.7.0 dazu. Die Tabelle unten ist auf dem Stand von 1.7.2.*
+<img src="bilder/hauptfenster_einstellungen.png" alt="Hauptfenster, Reiter Einstellungen" width="420">
 
 **Schreibtisch-Widget**
 
@@ -296,6 +292,12 @@ Mit „Einstellungen speichern" werden alle Änderungen sofort auf das
 laufende Schreibtischwidget angewendet - ohne Neustart, mit Ausnahme von
 „Schreibtisch-Widget anzeigen" selbst.
 
+Der dritte Reiter **„Hilfe"** enthält diese Anleitung samt Bildern,
+auch ohne Internet lesbar. Der Knopf darunter öffnet sie zusätzlich im
+Browser:
+
+<img src="bilder/hauptfenster_hilfe.png" alt="Hauptfenster, Reiter Hilfe" width="420">
+
 ## 7. Die vier Ansichten des Schreibtischwidgets
 
 Jede Ansicht gibt es in Dark- und Light-Mode. Der Kasten ist bei allen
@@ -310,14 +312,14 @@ Auskunft erkennbar und nicht als Fehler.
 
 **Uhr + Datum** - Wochentag, Uhrzeit, Datum, sonst nichts:
 
-<img src="bilder/uhr_dunkel.png" alt="Uhr-Ansicht, Dark-Mode" width="220">
-<img src="bilder/uhr_hell.png" alt="Uhr-Ansicht, Light-Mode" width="220">
+<img src="bilder/uhr_dunkel.png" alt="Uhr-Ansicht, Dark-Mode" width="230">
+<img src="bilder/uhr_hell.png" alt="Uhr-Ansicht, Light-Mode" width="230">
 
 **Nächste 3 Termine** - unabhängig vom Datum immer die drei nächsten
 anstehenden, bereits vergangene Termine des Tages fallen raus:
 
-<img src="bilder/naechste3_dunkel.png" alt="Nächste 3 Termine, Dark-Mode" width="260">
-<img src="bilder/naechste3_hell.png" alt="Nächste 3 Termine, Light-Mode" width="260">
+<img src="bilder/naechste3_dunkel.png" alt="Nächste 3 Termine, Dark-Mode" width="300">
+<img src="bilder/naechste3_hell.png" alt="Nächste 3 Termine, Light-Mode" width="300">
 
 **Nächste 7 Tage** - alle Termine der kommenden Woche, nach Tagen
 gruppiert, bis einschließlich des siebten Tages:

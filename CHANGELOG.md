@@ -1,5 +1,21 @@
 # Änderungsprotokoll
 
+## Unveröffentlicht
+
+**Geändert**
+
+- Alle Bildschirmfotos neu aufgenommen, auf dem Stand von 1.8.0: mit
+  Terminquelle, Kalenderauswahl, Abonnieren-Knopf, Jahreszahl und dem
+  Schalter für den Hintergrundabruf. Dazu erstmals der Reiter „Hilfe",
+  der bisher nirgends abgebildet war. Der Hinweis, dass die Aufnahmen
+  älter seien als der Text, ist damit hinfällig und entfernt.
+- Die Bilder entstehen jetzt mit `werkzeuge/bilder_bauen.py` aus dem
+  Fake-Profil - gerendert statt abfotografiert. Unter Wayland lässt
+  sich kein einzelnes Fenster gezielt aufnehmen; der Umweg über ein
+  Vollbild liest den ganzen Schreibtisch mit und erwischte beim ersten
+  Versuch fremde Fensterinhalte. So ist es wiederholbar und zeigt
+  garantiert nur erfundene Daten.
+
 ## 1.8.0 – 2026-11-04
 
 **Geändert**

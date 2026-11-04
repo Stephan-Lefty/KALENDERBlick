@@ -2,19 +2,6 @@
 
 ## Als Nächstes
 
-- [ ] Bildschirmfotos der Anleitung neu aufnehmen (Stand 03.11.2026
-      veraltet): Sie zeigen die Einstellungen von vor 1.6.0 - ohne
-      Terminquelle, Kalenderauswahl, Abonnieren-Knopf und Jahreszahl,
-      dazu in der alten Fenstergröße. Vorgehen wie am 03.11.2026: Fake-
-      Profil mit `python3 werkzeuge/fakeprofil.py` bauen (liegt seit
-      04.11.2026 im Repo, erzeugt vier Kalender und fünfzehn erfundene
-      Termine auf passenden Wochentagen), `profil` in den Einstellungen
-      darauf zeigen lassen, mit `spectacle -f -b -n -o` aufnehmen und
-      über die KWin-Fensterliste zuschneiden. Niemals mit echten
-      Terminen. Beim Austausch den Kursiv-Hinweis unter dem
-      Einstellungsbild in der Anleitung wieder entfernen - er erklärt
-      nur, warum die Aufnahme älter ist als der Text.
-
 - [ ] Unter Xfce die einzelnen Schalter einzeln prüfen (Position sperren,
       hinter anderen Fenstern, nicht in der Fensterleiste). Der
       Grundbetrieb läuft seit 04.11.2026; die Haken in der README-Tabelle
@@ -41,6 +28,14 @@
       Taktlogik über Tests).
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
+
+- [x] Bildschirmfotos neu aufgenommen (04.11.2026, Stand 1.8.0): elf
+      Bilder, erzeugt mit `werkzeuge/bilder_bauen.py` aus dem
+      Fake-Profil. Gerendert statt abfotografiert - unter Wayland
+      lässt sich kein einzelnes Fenster gezielt aufnehmen, und der
+      Umweg über ein Vollbild erwischte prompt fremde Fensterinhalte.
+      Neu dabei: der Reiter „Hilfe", der nie abgebildet war.
+
 
 - [x] Fassungen 1.1.1 bis 1.3.0 an einem Vormittag (03.11.2026), alle
       aus Stephans Durchspielen auf zwei Systemen entstanden:
