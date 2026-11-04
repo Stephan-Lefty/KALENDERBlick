@@ -94,3 +94,26 @@ def test_ohne_jeden_weiteren_termin_keine_falsche_zusage(qt_app):
     texte = " | ".join(_texte(w, qt_app))
     assert "keine Termine" in texte
     assert "ächster" not in texte
+
+
+def test_mehrfaches_umschalten_sammelt_keine_dehnfugen(qt_app):
+    """Die leere Meldung steht zwischen zwei Dehnfugen. Wird beim
+    Aktualisieren nicht sauber aufgeräumt, wandert die Darstellung mit
+    jedem Umschalten weiter nach unten."""
+    from kalenderblick.gui.liste import TerminListe
+    heute = date.today()
+
+    w = TerminListe(ansicht="woche")
+    voll = [_termin("Da", heute + timedelta(days=1))]
+    leer = [_termin("Weit weg", heute + timedelta(days=40))]
+
+    zaehlungen = []
+    for durchgang in range(4):
+        w.setze_termine(leer if durchgang % 2 == 0 else voll)
+        qt_app.processEvents()
+        zaehlungen.append(w._inhalt_layout.count())
+
+    assert zaehlungen[0] == zaehlungen[2], \
+        f"leerer Zustand wächst: {zaehlungen}"
+    assert zaehlungen[1] == zaehlungen[3], \
+        f"voller Zustand wächst: {zaehlungen}"

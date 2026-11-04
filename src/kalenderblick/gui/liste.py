@@ -358,7 +358,11 @@ class TerminListe(QWidget):
             leer.setStyleSheet(
                 f"font-size: {self._schrift}pt; color: {self._farben['gedaempft']}; padding: 8px;")
             leer.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            self._inhalt_layout.insertWidget(0, leer)
+            # Zwischen zwei Dehnfugen, damit die Meldung auch der Höhe
+            # nach in der Mitte steht - am oberen Rand klebend wirkte sie
+            # wie ein abgeschnittener Rest.
+            self._inhalt_layout.insertStretch(0)
+            self._inhalt_layout.insertWidget(1, leer)
             return
 
         for tag, eintraege in nach_tagen(gefiltert):

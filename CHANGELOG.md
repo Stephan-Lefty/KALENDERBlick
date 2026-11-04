@@ -9,7 +9,8 @@
   Zeitraum gar nichts, nennt es zusätzlich den nächsten Termin dahinter.
   Vorher wirkte ein fast leeres Widget wie ein Fehler, obwohl es nur den
   kürzeren Zeitraum zeigte: Die Ansicht „14 Tage" endet am vierzehnten
-  Tag, der Reiter „Termine" zeigt dagegen immer einen ganzen Monat.
+  Tag, der Reiter „Termine" zeigt dagegen immer einen ganzen Monat. Ist
+  gar nichts da, steht die Meldung mittig im Fenster statt oben am Rand.
 - Die Kommandozeile liest dieselben Quellen wie die Oberfläche. `liste`,
   `naechster` und `kalender` sahen bisher nur in Thunderbird nach und
   übergingen Evolution, GNOME Kalender und die Abonnements - wer sie zur
