@@ -30,18 +30,13 @@
       1.7.3. Ein Test bildet den Fall samt GOA-Abschnitt in der
       .source-Datei nach. Am einfachsten auf DialOS.
 
-- [ ] Schalter für einen kopflosen Thunderbird im Hintergrund
-      (`thunderbird --headless`, am 04.11.2026 nachgewiesen: holt ab,
-      ohne Oberfläche). Stephans Vorgaben vom 04.11.2026:
-      * niemals von selbst an - ein dauerhafter Thunderbird kostet
-        200-400 MB Arbeitsspeicher
-      * von Hand ein- und ausschaltbar
-      * an KALENDERBlick gekoppelt: Ist das Programm aus, muss auch
-        der Dienst aus sein
-      Lohnt vor allem für CalDAV-Kalender, die nur in Thunderbird
-      stehen; für Google und Nextcloud ist der Weg über die GNOME
-      Online-Konten besser. Offen: Verhalten bei Absturz und bei einem
-      Thunderbird-Update im laufenden Betrieb.
+- [ ] Den Abholtakt einmal am Stück mit geschlossenem Thunderbird
+      durchspielen: Schalter an, warten, nachsehen ob die Termine ohne
+      geöffnetes Programm aktueller werden und ob Thunderbird danach
+      wieder normal aufgeht. Hier ging das nicht am Stück, weil dafür
+      Thunderbird geschlossen sein müsste; belegt sind bisher die
+      Einzelteile (kopfloses Abholen am Testserver gemessen, die
+      Taktlogik über Tests).
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
