@@ -1,6 +1,6 @@
 # Änderungsprotokoll
 
-## Unveröffentlicht
+## 1.8.0 – 2026-11-04
 
 **Geändert**
 
@@ -45,7 +45,7 @@
   ungesicherter Nachricht. Bleibt nach einem Absturz ein Prozess übrig,
   wird er beim nächsten Start eingesammelt.
 
-## Unveröffentlicht
+## 1.8.0 – 2026-11-04
 
 **Geändert**
 

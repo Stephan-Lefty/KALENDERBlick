@@ -112,6 +112,24 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.8.0" date="2026-11-04">
+      <description>
+        <p>
+          Neu: Thunderbird beziehungsweise Betterbird kann im
+          Hintergrund mitlaufen. Es holt entfernte Kalender nur ab,
+          solange es läuft - wer es selten öffnet, sah deshalb einen
+          alten Stand. Eingeschaltet wird das Programm alle 30 Minuten
+          für 90 Sekunden ohne Fenster gestartet. Der Schalter ist von
+          Haus aus aus und endet zusammen mit KALENDERBlick.
+        </p>
+        <p>
+          Außerdem beschreibt die Hilfe jetzt den Weg über die GNOME
+          Online-Konten: Konto einmal in den Systemeinstellungen
+          eintragen, und KALENDERBlick liest den Kalender mit - ohne
+          eigene Anmeldung.
+        </p>
+      </description>
+    </release>
     <release version="1.7.3" date="2026-11-04">
       <description>
         <p>

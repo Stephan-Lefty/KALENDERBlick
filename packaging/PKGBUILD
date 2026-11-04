@@ -1,6 +1,6 @@
 # Maintainer: Stephan Rösner
 pkgname=kalenderblick
-pkgver=1.7.3
+pkgver=1.8.0
 pkgrel=1
 pkgdesc="Zeigt Thunderbirds Kalender auf dem Schreibtisch und in der Kontrollleiste"
 arch=('any')
