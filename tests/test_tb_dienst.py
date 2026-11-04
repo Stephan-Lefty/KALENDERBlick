@@ -251,12 +251,40 @@ def test_ausschalten_haelt_auch_die_zeitgeber_an(qt_app, monkeypatch):
     assert not takt._schliesser.isActive()
 
 
-def test_zweimal_einschalten_legt_keinen_zweiten_takt_an(qt_app, monkeypatch):
-    takt, verlauf = _takt(qt_app, monkeypatch)
+def test_erneutes_einschalten_holt_wieder_ab(qt_app, monkeypatch):
+    """Am 04.11.2026 im Alltag aufgefallen: Beim ersten Speichern war
+    Thunderbird noch offen, die Abholung unterblieb zu Recht. Nach dem
+    Schließen und erneutem Speichern passierte aber ebenfalls nichts -
+    der Takt lief ja schon und sprang sofort heraus. Haken gesetzt,
+    und bis zu einer halben Stunde kein aktueller Termin."""
+    from kalenderblick.gui.gemeinsam import AbholTakt
+    from kalenderblick import tb_dienst
+
+    verlauf = []
+    offen = [True]        # erst offen, dann geschlossen
+    monkeypatch.setattr(tb_dienst, "offen_ohne_uns", lambda: offen[0])
+    monkeypatch.setattr(tb_dienst, "starte",
+                        lambda: (verlauf.append("start"), (True, ""))[1])
+    monkeypatch.setattr(tb_dienst, "beende",
+                        lambda: (verlauf.append("stop"), (True, ""))[1])
+
+    takt = AbholTakt()
+    takt.an()                       # Thunderbird offen -> nichts
+    assert "start" not in verlauf
+
+    offen[0] = False                # Nutzer schließt Thunderbird
+    takt.an()                       # und speichert erneut
+    assert "start" in verlauf, "zweites Einschalten holte nicht ab"
+    takt.aus()
+
+
+def test_zweimal_einschalten_legt_keinen_zweiten_zeitgeber_an(qt_app, monkeypatch):
+    takt, _ = _takt(qt_app, monkeypatch)
     takt.an()
-    erster = verlauf.count("start")
+    abstand = takt._takt.interval()
     takt.an()
-    assert verlauf.count("start") == erster, "doppelt gestartet"
+    assert takt._takt.interval() == abstand
+    assert takt._takt.isActive()
     takt.aus()
 
 

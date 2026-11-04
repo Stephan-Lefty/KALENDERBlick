@@ -212,11 +212,13 @@ class AbholTakt:
 
     def an(self) -> None:
         from .. import tb_dienst
-        if self._takt.isActive():
-            return
-        self._takt.start(int(tb_dienst.ABSTAND_MINUTEN * 60 * 1000))
-        # Nicht erst in einer halben Stunde anfangen - wer den Schalter
-        # umlegt, möchte jetzt aktuelle Termine.
+        if not self._takt.isActive():
+            self._takt.start(int(tb_dienst.ABSTAND_MINUTEN * 60 * 1000))
+        # Immer gleich einmal abholen, auch wenn der Takt schon lief:
+        # Beim ersten Speichern ist Thunderbird oft noch offen, dann
+        # unterbleibt die Abholung zu Recht. Wer es danach schließt und
+        # erneut speichert, stünde sonst bis zum nächsten Tick da -
+        # Haken gesetzt und trotzdem nichts aktueller.
         self.oeffne_fenster()
 
     def aus(self) -> None:
