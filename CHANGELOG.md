@@ -1,5 +1,18 @@
 # Änderungsprotokoll
 
+## Unveröffentlicht
+
+**Dokumentation**
+
+- Die Anleitung beschreibt die Abschlusszeile der beiden Tage-Ansichten
+  und sagt bei jeder Ansicht, wie weit ihr Zeitraum reicht. Der Hinweis
+  selbst steckt schon in 1.7.2, die Erklärung dazu kommt erst mit dieser
+  Fassung ins Paket.
+- Unter dem Bild der Einstellungen steht, dass die Aufnahme älter ist
+  als der Text daneben - „Terminquelle", Kalenderauswahl und der Knopf
+  zum Abonnieren fehlen darauf noch. Der Hinweis fliegt wieder raus,
+  sobald die Bildschirmfotos neu aufgenommen sind.
+
 ## 1.7.2 – 2026-11-04
 
 **Geändert**

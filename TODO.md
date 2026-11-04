@@ -9,7 +9,9 @@
       Profil über `tests/hilfe.py` bauen, `profil` in den Einstellungen
       darauf zeigen lassen, mit `spectacle -f -b -n -o` aufnehmen und
       über die KWin-Fensterliste zuschneiden. Niemals mit echten
-      Terminen.
+      Terminen. Beim Austausch den Kursiv-Hinweis unter dem
+      Einstellungsbild in der Anleitung wieder entfernen - er erklärt
+      nur, warum die Aufnahme älter ist als der Text.
 
 - [ ] Unter Xfce die einzelnen Schalter einzeln prüfen (Position sperren,
       hinter anderen Fenstern, nicht in der Fensterleiste). Der

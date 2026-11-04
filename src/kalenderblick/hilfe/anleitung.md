@@ -143,6 +143,10 @@ Zweiter Reiter im Hauptfenster:
 
 <img src="bilder/hauptfenster_einstellungen.png" alt="Hauptfenster, Reiter Einstellungen" width="340">
 
+*Die Aufnahme stammt aus einer früheren Fassung: „Terminquelle", die
+Kalenderauswahl und der Knopf zum Abonnieren kamen erst mit 1.6.0 und
+1.7.0 dazu. Die Tabelle unten ist auf dem Stand von 1.7.2.*
+
 **Schreibtisch-Widget**
 
 | Schalter | Bedeutung |
@@ -211,6 +215,12 @@ Jede Ansicht gibt es in Dark- und Light-Mode. Der Kasten ist bei allen
 Ansichten nur so groß wie der Inhalt - bei wenig Terminen bleibt kein
 durchscheinender Leerraum stehen.
 
+Die beiden Tage-Ansichten schließen mit einer Zeile ab, die das Ende
+ihres Zeitraums nennt („bis 17.11. keine weiteren"). Liegt im Zeitraum
+überhaupt nichts, steht stattdessen mittig im Kasten, bis wann geschaut
+wurde und wann der nächste Termin ansteht. So ist ein leeres Widget als
+Auskunft erkennbar und nicht als Fehler.
+
 **Uhr + Datum** - Wochentag, Uhrzeit, Datum, sonst nichts:
 
 <img src="bilder/uhr_dunkel.png" alt="Uhr-Ansicht, Dark-Mode" width="220">
@@ -223,14 +233,15 @@ anstehenden, bereits vergangene Termine des Tages fallen raus:
 <img src="bilder/naechste3_hell.png" alt="Nächste 3 Termine, Light-Mode" width="260">
 
 **Nächste 7 Tage** - alle Termine der kommenden Woche, nach Tagen
-gruppiert:
+gruppiert, bis einschließlich des siebten Tages:
 
 <img src="bilder/woche_dunkel.png" alt="Nächste 7 Tage, Dark-Mode" width="300">
 <img src="bilder/woche_hell.png" alt="Nächste 7 Tage, Light-Mode" width="300">
 
 **Nächste 14 Tage** - wie oben, nur zwei Wochen weit. Bei viel Inhalt
 stößt der Kasten an die eingestellte Größen-Obergrenze; der Rest lässt
-sich mit dem Mausrad durchscrollen:
+sich mit dem Mausrad durchscrollen. Umgekehrt kann hier weniger stehen
+als im Reiter „Termine", der immer einen ganzen Monat zeigt:
 
 <img src="bilder/14tage_dunkel.png" alt="Nächste 14 Tage, Dark-Mode" width="300">
 <img src="bilder/14tage_hell.png" alt="Nächste 14 Tage, Light-Mode" width="300">
