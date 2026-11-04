@@ -364,6 +364,22 @@ class _KalenderUebersicht(QScrollArea):
             kennzeichen.append("nur lesen")
         if kennzeichen:
             teile.append(", ".join(kennzeichen))
+        # Der häufigste Stolperstein: Ein entfernter Kalender in
+        # Thunderbird wird nur abgeholt, solange Thunderbird läuft. Wer
+        # es selten öffnet, wundert sich über fehlende Termine und sucht
+        # den Fehler bei KALENDERBlick.
+        #
+        # Bewusst nur für Thunderbird/Betterbird: Evolution bringt mit
+        # dem Data Server einen eigenen Hintergrunddienst mit, der auch
+        # ohne geöffnetes Fenster abholen kann. Ungeprüft - deshalb hier
+        # keine Aussage darüber, statt einer womöglich falschen.
+        if kal.ist_fern and isinstance(kal, thunderbird.Kalender):
+            teile.append("")
+            teile.append("Wird nur abgeholt, solange Thunderbird läuft.\n"
+                         "Bei geschlossenem Programm bleibt der Stand\n"
+                         "stehen - siehe Hilfe, „Wann kommen neue\n"
+                         "Termine an?\".")
+
         teile.append("")
         teile.append("Haken entfernen, um diesen Kalender in KALENDERBlick\n"
                      "auszublenden - im Kalenderprogramm bleibt er sichtbar.")

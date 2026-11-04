@@ -194,6 +194,39 @@ ruft ihn dann selbst ab, höchstens alle 30 Minuten. Abonnierte Kalender
 erscheinen in der Liste unter „Abonniert“ und lassen sich dort mit dem
 Kreuz wieder entfernen; beim Anbieter ändert sich dadurch nichts.
 
+### Wann kommen neue Termine an?
+
+Das hängt davon ab, wer den Kalender abholt:
+
+| Kalender liegt in | neue Termine erscheinen |
+|---|---|
+| Thunderbird oder Betterbird, örtlich gespeichert | sofort, sobald das Programm sie geschrieben hat |
+| Thunderbird oder Betterbird, entfernt (CalDAV oder ICS) | erst wenn **das Programm läuft** und abgeholt hat - es ist kein Hintergrunddienst, bei geschlossenem Programm bleibt die Datei stehen |
+| Evolution oder GNOME Kalender | nicht geprüft: Evolution bringt mit dem Data Server einen eigenen Hintergrunddienst mit, der möglicherweise auch ohne geöffnetes Fenster abholt |
+| in KALENDERBlick abonniert | unabhängig von jedem Kalenderprogramm, höchstens alle 30 Minuten |
+
+Für Betterbird gilt dasselbe wie für Thunderbird - es ist derselbe
+Programmkern mit demselben Profil.
+
+Wer sein Kalenderprogramm selten öffnet, aber trotzdem aktuelle Termine
+sehen will, abonniert den Kalender besser unmittelbar hier. Das geht
+allerdings nur mit iCalendar-Adressen (`https://…`, oft auf `.ics`
+endend); das CalDAV-Protokoll beherrscht KALENDERBlick nicht. Manche
+Anbieter stellen für denselben Kalender beides bereit - dann ist die
+iCalendar-Adresse die richtige.
+
+Welcher Art ein Kalender ist, steht im Mauszeiger-Hinweis in der Liste
+darüber oder in der Ausgabe von `kalenderblick kalender`. Die Adresse
+eines in Thunderbird eingebundenen ICS-Kalenders lässt sich von dort
+übernehmen - sie steht in den Eigenschaften des Kalenders.
+
+**Dabei den Kalender in Thunderbird abwählen.** Steht derselbe Kalender
+sowohl in Thunderbird als auch unter „Abonniert", liest KALENDERBlick
+ihn zweimal und zeigt jeden Termin doppelt - die Quellen werden
+zusammengeführt, ohne auf Dubletten zu prüfen. In der Kalenderliste
+lässt sich der Haken beim Thunderbird-Eintrag entfernen; in Thunderbird
+selbst bleibt dann alles, wie es war.
+
 Jeder Kalender hat ein **Ankreuzfeld**: Abgewählte erscheinen weder im
 Schreibtischwidget noch in der Terminliste. Das betrifft ausschließlich
 die Anzeige in KALENDERBlick - in Thunderbird beziehungsweise Evolution

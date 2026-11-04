@@ -2,12 +2,25 @@
 
 ## Unveröffentlicht
 
+**Geändert**
+
+- In der Kalenderliste steht bei entfernten Thunderbird-Kalendern im
+  Mauszeiger-Hinweis, dass sie nur abgeholt werden, solange Thunderbird
+  läuft. Wer sein Kalenderprogramm selten öffnet, suchte den Fehler
+  sonst bei KALENDERBlick.
+
 **Dokumentation**
 
 - Die Anleitung beschreibt die Abschlusszeile der beiden Tage-Ansichten
   und sagt bei jeder Ansicht, wie weit ihr Zeitraum reicht. Der Hinweis
   selbst steckt schon in 1.7.2, die Erklärung dazu kommt erst mit dieser
   Fassung ins Paket.
+- Neuer Abschnitt „Wann kommen neue Termine an?": Entfernte Kalender in
+  Thunderbird werden nur abgeholt, solange Thunderbird läuft - es ist
+  kein Hintergrunddienst. Wer sein Kalenderprogramm selten öffnet, fährt
+  mit einem unmittelbaren Abonnement besser. Dazu der Hinweis, denselben
+  Kalender dann in Thunderbird abzuwählen: Die Quellen werden ohne
+  Dublettenprüfung zusammengeführt, sonst stünde jeder Termin doppelt.
 - Unter dem Bild der Einstellungen steht, dass die Aufnahme älter ist
   als der Text daneben - „Terminquelle", Kalenderauswahl und der Knopf
   zum Abonnieren fehlen darauf noch. Der Hinweis fliegt wieder raus,
