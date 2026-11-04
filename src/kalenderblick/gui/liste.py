@@ -342,8 +342,19 @@ class TerminListe(QWidget):
                 item.widget().deleteLater()
 
         gefiltert = self._filtere()
+        ende = self._zeitraum_ende()
+
         if not gefiltert:
-            leer = QLabel("Keine Termine im gewählten Zeitraum.")
+            text = ("Keine Termine." if ende is None
+                    else f"Bis {ende:%d.%m.} keine Termine.")
+            # Ein leeres Feld sagt nichts darüber aus, ob überhaupt noch
+            # etwas kommt. Liegt der nächste Termin nur knapp hinter dem
+            # Zeitraum, ist genau das die Auskunft, die fehlt.
+            weiter = self._naechster_danach(ende)
+            if weiter is not None:
+                text += f"\n\nNächster Termin am {weiter.tag:%d.%m.}:\n{weiter.titel}"
+            leer = QLabel(text)
+            leer.setWordWrap(True)
             leer.setStyleSheet(
                 f"font-size: {self._schrift}pt; color: {self._farben['gedaempft']}; padding: 8px;")
             leer.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -353,6 +364,45 @@ class TerminListe(QWidget):
         for tag, eintraege in nach_tagen(gefiltert):
             block = _TagesBlock(tag, eintraege, self._schrift, self._farben)
             self._inhalt_layout.insertWidget(self._inhalt_layout.count() - 1, block)
+
+        # Abschlusszeile mit dem Ende des Zeitraums. Ohne sie wirkt die
+        # leere Fläche unter dem letzten Eintrag wie ein Fehler - gerade
+        # wenn das Hauptfenster gleichzeitig weiter reicht, weil es dem
+        # "Vorausblick" folgt und nicht der hier gewählten Ansicht.
+        if ende is not None:
+            text = f"bis {ende:%d.%m.} keine weiteren"
+            weiter = self._naechster_danach(ende)
+            if weiter is not None:
+                text += f" · nächster {weiter.tag:%d.%m.}"
+            fuss = QLabel(text)
+            fuss.setWordWrap(True)
+            fuss.setStyleSheet(
+                f"font-size: {max(7, self._schrift - 1)}pt; "
+                f"color: {self._farben['gedaempft']}; padding: 4px 8px 8px 8px;")
+            fuss.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self._inhalt_layout.insertWidget(self._inhalt_layout.count() - 1, fuss)
+
+    def _naechster_danach(self, ende: date | None) -> Termin | None:
+        """Der erste Termin hinter dem Zeitraum - sofern er überhaupt
+        geladen wurde. Geladen wird nach „Vorausblick", mindestens aber
+        die weiteste Ansicht; was darüber hinaus liegt, ist hier nicht
+        bekannt und bleibt dann unerwähnt.
+        """
+        if ende is None:
+            return None
+        spaeter = [t for t in self._termine if t.tag > ende]
+        return min(spaeter, key=lambda t: t.beginn) if spaeter else None
+
+    def _zeitraum_ende(self) -> date | None:
+        """Letzter Tag, den die gewählte Ansicht abdeckt.
+
+        None bei „nächste 3", weil dort kein Zeitraum gilt, sondern eine
+        Anzahl.
+        """
+        tage = ANSICHT_TAGE.get(self._ansicht)
+        if not tage:
+            return None
+        return date.today() + timedelta(days=tage - 1)
 
     def _filtere(self) -> list[Termin]:
         jetzt = datetime.now()

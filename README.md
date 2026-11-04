@@ -17,9 +17,9 @@ Kalenderprogramm einrichten will, kann einen Kalender auch unmittelbar
 über seine iCalendar-Adresse abonnieren.
 
 Erprobt auf Arch/Manjaro mit KDE Plasma (Wayland), auf Debian mit
-Cinnamon (X11) und auf Debian 13 mit GNOME (Wayland). Den vollen
-Funktionsumfang gibt es unter KDE Plasma – was unter den anderen
-Arbeitsumgebungen anders ist, steht weiter unten.
+Cinnamon (X11), auf Debian 13 mit GNOME (Wayland) und auf Debian mit
+Xfce (X11). Den vollen Funktionsumfang gibt es unter KDE Plasma – was
+unter den anderen Arbeitsumgebungen anders ist, steht weiter unten.
 
 ## Warum nicht einfach Rainlendar oder ein Plasma-Widget?
 
@@ -135,13 +135,13 @@ anderen entfernten Kalender einstellen; `kalenderblick kalender` zeigt sie an.
 Wie sich ein Fenster verhalten darf, entscheidet nicht das Programm,
 sondern die Arbeitsumgebung. Daher die Unterschiede:
 
-| | KDE Plasma (Wayland) | Cinnamon (X11) | GNOME (Wayland) |
-|---|---|---|---|
-| Leistensymbol | ✓ | ✓ | braucht `gnome-shell-extension-appindicator` |
-| Feste Position | ✓ über KWin-Regel | ✓ | nicht möglich |
-| Hinter allen Fenstern | ✓ | ✓ | nicht möglich |
-| Nicht in der Fensterleiste | ✓ | ✓ | nicht möglich |
-| Auf allen Arbeitsflächen | ✓ | – | – |
+| | KDE Plasma (Wayland) | Cinnamon (X11) | Xfce (X11) | GNOME (Wayland) |
+|---|---|---|---|---|
+| Leistensymbol | ✓ | ✓ | ✓ | braucht `gnome-shell-extension-appindicator` |
+| Feste Position | ✓ über KWin-Regel | ✓ | ✓ | nicht möglich |
+| Hinter allen Fenstern | ✓ | ✓ | ✓ | nicht möglich |
+| Nicht in der Fensterleiste | ✓ | ✓ | ✓ | nicht möglich |
+| Auf allen Arbeitsflächen | ✓ | – | – | – |
 
 **KDE Plasma:** „Hinter anderen bleiben", „nicht in der Fensterleiste"
 und „auf allen Arbeitsflächen" setzt KALENDERBlick selbst über ein kurzes
@@ -153,8 +153,11 @@ Fertig mitgeliefert, aber optional:
 `packaging/kalenderblick.kwinrule` (Startposition und -größe, einzuspielen
 über Systemeinstellungen → Fensterverwaltung → Fensterregeln → Importieren).
 
-**Cinnamon/X11:** Hier darf sich das Fenster selbst positionieren, es
-braucht also keine Regel.
+**Cinnamon und Xfce (X11):** Hier darf sich das Fenster selbst
+positionieren, es braucht also keine Regel. Beide laufen über denselben
+X11-Weg; die Haken in der Tabelle gelten für das, was X11 dem Programm
+erlaubt - unter Xfce ist bisher der Grundbetrieb erprobt, die einzelnen
+Schalter noch nicht jeder für sich.
 
 **GNOME/Wayland:** Es gibt keine Schnittstelle für Fensterposition oder
 Stapelreihenfolge - das Schreibtischfenster verhält sich wie jedes andere

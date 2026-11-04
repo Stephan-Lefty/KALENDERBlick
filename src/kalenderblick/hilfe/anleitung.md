@@ -37,14 +37,14 @@ lesen. Sie wird nur für dich lesbar gespeichert.
 **Manjaro, Arch**
 
 ```bash
-pamac install python-dateutil python-pyqt6 python-pipx
+pamac install python-dateutil python-icalendar python-pyqt6 python-pipx
 pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDERBlick.git
 ```
 
 **Debian, GuideOS, Ubuntu**
 
 ```bash
-sudo apt install python3-dateutil python3-pyqt6 pipx
+sudo apt install python3-dateutil python3-icalendar python3-pyqt6 pipx
 pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDERBlick.git
 ```
 
@@ -60,7 +60,8 @@ sudo apt install ./kalenderblick_*_all.deb
 ```
 
 Wichtig ist `apt install ./…` und **nicht** `dpkg -i`: Nur apt holt die
-benötigten Pakete (`python3-dateutil`, `python3-pyqt6`) selbst dazu.
+benötigten Pakete (`python3-dateutil`, `python3-icalendar`,
+`python3-pyqt6`) selbst dazu.
 
 Danach stehen zwei Befehle zur Verfügung: `kalenderblick` (Kommandozeile)
 und `kalenderblick-fenster` (nur das Hauptfenster, ohne Leistensymbol und
@@ -87,7 +88,7 @@ cat > ~/.local/share/applications/kalenderblick.desktop << 'EOF'
 [Desktop Entry]
 Type=Application
 Name=KALENDERBlick
-Comment=Thunderbirds Termine auf dem Schreibtisch und in der Kontrollleiste
+Comment=Termine auf dem Schreibtisch und in der Kontrollleiste
 Exec=kalenderblick start
 Icon=kalenderblick
 Terminal=false
@@ -114,6 +115,10 @@ mit Art und Abholfrequenz - das sollten echte, bekannte Kalendernamen
 sein. Wenn hier nichts oder das falsche Profil erscheint, lässt sich ein
 bestimmtes Profil von Hand vorgeben (siehe Abschnitt „Kalenderquellen"
 weiter unten).
+
+Diese beiden Befehle sehen nur in Thunderbird nach. Evolution, GNOME
+Kalender und abonnierte Kalender erscheinen nicht hier, sondern im
+Programm selbst unter „Einstellungen → Kalenderquellen".
 
 ## 5. Starten
 
@@ -144,7 +149,7 @@ Zweiter Reiter im Hauptfenster:
 |---|---|
 | Schreibtisch-Widget anzeigen | Ob überhaupt ein Fenster auf dem Schreibtisch liegt. Wirkt sofort beim Speichern; das Leistensymbol bleibt davon unberührt. |
 | Größe | Fünf Stufen von „Sehr klein" bis „Sehr groß". Gesteuert wird damit die Breite des Fensters; die Höhe richtet sich immer nach dem Inhalt - so weit, wie Termine da sind, höchstens bis zum Bildschirmrand. Bei der Uhr-Ansicht steuert die Größe stattdessen die Schriftgröße („Sehr klein" ergibt rund 100 × 110 Pixel, gedacht für ältere Geräte mit 1920er Auflösung). |
-| Ansicht | Welche der vier Ansichten unten gezeigt wird. |
+| Ansicht | Welche der vier Ansichten unten gezeigt wird. Sie bestimmt zugleich den Zeitraum: „Nächste 7 Tage" reicht bis einschließlich des siebten Tages, „Nächste 14 Tage" bis zum vierzehnten - jeweils mit dem heutigen Tag als erstem. Der Reiter „Termine" in diesem Fenster zeigt davon unabhängig immer einen ganzen Monat, weshalb dort mehr stehen kann als im Widget. |
 | Transparenz | Wie durchsichtig der Hintergrund ist - 0 % nur Schrift, 100 % voll deckend. |
 | Erscheinungsbild | Dark-Mode (weiße Schrift) oder Light-Mode (schwarze Schrift) - wirkt nur auf das Widget, nicht auf dieses Fenster. |
 | Stundenformat | 24 Stunden oder 12 Stunden mit AM/PM - nur für die Uhr-Ansicht. |
@@ -157,7 +162,8 @@ Zweiter Reiter im Hauptfenster:
 
 | Schalter | Bedeutung |
 |---|---|
-| Aktualisierung | Wie oft die Oberfläche Thunderbirds Daten neu einliest. Ersetzt nicht Thunderbirds eigene Abholfrequenz für entfernte Kalender - erst wenn Thunderbird selbst abgeholt hat, gibt es hier etwas Neues zu sehen. |
+| Terminquelle | Aus welchem Kalenderprogramm gelesen wird: alles, was gefunden wird, oder gezielt nur Thunderbird/Betterbird beziehungsweise nur Evolution/GNOME Kalender. Abonnierte Kalender kommen unabhängig davon immer dazu. |
+| Aktualisierung | Wie oft die Oberfläche die Daten neu einliest. Bei Thunderbird und Evolution ersetzt das nicht deren eigene Abholfrequenz - erst wenn das Kalenderprogramm selbst abgeholt hat, gibt es hier etwas Neues zu sehen. Abonnierte Kalender ruft KALENDERBlick selbst ab, höchstens alle 30 Minuten. |
 | Beim Anmelden automatisch starten | Legt eine `.desktop`-Datei in `~/.config/autostart/` an oder entfernt sie wieder. |
 
 **Kalenderquellen** - ganz unten: Zuoberst lässt sich wählen, woher die
@@ -252,8 +258,8 @@ KALENDERBlick selbst über ein kurzes KWin-Skript, sobald das Widget
 erscheint. Dafür ist keine Regel nötig, das funktioniert unabhängig davon,
 wie das Programm gestartet wurde.
 
-Unter X11 (z. B. Cinnamon) braucht es keine Regel, KALENDERBlick
-positioniert sich dort selbst.
+Unter X11 (z. B. Cinnamon oder Xfce) braucht es keine Regel,
+KALENDERBlick positioniert sich dort selbst.
 
 ## 10. GNOME
 
@@ -284,7 +290,10 @@ einer Sitzung.
 |---|---|
 | Kein Termin zu sehen | `kalenderblick pruefen` und `kalenderblick kalender` - zeigt, welches Profil gefunden wurde und ob Kalender abgeschaltet sind. |
 | Falsches oder gar kein Profil gefunden | Unter „Einstellungen → Kalenderquellen“ auf „Profilordner auswählen …“ - oder auf der Kommandozeile: `kalenderblick einstellungen --profil /pfad/zum/profil`. |
-| Abonnierter Kalender hinkt hinterher | Das ist Thunderbirds eigene Abholfrequenz, nicht KALENDERBlicks Aktualisierung - siehe „Kalenderquellen" in den Einstellungen. |
+| Kalender hinkt hinterher | Bei Thunderbird und Evolution ist das deren eigene Abholfrequenz, nicht KALENDERBlicks Aktualisierung - siehe „Kalenderquellen" in den Einstellungen. Direkt abonnierte Kalender holt KALENDERBlick höchstens alle 30 Minuten. |
 | Widget bleibt unsichtbar | In den Einstellungen „Schreibtisch-Widget anzeigen" einschalten und KALENDERBlick neu starten. |
+| Widget fast leer, Hauptfenster voll | Kein Fehler: Das Widget zeigt nur den Zeitraum der gewählten Ansicht (7 oder 14 Tage), der Reiter „Termine" dagegen einen ganzen Monat. Liegt im Zeitraum nichts mehr, nennt das Widget unten das Datum, bis zu dem es schaut, und den nächsten Termin dahinter. |
+| Termine aus Evolution fehlen | Prüfen, ob unter „Terminquelle" nicht versehentlich „Nur Thunderbird / Betterbird" eingestellt ist. |
+| Abonnierter Kalender zeigt nichts | Die Adresse muss auf eine iCalendar-Datei zeigen (endet meist auf `.ics`). Bei Google ist es die **private** Adresse, nicht die öffentliche. |
 | Kein Symbol in der Leiste (GNOME) | Die Erweiterung `gnome-shell-extension-appindicator` installieren und sich einmal neu anmelden - siehe Abschnitt 10. |
 | Zweites Fenster lässt sich nicht öffnen | KALENDERBlick läuft schon - ein Blick ins Leistensymbol genügt, ein zweiter gleichzeitiger Start ist bewusst gesperrt. |

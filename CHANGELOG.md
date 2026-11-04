@@ -1,5 +1,34 @@
 # Änderungsprotokoll
 
+## Unveröffentlicht
+
+**Geändert**
+
+- Das Schreibtisch-Widget sagt jetzt, wie weit es schaut. Unter dem
+  letzten Eintrag steht das Enddatum der gewählten Ansicht, und liegt im
+  Zeitraum gar nichts, nennt es zusätzlich den nächsten Termin dahinter.
+  Vorher wirkte ein fast leeres Widget wie ein Fehler, obwohl es nur den
+  kürzeren Zeitraum zeigte: Die Ansicht „14 Tage" endet am vierzehnten
+  Tag, der Reiter „Termine" zeigt dagegen immer einen ganzen Monat.
+- Die Kommandozeile liest dieselben Quellen wie die Oberfläche. `liste`,
+  `naechster` und `kalender` sahen bisher nur in Thunderbird nach und
+  übergingen Evolution, GNOME Kalender und die Abonnements - wer sie zur
+  Fehlersuche benutzte, bekam dadurch ein falsches Bild.
+
+**Behoben**
+
+- `kalender` brach mit einem Fehler ab, sobald ein Kalender aus Evolution
+  oder ein Abonnement dabei war: Die Ausgabe erwartete ein Merkmal, das
+  es nur bei Thunderbird gibt.
+
+**Dokumentation**
+
+- Die Installationsbefehle nannten `python-icalendar` nicht, obwohl es
+  seit Fassung 1.6.0 gebraucht wird. Die fertigen Pakete führen es
+  ohnehin mit; betroffen war nur, wer den Anweisungen von Hand folgte.
+- Xfce als vierte erprobte Arbeitsumgebung aufgenommen.
+- „Terminquelle" fehlte in der Übersicht der Einstellungen.
+
 ## 1.7.1 – 2026-11-03
 
 **Geändert**

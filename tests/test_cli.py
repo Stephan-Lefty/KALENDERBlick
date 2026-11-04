@@ -111,3 +111,38 @@ def test_symbole_sind_im_paket():
     # kleinere Anforderung bekommt die nächstgrößere Datei
     assert bilder.symbol_datei(20).name == "symbol-22.png"
     assert bilder.symbol_datei(1000).name == "symbol-512.png"
+
+
+# ----------------------------------------------------------------------
+#  Kommandozeile und Oberfläche müssen dieselben Quellen lesen
+# ----------------------------------------------------------------------
+
+def test_liste_zeigt_auch_evolution_termine(heim, capsys):
+    """Die Kommandozeile las lange nur Thunderbird, während die
+    Oberfläche längst alle Quellen zusammenführte. Wer `liste` zur
+    Fehlersuche benutzte, bekam dadurch ein falsches Bild."""
+    pytest.importorskip("icalendar")
+    from hilfe_evolution import EvolutionAblage
+    from kalenderblick import cli
+
+    heute = date.today()
+    a = EvolutionAblage(heim)
+    a.lege_kalender_an("ev001", "Evolution-Kalender")
+    a.termin("ev001", "e1", "Aus Evolution",
+             datetime(heute.year, heute.month, heute.day, 14, 0),
+             datetime(heute.year, heute.month, heute.day, 15, 0))
+
+    assert cli.main(["liste"]) == 0
+    assert "Aus Evolution" in capsys.readouterr().out
+
+
+def test_kalender_zeigt_auch_evolution(heim, capsys):
+    pytest.importorskip("icalendar")
+    from hilfe_evolution import EvolutionAblage
+    from kalenderblick import cli
+
+    a = EvolutionAblage(heim)
+    a.lege_kalender_an("ev001", "Evolution-Kalender")
+
+    assert cli.main(["kalender"]) == 0
+    assert "Evolution-Kalender" in capsys.readouterr().out

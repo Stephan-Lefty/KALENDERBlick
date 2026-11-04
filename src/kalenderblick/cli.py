@@ -10,7 +10,7 @@ from pathlib import Path
 
 from . import NAME, __version__
 from . import config as konfig_modul
-from . import paths, thunderbird
+from . import paths, quellen, thunderbird
 from .config import KonfigFehler
 from .modell import kurzfassung, nach_tagen, naechster, tagesueberschrift
 
@@ -114,9 +114,15 @@ def befehl_pruefen(args) -> int:
 
 
 def befehl_kalender(args) -> int:
-    """Welche Kalender gibt es, und wie oft wird abgeglichen?"""
-    profil = _profil(args)
-    kalender = thunderbird.lies_kalender(profil)
+    """Welche Kalender gibt es, und wie oft wird abgeglichen?
+
+    Über alle Quellen hinweg - sonst zeigte die Kommandozeile etwas
+    anderes als die Oberfläche.
+    """
+    e = konfig_modul.laden()
+    kalender = quellen.lies_kalender(
+        quelle=e.quelle,
+        profil_vorgabe=getattr(args, "profil", "") or e.profil)
     if not kalender:
         _schreib("Keine Kalender gefunden.")
         return 1
@@ -126,7 +132,8 @@ def befehl_kalender(args) -> int:
         kennzeichen = []
         if eintrag.abgeschaltet:
             kennzeichen.append("abgeschaltet")
-        if eintrag.nur_lesen:
+        # „nur lesen" kennt nur Thunderbird; Evolution und Abos nicht
+        if getattr(eintrag, "nur_lesen", False):
             kennzeichen.append("nur lesen")
         zusatz = ("  [" + ", ".join(kennzeichen) + "]") if kennzeichen else ""
         _schreib(f"{eintrag.name or eintrag.kennung}{zusatz}")
@@ -144,17 +151,17 @@ def befehl_kalender(args) -> int:
         _schreib(f"   Kennung:  {eintrag.kennung}")
         _schreib()
 
-    _schreib("Hinweis: „zuletzt geschrieben\" ist der Zeitpunkt, an dem Thunderbird")
-    _schreib("zuletzt etwas in die Datei geschrieben hat - also der letzte Abgleich,")
-    _schreib("bei dem sich auch wirklich etwas geändert hat.")
+    _schreib("Hinweis: „zuletzt geschrieben\" ist der Zeitpunkt, an dem das")
+    _schreib("Kalenderprogramm zuletzt etwas in die Datei geschrieben hat - also")
+    _schreib("der letzte Abgleich, bei dem sich auch wirklich etwas geändert hat.")
     return 0
 
 
 def befehl_liste(args) -> int:
     e = konfig_modul.laden()
-    profil = _profil(args)
-    termine = thunderbird.lies_termine(
-        profil,
+    termine = quellen.lies_termine(
+        quelle=e.quelle,
+        profil_vorgabe=getattr(args, "profil", "") or e.profil,
         tage_voraus=args.tage or e.tage_voraus,
         tage_zurueck=e.tage_zurueck,
         versteckt=e.versteckte_kalender,
@@ -183,9 +190,10 @@ def befehl_liste(args) -> int:
 
 def befehl_naechster(args) -> int:
     e = konfig_modul.laden()
-    profil = _profil(args)
-    termine = thunderbird.lies_termine(
-        profil, tage_voraus=e.tage_voraus, versteckt=e.versteckte_kalender)
+    termine = quellen.lies_termine(
+        quelle=e.quelle,
+        profil_vorgabe=getattr(args, "profil", "") or e.profil,
+        tage_voraus=e.tage_voraus, versteckt=e.versteckte_kalender)
     _schreib(kurzfassung(naechster(termine)))
     return 0
 
