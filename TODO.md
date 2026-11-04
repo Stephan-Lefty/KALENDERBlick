@@ -11,6 +11,13 @@
       über die KWin-Fensterliste zuschneiden. Niemals mit echten
       Terminen.
 
+- [ ] Unter Xfce die einzelnen Schalter einzeln prüfen (Position sperren,
+      hinter anderen Fenstern, nicht in der Fensterleiste). Der
+      Grundbetrieb läuft seit 04.11.2026; die Haken in der README-Tabelle
+      stehen dort bisher nur, weil Xfce denselben X11-Weg nutzt wie
+      Cinnamon - nachgemessen ist keiner davon.
+
+
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
 - [x] Fassungen 1.1.1 bis 1.3.0 an einem Vormittag (03.11.2026), alle
@@ -198,9 +205,3 @@
 - [x] Hilfe-Zugang in der Oberfläche: Reiter „Hilfe" mit der
       mitgelieferten Anleitung samt Bildschirmfotos, dazu ein Knopf, der
       sie als HTML im Browser öffnet (1.3.0)
-
-- [ ] Unter Xfce die einzelnen Schalter einzeln prüfen (Position sperren,
-      hinter anderen Fenstern, nicht in der Fensterleiste). Der
-      Grundbetrieb läuft seit 04.11.2026; die Haken in der README-Tabelle
-      stehen dort bisher nur, weil Xfce denselben X11-Weg nutzt wie
-      Cinnamon - nachgemessen ist keiner davon.
