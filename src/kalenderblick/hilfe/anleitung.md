@@ -87,6 +87,23 @@ Danach stehen zwei Befehle zur Verfügung: `kalenderblick` (Kommandozeile)
 und `kalenderblick-fenster` (nur das Hauptfenster, ohne Leistensymbol und
 Schreibtischwidget).
 
+### Aus einem Arbeitsordner statt von GitHub
+
+Wer das Projekt ausgecheckt hat und einen eigenen Stand ausprobieren
+will, gibt statt der Adresse den Ordner an:
+
+```bash
+pipx uninstall kalenderblick
+pipx install --system-site-packages /pfad/zum/kalenderblick
+```
+
+Erst entfernen, dann neu einspielen: `pipx install --force` scheitert,
+wenn pipx im Hintergrund `uv` benutzt - das legt keine Umgebung über
+eine bestehende und bricht mit „a virtual environment already exists"
+ab. `--system-site-packages` darf dabei nicht fehlen, sonst findet die
+neue Umgebung PyQt6 nicht, und es gibt weder Fenster noch
+Leistensymbol - nur die Befehle für die Kommandozeile.
+
 ## 3. Menüeintrag und Symbole einrichten
 
 `pipx install` legt nur die beiden Befehle an, keinen Eintrag im

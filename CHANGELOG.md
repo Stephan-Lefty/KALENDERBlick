@@ -2,6 +2,14 @@
 
 ## Unveröffentlicht
 
+**Dokumentation**
+
+- Die Anleitung erklärt, wie man aus einem Arbeitsordner statt von
+  GitHub installiert - samt der beiden Stolpersteine: `--force`
+  scheitert, wenn pipx im Hintergrund `uv` benutzt, und ohne
+  `--system-site-packages` fehlt PyQt6, womit Fenster und
+  Leistensymbol wegfallen.
+
 **Neu**
 
 - Schalter **„Thunderbird im Hintergrund mitlaufen lassen"**. Thunderbird
