@@ -27,12 +27,13 @@ Dienst weiterläuft. Thunderbird und Betterbird tun das nur, solange
 das Programm läuft – danach bleibt der Stand stehen. Angezeigt wird in
 beiden Fällen ohne geöffnetes Programm.
 
-Für Thunderbird lässt sich das abschalten: Der Schalter „Thunderbird im
-Hintergrund mitlaufen lassen“ startet es alle 30 Minuten für anderthalb
-Minuten ohne Fenster (`--headless`). Bewusst nicht durchgehend – ein
-laufender Thunderbird hält die Profilsperre, und dann öffnet ein Klick
-auf Thunderbird gar kein Fenster mehr. In den kurzen Abholfenstern ist
-das derselbe Effekt, nur selten genug, um nicht zu stören.
+Für Thunderbird und Betterbird lässt sich das abschalten: Der Schalter
+„Thunderbird/Betterbird im Hintergrund mitlaufen lassen“ startet das
+Programm alle 30 Minuten für 90 Sekunden ohne Fenster (`--headless`).
+Bewusst nicht durchgehend – solange es läuft, hält es die Profilsperre,
+und ein Klick darauf öffnet gar kein Fenster mehr. In den kurzen
+Abholfenstern ist das derselbe Effekt, nur selten genug, um nicht zu
+stören.
 
 Erprobt auf Arch/Manjaro mit KDE Plasma (Wayland), auf Debian mit
 Cinnamon (X11), auf Debian 13 mit GNOME (Wayland) und auf Debian mit
@@ -41,11 +42,12 @@ unter den anderen Arbeitsumgebungen anders ist, steht weiter unten.
 
 ## Warum nicht einfach Rainlendar oder ein Plasma-Widget?
 
-Weil keines von beiden an Thunderbirds Daten kommt. Rainlendar liest
+Weil keines von beiden an die Daten von Thunderbird/Betterbird kommt.
+Rainlendar liest
 iCalendar-Dateien, das Plasma-Widget „Event Calendar" kann Google und ICS –
 Thunderbirds eigene Ablage kann keines von beiden. KALENDERBlick geht genau
 dorthin: an die SQLite-Dateien im Profil. Damit siehst du **alle** Kalender auf
-einmal, auch rein örtliche, und zwar genau so, wie Thunderbird sie kennt.
+einmal, auch rein örtliche, und zwar genau so, wie das Programm sie kennt.
 
 ## Wie es an die Daten kommt
 
@@ -64,7 +66,8 @@ nutzt denselben Ordner):
 Kalender nutzt denselben Dienst), und zwar an zwei verschiedenen Orten:
 örtliche Kalender als iCalendar-Datei unter den Daten, entfernte
 (CalDAV, Google, abonnierte Adressen) als SQLite unter dem
-Zwischenspeicher. Anders als Thunderbird holt Evolution auch dann ab,
+Zwischenspeicher. Anders als Thunderbird/Betterbird holt Evolution auch
+dann ab,
 wenn das Fenster geschlossen ist – der Dienst läuft weiter:
 
 ```
@@ -83,7 +86,8 @@ deshalb nur für den eigenen Benutzer lesbar angelegt wird.
   Ortszeit umgestellt.
 * Wiederholungen stehen als `icalString` in `cal_recurrence` und werden mit
   `dateutil` entfaltet, samt `EXDATE` und abweichenden Einzelterminen.
-* Ein laufender Thunderbird sperrt die Datei, deshalb wird vor dem Lesen eine
+* Ein laufendes Thunderbird/Betterbird sperrt die Datei, deshalb wird vor
+  dem Lesen eine
   Kopie gezogen.
 
 ## Installation
@@ -103,7 +107,8 @@ pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDE
 ```
 
 KALENDERBlick ist reines Python mit Qt und braucht außer `python-dateutil`
-und `python-icalendar` nichts weiter. Es läuft überall dort, wo Thunderbird
+und `python-icalendar` nichts weiter. Es läuft überall dort, wo
+Thunderbird/Betterbird
 oder Evolution laufen – auch als Flatpak oder Snap installiert, denn deren
 Ordner werden mitgesucht. **Betterbird** wird ebenfalls gelesen: Der Fork legt
 seine Profile in denselben Ordner `~/.thunderbird` wie Thunderbird, als
@@ -118,7 +123,7 @@ kalenderblick liste        # die nächsten Termine als Text
 ```
 
 `kalender` beantwortet die Frage, die bei einem abonnierten Proton-Kalender
-zuerst kommt: **wie oft holt Thunderbird eigentlich?**
+zuerst kommt: **wie oft holt Thunderbird/Betterbird eigentlich?**
 
 ```
 Proton
@@ -129,7 +134,7 @@ Proton
 
 Die Abholfrequenz stellst du in Thunderbird ein: Rechtsklick auf den Kalender →
 Eigenschaften → Aktualisieren. „Zuletzt geschrieben" ist der Zeitpunkt, an dem
-sich tatsächlich etwas geändert hat – holt Thunderbird ab und es gibt nichts
+sich tatsächlich etwas geändert hat – holt das Programm ab und es gibt nichts
 Neues, bleibt der Stand stehen.
 
 ## Feiertage und Ferien

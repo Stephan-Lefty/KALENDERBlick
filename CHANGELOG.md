@@ -2,6 +2,17 @@
 
 ## Unveröffentlicht
 
+**Geändert**
+
+- Überall dort, wo das Mailprogramm angesprochen wird, steht jetzt
+  „Thunderbird/Betterbird" statt nur „Thunderbird" - in der
+  Oberfläche, in der Anleitung und im README. Betterbird verhält sich
+  in jeder Hinsicht gleich, hieß aber nur an einzelnen Stellen beim
+  Namen.
+- Die Rückmeldung beim Setzen des Hakens nennt beide Zahlen und sagt,
+  dass sich das Programm in dieser Zeit nicht öffnen lässt. Den
+  Hinweis am Mauszeiger sieht nur, wer dort verharrt.
+
 **Dokumentation**
 
 - Die Anleitung erklärt, wie man aus einem Arbeitsordner statt von

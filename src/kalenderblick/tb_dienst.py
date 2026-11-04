@@ -138,8 +138,8 @@ def starte() -> tuple[bool, str]:
                        "ohne eines von beiden gibt es nichts abzuholen.")
 
     if offen_ohne_uns():
-        return True, ("Thunderbird ist bereits geöffnet und holt selbst ab. "
-                      "Der Dienst startet, sobald das Programm geschlossen wird.")
+        return True, ("Das Programm ist bereits geöffnet und holt selbst ab. "
+                      "Der Dienst startet beim nächsten Abholfenster.")
 
     paths.lege_ordner_an()
     try:

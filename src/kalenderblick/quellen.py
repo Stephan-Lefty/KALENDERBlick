@@ -159,6 +159,7 @@ def _keine_quelle_text() -> str:
         "Wer kein Kalenderprogramm nutzt, kann unter „Einstellungen → "
         "Kalenderquellen“ auch einen Kalender unmittelbar abonnieren - "
         "etwa über die private Adresse eines Google-Kalenders. Dort "
-        "lässt sich auch ein Thunderbird-Profil von Hand auswählen, falls "
+        "lässt sich auch ein Profil von Thunderbird/Betterbird von Hand "
+        "auswählen, falls "
         "es an einer ungewöhnlichen Stelle liegt."
     )

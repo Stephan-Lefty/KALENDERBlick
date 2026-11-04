@@ -375,8 +375,8 @@ class _KalenderUebersicht(QScrollArea):
         # keine Aussage darüber, statt einer womöglich falschen.
         if kal.ist_fern and isinstance(kal, thunderbird.Kalender):
             teile.append("")
-            teile.append("Wird nur abgeholt, solange Thunderbird läuft.\n"
-                         "Bei geschlossenem Programm bleibt der Stand\n"
+            teile.append("Wird nur abgeholt, solange Thunderbird/Betterbird\n"
+                         "läuft. Bei geschlossenem Programm bleibt der Stand\n"
                          "stehen - siehe Hilfe, „Wann kommen neue\n"
                          "Termine an?\".")
 
@@ -555,10 +555,11 @@ class _EinstellungenReiter(QWidget):
         self._interval.setValue(e.aktualisierung_minuten)
         self._interval.setSuffix(" Minuten")
         self._interval.setToolTip(
-            "Wie oft die Oberfläche Thunderbirds Kalenderdaten neu einliest.\n"
-            "Ersetzt nicht Thunderbirds eigene Abholfrequenz für entfernte\n"
+            "Wie oft die Oberfläche die Kalenderdaten neu einliest.\n"
+            "Ersetzt nicht die Abholfrequenz von Thunderbird/Betterbird\n"
+            "für entfernte\n"
             "Kalender (siehe „Kalenderquellen“ weiter unten) - erst wenn\n"
-            "Thunderbird selbst abgeholt hat, gibt es hier etwas Neues zu sehen.")
+            "das Programm selbst abgeholt hat, gibt es hier etwas Neues zu sehen.")
         al.addRow("Aktualisierung:", self._interval)
 
         self._autostart = QCheckBox("Beim Anmelden automatisch starten")
@@ -572,16 +573,17 @@ class _EinstellungenReiter(QWidget):
         # Dieser Schalter lässt es ohne Fenster mitlaufen - bewusst von
         # Hand, denn das kostet mehrere hundert Megabyte.
         self._tb_hintergrund = QCheckBox(
-            "Thunderbird im Hintergrund mitlaufen lassen")
+            "Thunderbird/Betterbird im Hintergrund mitlaufen lassen")
         self._tb_hintergrund.setChecked(e.tb_hintergrund)
         self._tb_hintergrund.setToolTip(
-            "Startet Thunderbird alle 30 Minuten kurz ohne Fenster, damit\n"
-            "entfernte Kalender (CalDAV, abonnierte Adressen) auch dann\n"
-            "abgeholt werden, wenn das Programm nicht geöffnet ist.\n\n"
-            "Das Fenster bleibt nur anderthalb Minuten offen: In dieser\n"
-            "Zeit hält Thunderbird die Profilsperre, ein Klick auf\n"
-            "Thunderbird öffnet dann kein Fenster. Trifft man es, hilft\n"
-            "ein zweiter Versuch eine Minute später.\n\n"
+            f"Startet Thunderbird/Betterbird alle {tb_dienst.ABSTAND_MINUTEN} "
+            "Minuten kurz ohne Fenster,\ndamit entfernte Kalender (CalDAV, "
+            "abonnierte Adressen) auch dann\nabgeholt werden, wenn das "
+            "Programm nicht geöffnet ist.\n\n"
+            f"Das Fenster bleibt nur {tb_dienst.FENSTER_SEKUNDEN} Sekunden "
+            "offen: In dieser Zeit hält\ndas Programm die Profilsperre, ein "
+            "Klick darauf öffnet dann\nkein Fenster. Trifft man es, hilft "
+            "ein zweiter Versuch\neine Minute später.\n\n"
             "Endet zusammen mit KALENDERBlick. Für Evolution unnötig -\n"
             "dessen Dienst läuft ohnehin weiter.")
         al.addRow(self._tb_hintergrund)
@@ -604,7 +606,7 @@ class _EinstellungenReiter(QWidget):
             self._quelle.setCurrentIndex(list(quellen.QUELLEN).index(jetzige))
             self._quelle.setToolTip(
                 "Aus welchen Programmen die Termine kommen. „Alles, was\n"
-                "gefunden wird“ nimmt Thunderbird und Evolution zusammen -\n"
+                "gefunden wird“ nimmt Thunderbird/Betterbird und Evolution zusammen -\n"
                 "wer beide nutzt, sieht alle Termine in einer Liste.")
             quelle_zeile = QFormLayout()
             quelle_zeile.addRow("Terminquelle:", self._quelle)
@@ -618,7 +620,7 @@ class _EinstellungenReiter(QWidget):
             knoepfe = QHBoxLayout()
             waehlen = QPushButton("Profilordner auswählen …")
             waehlen.setToolTip(
-                "Den Ordner angeben, in dem Thunderbird seine Daten ablegt -\n"
+                "Den Ordner angeben, in dem Thunderbird/Betterbird seine Daten ablegt -\n"
                 "zu erkennen an einem Unterordner namens „calendar-data“.")
             waehlen.clicked.connect(self._profil_waehlen)
             knoepfe.addWidget(waehlen)
@@ -704,14 +706,14 @@ class _EinstellungenReiter(QWidget):
                 f"Selbst gefunden: <code>{gefunden}</code>")
         except Exception:
             self._profil_text.setText(
-                "<b>Kein Thunderbird-Profil gefunden.</b> Ist Thunderbird "
+                "<b>Kein Thunderbird/Betterbird-Profil gefunden.</b> Ist das Programm "
                 "eingerichtet und liegt das Profil an einer ungewöhnlichen "
                 "Stelle, lässt es sich hier von Hand auswählen.")
 
     def _profil_waehlen(self) -> None:
         start = str(Path.home())
         ordner = QFileDialog.getExistingDirectory(
-            self, "Thunderbird-Profilordner auswählen", start)
+            self, "Profilordner von Thunderbird/Betterbird auswählen", start)
         if not ordner:
             return
 
@@ -726,7 +728,7 @@ class _EinstellungenReiter(QWidget):
             else:
                 self._status.setStyleSheet("color: #e66100;")
                 self._status.setText(
-                    "Dort liegt kein Thunderbird-Profil (kein Ordner "
+                    "Dort liegt kein Thunderbird/Betterbird-Profil (kein Ordner "
                     "„calendar-data“ darin).")
                 return
 
@@ -812,8 +814,11 @@ class _EinstellungenReiter(QWidget):
         if an:
             takt.an()
             if tb_dienst.offen_ohne_uns():
-                return "Thunderbird ist offen und holt gerade selbst ab."
-            return "Thunderbird wird alle 30 Minuten kurz abgefragt."
+                return "Das Programm ist offen und holt gerade selbst ab."
+            return (f"Thunderbird/Betterbird wird alle "
+                    f"{tb_dienst.ABSTAND_MINUTEN} Minuten für "
+                    f"{tb_dienst.FENSTER_SEKUNDEN} Sekunden abgefragt - in "
+                    "dieser Zeit lässt es sich nicht öffnen.")
         takt.aus()
         return ""
 

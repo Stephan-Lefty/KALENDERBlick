@@ -303,3 +303,31 @@ def test_fenster_wird_nach_der_frist_geschlossen(qt_app, monkeypatch):
             break
     assert "stop" in verlauf, "das Abholfenster wurde nie geschlossen"
     takt.aus()
+
+
+def test_meldung_beim_einschalten_nennt_die_einschraenkung(qt_app, monkeypatch):
+    """Den Hinweis am Haken sieht nur, wer mit der Maus darauf
+    stehenbleibt. Beim Speichern muss deshalb dastehen, dass sich
+    Thunderbird in diesen Zeitfenstern nicht öffnen lässt - sonst
+    sucht jemand später den Fehler woanders."""
+    from kalenderblick import tb_dienst
+    from kalenderblick.gui.fenster import _EinstellungenReiter
+    from kalenderblick.gui.gemeinsam import AbholTakt
+    from PyQt6.QtWidgets import QApplication
+
+    monkeypatch.setattr(tb_dienst, "offen_ohne_uns", lambda: False)
+    monkeypatch.setattr(tb_dienst, "starte", lambda: (True, ""))
+    monkeypatch.setattr(tb_dienst, "beende", lambda: (True, ""))
+
+    app = QApplication.instance()
+    takt = AbholTakt()
+    monkeypatch.setattr(app, "_abhol_takt", takt, raising=False)
+    try:
+        meldung = _EinstellungenReiter._takt_abgleichen(True)
+    finally:
+        takt.aus()
+
+    assert str(tb_dienst.ABSTAND_MINUTEN) in meldung
+    assert str(tb_dienst.FENSTER_SEKUNDEN) in meldung
+    assert "nicht öffnen" in meldung, \
+        "die Einschränkung fehlt in der Rückmeldung"
