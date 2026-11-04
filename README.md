@@ -12,9 +12,20 @@ eines davon offen zu haben. Gelesen wird ausschließlich, geschrieben nie.
 
 Online-Kalender wie Google, Nextcloud oder Proton bindet man am besten
 dort ein, wo sie hingehören – ins Kalenderprogramm; KALENDERBlick liest
-sie von dort mit und braucht selbst keine Anmeldung. Wer gar kein
-Kalenderprogramm einrichten will, kann einen Kalender auch unmittelbar
-über seine iCalendar-Adresse abonnieren.
+sie von dort mit und braucht selbst keine Anmeldung. Unter GNOME geht
+das noch bequemer über die **Online-Konten** in den Systemeinstellungen:
+Konto einmal eintragen, „Kalender“ ankreuzen – die Anmeldung samt
+OAuth2 erledigt das System, und KALENDERBlick liest den Kalender über
+den Evolution Data Server mit, der auf GNOME-Systemen ohnehin
+vorhanden ist. Wer gar kein Kalenderprogramm einrichten will, kann
+einen Kalender auch unmittelbar über seine iCalendar-Adresse
+abonnieren.
+
+Zum Aktualisieren gilt ein Unterschied: Evolution holt entfernte
+Kalender auch bei geschlossenem Fenster ab, weil sein Data Server als
+Dienst weiterläuft. Thunderbird und Betterbird tun das nur, solange
+das Programm läuft – danach bleibt der Stand stehen. Angezeigt wird in
+beiden Fällen ohne geöffnetes Programm.
 
 Erprobt auf Arch/Manjaro mit KDE Plasma (Wayland), auf Debian mit
 Cinnamon (X11), auf Debian 13 mit GNOME (Wayland) und auf Debian mit

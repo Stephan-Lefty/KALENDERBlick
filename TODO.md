@@ -20,6 +20,15 @@
       Cinnamon - nachgemessen ist keiner davon.
 
 
+- [ ] GNOME Online Konten durchspielen: Ein Konto (z. B. Google) in den
+      Systemeinstellungen eintragen, „Kalender" ankreuzen und prüfen, ob
+      KALENDERBlick die Termine anzeigt. Die Kette ist nur in Teilen
+      belegt - dass der Data Server entfernte Kalender als cache.db
+      ablegt und wir die lesen, ist seit 04.11.2026 geprüft; dass ein
+      GOA-Konto dort tatsächlich ankommt, noch nicht. Die Anleitung
+      beschreibt den Weg bereits, also möglichst bald nachholen.
+      Braucht ein GNOME-System mit evolution-data-server.
+
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
 - [x] Fassungen 1.1.1 bis 1.3.0 an einem Vormittag (03.11.2026), alle

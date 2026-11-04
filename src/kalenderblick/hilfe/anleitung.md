@@ -25,6 +25,20 @@ besten wie gewohnt in Thunderbird, Evolution oder GNOME Kalender ein -
 von dort werden sie automatisch mitgelesen, ohne dass KALENDERBlick je
 Zugangsdaten bräuchte.
 
+Unter GNOME gibt es dafür einen besonders bequemen Weg: die
+**Online-Konten** in den Systemeinstellungen. Dort trägt man das Konto
+einmal ein und wählt aus, was abgeglichen werden soll - Kalender,
+Kontakte, E-Mail. Alle Programme greifen dann darauf zu, statt jedes
+für sich eine Anmeldung zu verlangen. Die Anmeldung samt OAuth2
+erledigt das System; KALENDERBlick liest den Kalender über den
+Evolution Data Server mit, der auf GNOME-Systemen ohnehin vorhanden
+ist. Auf anderen Arbeitsumgebungen lässt er sich nachinstallieren
+(Paket `evolution-data-server`) - das Programm Evolution selbst wird
+dafür nicht gebraucht.
+
+Thunderbird nimmt daran nicht teil: Es verwaltet seine Konten
+ausschließlich selbst.
+
 Wer gar kein Kalenderprogramm einrichten möchte, kann einen Kalender
 unter „Einstellungen → Kalenderquellen“ auch **unmittelbar abonnieren**:
 Viele Anbieter stellen dafür eine Adresse im iCalendar-Format bereit, bei

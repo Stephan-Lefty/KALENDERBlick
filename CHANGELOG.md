@@ -1,5 +1,21 @@
 # Änderungsprotokoll
 
+## Unveröffentlicht
+
+**Dokumentation**
+
+- Der Weg über die **GNOME Online-Konten** ist beschrieben: Konto einmal
+  in den Systemeinstellungen eintragen, „Kalender" ankreuzen - die
+  Anmeldung samt OAuth2 erledigt das System, KALENDERBlick liest den
+  Kalender über den Evolution Data Server mit. Der ist auf
+  GNOME-Systemen ohnehin vorhanden, weil die GNOME Shell selbst von ihm
+  abhängt; das Programm Evolution wird dafür nicht gebraucht.
+  Thunderbird nimmt an diesem Verfahren nicht teil und verwaltet seine
+  Konten selbst.
+- README: Der Unterschied beim Aktualisieren steht jetzt auch dort -
+  Evolution holt bei geschlossenem Fenster ab, Thunderbird nicht.
+  Angezeigt wird in beiden Fällen ohne geöffnetes Programm.
+
 ## 1.7.3 – 2026-11-04
 
 **Behoben**
