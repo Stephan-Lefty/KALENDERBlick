@@ -98,6 +98,10 @@
       <caption>Die Einstellungen für das Schreibtischfenster</caption>
       <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/src/kalenderblick/hilfe/bilder/hauptfenster_einstellungen.png</image>
     </screenshot>
+    <screenshot>
+      <caption>Die mitgelieferte Anleitung, auch ohne Internet lesbar</caption>
+      <image>https://raw.githubusercontent.com/Stephan-Lefty/KALENDERBlick/main/src/kalenderblick/hilfe/bilder/hauptfenster_hilfe.png</image>
+    </screenshot>
   </screenshots>
 
   <url type="homepage">https://github.com/Stephan-Lefty/KALENDERBlick</url>
@@ -112,6 +116,15 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.8.1" date="2026-11-04">
+      <description>
+        <p>
+          Alle Bildschirmfotos neu aufgenommen; sie zeigten noch die
+          Oberfläche von vor einigen Fassungen. Neu dabei ist der
+          Reiter mit der mitgelieferten Anleitung.
+        </p>
+      </description>
+    </release>
     <release version="1.8.0" date="2026-11-04">
       <description>
         <p>

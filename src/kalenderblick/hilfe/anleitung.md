@@ -201,7 +201,7 @@ Zweiter Reiter im Hauptfenster:
 |---|---|
 | Terminquelle | Aus welchem Kalenderprogramm gelesen wird: alles, was gefunden wird, oder gezielt nur Thunderbird/Betterbird beziehungsweise nur Evolution/GNOME Kalender. Abonnierte Kalender kommen unabhängig davon immer dazu. |
 | Aktualisierung | Wie oft die Oberfläche die Daten neu einliest. Bei Thunderbird/Betterbird und Evolution ersetzt das nicht deren eigene Abholfrequenz - erst wenn das Kalenderprogramm selbst abgeholt hat, gibt es hier etwas Neues zu sehen. Abonnierte Kalender ruft KALENDERBlick selbst ab, höchstens alle 30 Minuten. |
-| Thunderbird/Betterbird im Hintergrund mitlaufen lassen | Startet das Programm alle 30 Minuten für anderthalb Minuten ohne Fenster, damit entfernte Kalender auch ohne geöffnetes Programm abgeholt werden. Aus, solange nichts anderes eingestellt ist. Näheres unten unter „Wann kommen neue Termine an?". |
+| Thunderbird/Betterbird im Hintergrund mitlaufen lassen | Startet das Programm alle 30 Minuten für 90 Sekunden ohne Fenster, damit entfernte Kalender auch ohne geöffnetes Programm abgeholt werden. Aus, solange nichts anderes eingestellt ist. Näheres unten unter „Wann kommen neue Termine an?". |
 | Beim Anmelden automatisch starten | Legt eine `.desktop`-Datei in `~/.config/autostart/` an oder entfernt sie wieder. |
 
 **Kalenderquellen** - ganz unten: Zuoberst lässt sich wählen, woher die
@@ -393,7 +393,7 @@ einer Sitzung.
 | Kalender hinkt hinterher | Bei Thunderbird/Betterbird und Evolution ist das deren eigene Abholfrequenz, nicht KALENDERBlicks Aktualisierung - siehe „Kalenderquellen" in den Einstellungen. Direkt abonnierte Kalender holt KALENDERBlick höchstens alle 30 Minuten. |
 | Widget bleibt unsichtbar | In den Einstellungen „Schreibtisch-Widget anzeigen" einschalten und KALENDERBlick neu starten. |
 | Widget fast leer, Hauptfenster voll | Kein Fehler: Das Widget zeigt nur den Zeitraum der gewählten Ansicht (7 oder 14 Tage), der Reiter „Termine" dagegen einen ganzen Monat. Liegt im Zeitraum nichts mehr, nennt das Widget unten das Datum, bis zu dem es schaut, und den nächsten Termin dahinter. |
-| Thunderbird/Betterbird öffnet kein Fenster | Läuft der Schalter „Thunderbird/Betterbird im Hintergrund mitlaufen lassen", ist das Programm alle 30 Minuten für anderthalb Minuten belegt. Eine Minute warten und erneut versuchen - oder den Schalter ausschalten. |
+| Thunderbird/Betterbird öffnet kein Fenster | Läuft der Schalter „Thunderbird/Betterbird im Hintergrund mitlaufen lassen", ist das Programm alle 30 Minuten für 90 Sekunden belegt. Eine Minute warten und erneut versuchen - oder den Schalter ausschalten. |
 | Termine aus Evolution fehlen | Prüfen, ob unter „Terminquelle" nicht versehentlich „Nur Thunderbird / Betterbird" eingestellt ist. |
 | Abonnierter Kalender zeigt nichts | Die Adresse muss auf eine iCalendar-Datei zeigen (endet meist auf `.ics`). Bei Google ist es die **private** Adresse, nicht die öffentliche. |
 | Kein Symbol in der Leiste (GNOME) | Die Erweiterung `gnome-shell-extension-appindicator` installieren und sich einmal neu anmelden - siehe Abschnitt 10. |
