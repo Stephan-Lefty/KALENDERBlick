@@ -116,6 +116,16 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.8.2" date="2026-11-05">
+      <description>
+        <p>
+          Wer KALENDERBlick mit pipx installiert hatte, fand es in
+          keiner Software-Verwaltung: Die Angaben dafür lagen nicht im
+          Paket. Jetzt liegen sie dort, und der Einrichtungsschritt in
+          der Anleitung richtet sie mit ein.
+        </p>
+      </description>
+    </release>
     <release version="1.8.1" date="2026-11-04">
       <description>
         <p>
