@@ -29,6 +29,15 @@
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
+- [x] AUR verworfen (05.11.2026): Ein Paket dort zu pflegen heißt, bei
+      jeder Fassung PKGBUILD und .SRCINFO nachzuziehen und einzureichen
+      - bei zehn Programmen eine Daueraufgabe für eine kleine
+      Zielgruppe. Das `.deb` erreicht mehr Leute und entsteht bei jedem
+      Release von selbst. Das PKGBUILD bleibt, es baut sauber; wer mag,
+      erzeugt sich damit ein Systempaket. Nicht wieder aufrollen, ohne
+      dass Arch-Nutzer danach fragen.
+
+
 - [x] Bildschirmfotos neu aufgenommen (04.11.2026, Stand 1.8.0): elf
       Bilder, erzeugt mit `werkzeuge/bilder_bauen.py` aus dem
       Fake-Profil. Gerendert statt abfotografiert - unter Wayland
