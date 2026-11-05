@@ -11,21 +11,25 @@ license=('MIT')
 depends=('python' 'python-dateutil' 'python-icalendar' 'python-pyqt6')
 makedepends=('python-build' 'python-installer' 'python-setuptools' 'python-wheel')
 checkdepends=('python-pytest' 'python-pyqt6')
+# Das Archiv entpackt nach "KALENDERBlick-<fassung>" - GitHub benutzt
+# den Namen des Repos, nicht den des Pakets. Ohne _quellordner lief
+# makepkg in ein "Datei oder Verzeichnis nicht gefunden".
+_quellordner="KALENDERBlick-$pkgver"
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
 sha256sums=('SKIP')
 
 build() {
-  cd "$pkgname-$pkgver"
+  cd "$_quellordner"
   python -m build --wheel --no-isolation
 }
 
 check() {
-  cd "$pkgname-$pkgver"
+  cd "$_quellordner"
   PYTHONPATH=src python -m pytest
 }
 
 package() {
-  cd "$pkgname-$pkgver"
+  cd "$_quellordner"
   python -m installer --destdir="$pkgdir" dist/*.whl
   install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
   install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"

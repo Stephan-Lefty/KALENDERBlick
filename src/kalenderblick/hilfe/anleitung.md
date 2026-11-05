@@ -133,7 +133,12 @@ cp "$PAKET/paketdaten/kalenderblick.desktop" ~/.local/share/applications/
 cp "$PAKET/paketdaten/"*.metainfo.xml ~/.local/share/metainfo/
 
 update-desktop-database ~/.local/share/applications
+command -v kbuildsycoca6 >/dev/null && kbuildsycoca6 --noincremental
 ```
+
+Die letzte Zeile betrifft KDE Plasma: Ohne sie erscheint der neue
+Menüeintrag erst nach dem nächsten Anmelden. Anderswo läuft sie ins
+Leere.
 
 Die beiden Dateien liegen fertig im Paket; sie werden hier nur an die
 Stellen kopiert, an denen die Arbeitsumgebung sie sucht. Früher stand
@@ -155,8 +160,14 @@ rm -f ~/.local/share/applications/kalenderblick.desktop
 rm -f ~/.local/share/metainfo/io.github.stephan_lefty.kalenderblick.metainfo.xml
 rm -f ~/.config/autostart/kalenderblick.desktop
 update-desktop-database ~/.local/share/applications
+command -v kbuildsycoca6 >/dev/null && kbuildsycoca6 --noincremental
 pipx uninstall kalenderblick
 ```
+
+Die vorletzte Zeile ist für KDE Plasma: Dort bliebe der Eintrag im
+Anwendungsmenü sonst stehen, obwohl die Datei längst weg ist - der
+Menüzwischenspeicher merkt es von allein nicht. Auf anderen
+Arbeitsumgebungen läuft die Zeile ins Leere und schadet nicht.
 
 Die Einstellungen und der Zwischenspeicher bleiben dabei erhalten -
 praktisch, wenn man KALENDERBlick nur neu einspielen will. Wer wirklich
