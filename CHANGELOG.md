@@ -1,5 +1,35 @@
 # Änderungsprotokoll
 
+## 1.8.3 – 2026-11-05
+
+**Neu**
+
+- Beim Einschalten des Schreibtisch-Widgets steht jetzt dabei, dass es
+  hinter allen anderen Fenstern liegt. Wer es gerade aktiviert hat und
+  einen vollen Bildschirm vor sich sieht, hielt es sonst für kaputt.
+  Der Hinweis erscheint nur beim Umlegen des Schalters.
+- Gibt es mehrere Thunderbird-Profile mit Terminen, sagt die
+  Oberfläche das unter „Kalenderquellen". Gewählt wird weiterhin das
+  von Thunderbird bevorzugte - aber wer privat und beruflich trennt,
+  erfährt jetzt, dass es ein zweites gibt, statt die fehlenden Termine
+  im falschen Programm zu suchen.
+
+**Behoben**
+
+- Das Arch-Paket ließ sich gar nicht bauen: `makepkg` suchte einen
+  Ordner `kalenderblick-<fassung>`, GitHubs Archiv entpackt aber nach
+  `KALENDERBlick-<fassung>` - mit großen Buchstaben, weil das Repo so
+  heißt.
+
+**Dokumentation**
+
+- Nach dem Entfernen blieb unter KDE der Eintrag im Anwendungsmenü
+  stehen; der Menüzwischenspeicher merkt die gelöschte Datei nicht von
+  allein. `kbuildsycoca6` steht jetzt in beiden Blöcken - beim
+  Einrichten und beim Entfernen.
+- Die Anleitung erklärt, was bei mehreren Thunderbird-Profilen
+  geschieht.
+
 ## 1.8.2 – 2026-11-05
 
 **Dokumentation**

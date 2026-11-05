@@ -201,6 +201,13 @@ sein. Wenn hier nichts oder das falsche Profil erscheint, lässt sich ein
 bestimmtes Profil von Hand vorgeben (siehe Abschnitt „Kalenderquellen"
 weiter unten).
 
+**Mehrere Profile?** Wer Thunderbird mit getrennten Profilen benutzt -
+etwa privat und beruflich -, bekommt das von Thunderbird bevorzugte,
+sofern dort Termine stehen. Gibt es weitere Profile mit Terminen, sagt
+das die Oberfläche unter „Kalenderquellen"; ein anderes lässt sich dort
+von Hand auswählen. Alle Profile gleichzeitig anzuzeigen geht nicht -
+Thunderbird selbst öffnet ja auch immer nur eines.
+
 Diese beiden Befehle sehen nur in Thunderbird nach. Evolution, GNOME
 Kalender und abonnierte Kalender erscheinen nicht hier, sondern im
 Programm selbst unter „Einstellungen → Kalenderquellen".
@@ -232,7 +239,7 @@ Zweiter Reiter im Hauptfenster:
 
 | Schalter | Bedeutung |
 |---|---|
-| Schreibtisch-Widget anzeigen | Ob überhaupt ein Fenster auf dem Schreibtisch liegt. Wirkt sofort beim Speichern; das Leistensymbol bleibt davon unberührt. |
+| Schreibtisch-Widget anzeigen | Ob überhaupt ein Fenster auf dem Schreibtisch liegt. Wirkt sofort beim Speichern; das Leistensymbol bleibt davon unberührt. Es liegt **hinter allen anderen Fenstern** - wer es gerade eingeschaltet hat, muss also erst alles minimieren, um es zu sehen. |
 | Größe | Fünf Stufen von „Sehr klein" bis „Sehr groß". Gesteuert wird damit die Breite des Fensters; die Höhe richtet sich immer nach dem Inhalt - so weit, wie Termine da sind, höchstens bis zum Bildschirmrand. Bei der Uhr-Ansicht steuert die Größe stattdessen die Schriftgröße („Sehr klein" ergibt rund 100 × 110 Pixel, gedacht für ältere Geräte mit 1920er Auflösung). |
 | Ansicht | Welche der vier Ansichten unten gezeigt wird. Sie bestimmt zugleich den Zeitraum: „Nächste 7 Tage" reicht bis einschließlich des siebten Tages, „Nächste 14 Tage" bis zum vierzehnten - jeweils mit dem heutigen Tag als erstem. Der Reiter „Termine" in diesem Fenster zeigt davon unabhängig immer einen ganzen Monat, weshalb dort mehr stehen kann als im Widget. |
 | Transparenz | Wie durchsichtig der Hintergrund ist - 0 % nur Schrift, 100 % voll deckend. |

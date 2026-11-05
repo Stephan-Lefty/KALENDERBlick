@@ -702,8 +702,17 @@ class _EinstellungenReiter(QWidget):
         self._profil_zuruecksetzen.setEnabled(False)
         try:
             gefunden = thunderbird.waehle_profil()
-            self._profil_text.setText(
-                f"Selbst gefunden: <code>{gefunden}</code>")
+            text = f"Selbst gefunden: <code>{gefunden}</code>"
+            # Bei mehreren Profilen mit Terminen bekommt man sonst
+            # wortlos eines davon und sucht die übrigen Termine
+            # vergeblich - etwa wer privat und beruflich trennt.
+            weitere = thunderbird.weitere_profile_mit_terminen()
+            if weitere:
+                wort = "ein weiteres Profil" if weitere == 1 else f"{weitere} weitere Profile"
+                text += (f"<br><b>Es gibt {wort} mit Terminen.</b> "
+                         "Gewählt ist das von Thunderbird bevorzugte; "
+                         "ein anderes lässt sich unten von Hand angeben.")
+            self._profil_text.setText(text)
         except Exception:
             self._profil_text.setText(
                 "<b>Kein Thunderbird/Betterbird-Profil gefunden.</b> Ist das Programm "
@@ -776,6 +785,13 @@ class _EinstellungenReiter(QWidget):
         breite, hoehe = GROESSEN[e.desktop.groesse]
         e.desktop.breite = breite
         e.desktop.hoehe = hoehe
+        # Merken, ob das Widget gerade erst eingeschaltet wurde - der
+        # Hinweis darauf lohnt nur beim Umlegen, nicht bei jedem Speichern.
+        try:
+            vorher_an = konfig_modul.laden().desktop_an
+        except Exception:
+            vorher_an = False
+
         try:
             e.pruefe()
             e.speichern()
@@ -788,6 +804,9 @@ class _EinstellungenReiter(QWidget):
             # legt man den Schalter um und nichts geschieht.
             hinweis = self._takt_abgleichen(e.tb_hintergrund)
 
+            lage = self._widget_lage_hinweis(vorher_an, e.desktop_an)
+            hinweis = f"{lage} {hinweis}".strip()
+
             self._status.setStyleSheet("color: #2ec27e;")
             self._status.setText(f"Gespeichert. {hinweis}".strip())
         except Exception as fehler:
@@ -797,6 +816,21 @@ class _EinstellungenReiter(QWidget):
         if self._cb:
             self._cb()
 
+
+    @staticmethod
+    def _widget_lage_hinweis(war_an: bool, ist_an: bool) -> str:
+        """Beim Einschalten erklären, wo das Widget liegt.
+
+        Es liegt bewusst hinter allen anderen Fenstern. Wer es gerade
+        eingeschaltet hat und einen vollen Bildschirm vor sich hat,
+        sieht deshalb nichts und hält es für kaputt. Nur beim Umlegen -
+        wer bloß die Transparenz ändert, braucht die Erklärung nicht
+        noch einmal.
+        """
+        if ist_an and not war_an:
+            return ("Das Widget liegt auf dem Schreibtisch, hinter allen "
+                    "Fenstern - zum Anschauen alles minimieren.")
+        return ""
 
     @staticmethod
     def _takt_abgleichen(an: bool) -> str:

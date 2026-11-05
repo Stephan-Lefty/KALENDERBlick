@@ -184,6 +184,22 @@ def profil_vorschlaege() -> list[tuple[Path, int, int, bool]]:
     return ergebnis
 
 
+def weitere_profile_mit_terminen(vorgabe: str = "") -> int:
+    """Wie viele Profile außer dem gewählten enthalten ebenfalls Termine?
+
+    Wer Thunderbird mit zwei Profilen benutzt - etwa privat und
+    beruflich -, bekommt sonst wortlos eines davon und sucht die
+    fehlenden Termine im falschen Programm.
+    """
+    if vorgabe:
+        return 0
+    try:
+        mit_terminen = [v for v in profil_vorschlaege() if v[2] > 0]
+    except Exception:
+        return 0
+    return max(0, len(mit_terminen) - 1)
+
+
 def waehle_profil(vorgabe: str = "") -> Path:
     """Das Profil, in dem die Termine tatsächlich liegen.
 
