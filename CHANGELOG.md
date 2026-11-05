@@ -1,5 +1,24 @@
 # Änderungsprotokoll
 
+## Unveröffentlicht
+
+**Geändert**
+
+- Die AppStream-Datei nennt jetzt ihr Symbol ausdrücklich
+  (`<icon type="stock">`). Software-Verwaltungen, die sie lesen,
+  finden es damit sicher.
+- Paketbeschreibung und AppStream-Zusammenfassung sagen wortgleich
+  dasselbe - sie unterschieden sich in einem „und" gegenüber „oder".
+  An genau diesem Wort ließ sich erkennen, woher pamac seinen Text
+  nimmt.
+
+**Dokumentation**
+
+- Die Anleitung erklärt, warum ein von Hand eingespieltes Paket in der
+  Software-Verwaltung ohne Symbol und Bildschirmfotos erscheint: Die
+  holt sie aus den Angaben der Paketquelle, und die gibt es für ein
+  örtlich eingespieltes Paket nicht. Entfernen geht trotzdem.
+
 ## 1.8.3 – 2026-11-05
 
 **Neu**

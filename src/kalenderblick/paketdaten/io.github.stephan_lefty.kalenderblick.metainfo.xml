@@ -64,6 +64,15 @@
 
   <launchable type="desktop-id">kalenderblick.desktop</launchable>
 
+  <!--
+    Das Symbol liegt unter seinem schlichten Namen im Symbolthema
+    (/usr/share/icons/hicolor/<groesse>/apps/kalenderblick.png).
+    Die meisten Programme verlassen sich darauf, dass die
+    Software-Verwaltung es ueber die .desktop-Datei findet; genannt
+    schadet es nicht und hilft denen, die hier nachsehen.
+  -->
+  <icon type="stock">kalenderblick</icon>
+
   <categories>
     <category>Office</category>
     <category>Calendar</category>

@@ -187,6 +187,13 @@ genügt die Software-Verwaltung oder `sudo apt remove kalenderblick`
 beziehungsweise `sudo pacman -R kalenderblick`. Nur die
 Einstellungen im Benutzerordner bleiben auch dann stehen.
 
+Ein Paket, das von Hand eingespielt wurde (`pacman -U`, `apt install
+./…`), erscheint in der Software-Verwaltung zwar mit Namen und
+Beschreibung, aber ohne Symbol und Bildschirmfotos. Die holt sie sich
+aus den Angaben der Paketquelle, und die gibt es für ein örtlich
+eingespieltes Paket nicht. Entfernen lässt es sich trotzdem auf
+Knopfdruck.
+
 ## 4. Kurz prüfen, ob das Profil gefunden wird
 
 ```bash
