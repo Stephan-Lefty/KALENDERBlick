@@ -99,12 +99,26 @@ pamac install python-dateutil python-icalendar python-pyqt6 python-pipx
 pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDERBlick.git
 ```
 
-**Debian, GuideOS, Ubuntu**
+**Debian, GuideOS, Ubuntu** – am einfachsten über das fertige Paket:
+Unter [Releases](https://github.com/Stephan-Lefty/KALENDERBlick/releases)
+liegt bei jeder Fassung eine `.deb`-Datei (nicht „Source code (zip)“ –
+die erzeugt GitHub automatisch und enthält nur den Quelltext).
+
+```bash
+sudo apt install ./kalenderblick_*_all.deb
+```
+
+Es bringt Menüeintrag, Symbole und die Angaben für die
+Software-Verwaltung gleich mit. Wer lieber pipx nimmt:
 
 ```bash
 sudo apt install python3-dateutil python3-icalendar python3-pyqt6 pipx
 pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDERBlick.git
 ```
+
+Nach einer pipx-Installation fehlen Menüeintrag, Symbole und der
+Eintrag in der Software-Verwaltung – die legt der Block in
+[Abschnitt 3 der Anleitung](src/kalenderblick/hilfe/anleitung.md) nach.
 
 KALENDERBlick ist reines Python mit Qt und braucht außer `python-dateutil`
 und `python-icalendar` nichts weiter. Es läuft überall dort, wo

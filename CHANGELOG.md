@@ -1,5 +1,30 @@
 # Änderungsprotokoll
 
+## Unveröffentlicht
+
+**Behoben**
+
+- Nach einer pipx-Installation erschien KALENDERBlick in keiner
+  Software-Verwaltung - weder in Discover noch in pamac oder GNOME
+  Software. Die AppStream-Angaben lagen nur unter `packaging/` und
+  damit außerhalb des Pakets; der Einrichtungsblock in der Anleitung
+  konnte sie gar nicht installieren. Jetzt liegen sie mit der
+  `.desktop`-Datei im Paket, und der Block kopiert beide mit.
+- Die `.desktop`-Datei des Pakets beschrieb KALENDERBlick noch als
+  „Thunderbirds Termine" - seit Evolution dazugekommen ist, zu eng.
+  Die Anleitung hatte den Text längst eigenständig korrigiert, weil
+  sie ihn zum Abtippen enthielt; jetzt gibt es nur noch eine Fassung.
+
+**Dokumentation**
+
+- README und Anleitung nennen für Debian das `.deb` an erster Stelle
+  und sagen ausdrücklich, dass „Source code (zip)" nicht zum
+  Installieren taugt - die hängt GitHub automatisch an jedes Release
+  und sie führt leicht in die Irre.
+- Dass eine pipx-Installation weder Menüeintrag noch Symbole noch den
+  Eintrag in der Software-Verwaltung mitbringt, steht jetzt dort, wo
+  man es sucht.
+
 ## 1.8.1 – 2026-11-04
 
 **Geändert**

@@ -32,12 +32,12 @@ jobs:
             sed 's|^#!.*|#!/usr/bin/python3|' "venv/bin/${script}" > "${PKG}/usr/bin/${script}"
             chmod 755 "${PKG}/usr/bin/${script}"
           done
-          cp packaging/kalenderblick.desktop "${PKG}/usr/share/applications/"
+          cp src/kalenderblick/paketdaten/kalenderblick.desktop "${PKG}/usr/share/applications/"
           cp packaging/kalenderblick.kwinrule "${PKG}/usr/share/doc/kalenderblick/"
           # Ohne AppStream-Metadaten kennen die Software-Verwaltungen das
           # Programm nicht: Es taucht weder zum Suchen noch unter
           # "installierte Software" zum Entfernen auf.
-          cp packaging/io.github.stephan_lefty.kalenderblick.metainfo.xml \
+          cp src/kalenderblick/paketdaten/io.github.stephan_lefty.kalenderblick.metainfo.xml \
             "${PKG}/usr/share/metainfo/"
           for groesse in 16 22 24 32 48 64 128 256 512; do
             mkdir -p "${PKG}/usr/share/icons/hicolor/${groesse}x${groesse}/apps"

@@ -72,12 +72,17 @@ pipx install --system-site-packages git+https://github.com/Stephan-Lefty/KALENDE
 
 Bei jeder Fassung liegt unter
 [Releases](https://github.com/Stephan-Lefty/KALENDERBlick/releases) eine
-`.deb`-Datei. Sie bringt Menüeintrag und Symbole gleich mit, Schritt 3
-entfällt damit:
+`.deb`-Datei. Sie bringt Menüeintrag, Symbole und die Angaben für die
+Software-Verwaltung gleich mit, Schritt 3 entfällt damit:
 
 ```bash
 sudo apt install ./kalenderblick_*_all.deb
 ```
+
+Gemeint ist die Datei, die mit `kalenderblick_` beginnt und auf `.deb`
+endet. **Nicht** „Source code (zip)" oder „(tar.gz)" - die hängt GitHub
+an jedes Release automatisch an, sie enthalten nur den Quelltext und
+lassen sich nicht installieren.
 
 Wichtig ist `apt install ./…` und **nicht** `dpkg -i`: Nur apt holt die
 benötigten Pakete (`python3-dateutil`, `python3-icalendar`,
@@ -106,38 +111,39 @@ Leistensymbol - nur die Befehle für die Kommandozeile.
 
 ## 3. Menüeintrag und Symbole einrichten
 
-`pipx install` legt nur die beiden Befehle an, keinen Eintrag im
-Anwendungsmenü und keine Symbole. Das holt dieser Block nach - einmalig,
+`pipx install` legt nur die beiden Befehle an - keinen Eintrag im
+Anwendungsmenü, keine Symbole und keine Angaben für die
+Software-Verwaltung. Deshalb taucht KALENDERBlick nach einer
+pipx-Installation weder im Startmenü noch in Discover, pamac oder
+GNOME Software auf. Das holt dieser Block nach, einmalig und
 unabhängig vom Betriebssystem:
 
 ```bash
 VENV=$(pipx environment --value PIPX_LOCAL_VENVS)/kalenderblick
-BILDER=$(find "$VENV" -type d -name bilder | head -1)
+PAKET=$(find "$VENV" -type d -name kalenderblick -path "*site-packages*" | head -1)
 
 for groesse in 16 22 24 32 48 64 128 256 512; do
   mkdir -p ~/.local/share/icons/hicolor/${groesse}x${groesse}/apps
-  cp "$BILDER/symbol-${groesse}.png" \
+  cp "$PAKET/bilder/symbol-${groesse}.png" \
      ~/.local/share/icons/hicolor/${groesse}x${groesse}/apps/kalenderblick.png
 done
 
-mkdir -p ~/.local/share/applications
-cat > ~/.local/share/applications/kalenderblick.desktop << 'EOF'
-[Desktop Entry]
-Type=Application
-Name=KALENDERBlick
-Comment=Termine auf dem Schreibtisch und in der Kontrollleiste
-Exec=kalenderblick start
-Icon=kalenderblick
-Terminal=false
-Categories=Office;Calendar;Utility;
-StartupNotify=false
-EOF
+mkdir -p ~/.local/share/applications ~/.local/share/metainfo
+cp "$PAKET/paketdaten/kalenderblick.desktop" ~/.local/share/applications/
+cp "$PAKET/paketdaten/"*.metainfo.xml ~/.local/share/metainfo/
+
 update-desktop-database ~/.local/share/applications
 ```
 
-Danach steht „KALENDERBlick" im Anwendungsmenü - meist ohne Neustart von
-Plasma. Wer lieber das fertige `.deb`- oder Arch-Paket nutzt (siehe
-`packaging/`), bekommt Menüeintrag und Symbole automatisch mit.
+Die beiden Dateien liegen fertig im Paket; sie werden hier nur an die
+Stellen kopiert, an denen die Arbeitsumgebung sie sucht. Früher stand
+der Inhalt der `.desktop`-Datei in dieser Anleitung noch einmal zum
+Abtippen - dabei liefen die beiden Fassungen auseinander.
+
+Die `.metainfo.xml` ist der Grund, warum KALENDERBlick danach auch in
+der Software-Verwaltung erscheint, mitsamt Beschreibung und
+Bildschirmfotos. Bei den fertigen Paketen (`.deb`, Arch) geschieht das
+alles von selbst - dieser Schritt entfällt dort.
 
 ## 4. Kurz prüfen, ob das Profil gefunden wird
 

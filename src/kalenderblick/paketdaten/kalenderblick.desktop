@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=KALENDERBlick
-Comment=Thunderbirds Termine auf dem Schreibtisch und in der Kontrollleiste
+Comment=Termine auf dem Schreibtisch und in der Kontrollleiste
 Exec=kalenderblick start
 Icon=kalenderblick
 Terminal=false

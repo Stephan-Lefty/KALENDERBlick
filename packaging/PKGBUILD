@@ -29,13 +29,13 @@ package() {
   python -m installer --destdir="$pkgdir" dist/*.whl
   install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
   install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
-  install -Dm644 packaging/kalenderblick.desktop \
+  install -Dm644 src/kalenderblick/paketdaten/kalenderblick.desktop \
     "$pkgdir/usr/share/applications/kalenderblick.desktop"
   install -Dm644 packaging/kalenderblick.kwinrule \
     "$pkgdir/usr/share/doc/$pkgname/kalenderblick.kwinrule"
   # Ohne AppStream-Metadaten kennen die Software-Verwaltungen das
   # Programm nicht - es taucht dort weder zum Suchen noch zum Entfernen auf.
-  install -Dm644 packaging/io.github.stephan_lefty.kalenderblick.metainfo.xml \
+  install -Dm644 src/kalenderblick/paketdaten/io.github.stephan_lefty.kalenderblick.metainfo.xml \
     "$pkgdir/usr/share/metainfo/io.github.stephan_lefty.kalenderblick.metainfo.xml"
   for groesse in 16 22 24 32 48 64 128 256 512; do
     install -Dm644 "src/kalenderblick/bilder/symbol-${groesse}.png" \
