@@ -2,6 +2,18 @@
 
 ## 1.8.2 – 2026-11-05
 
+**Dokumentation**
+
+- Die Anleitung sagt jetzt auch, wie man KALENDERBlick wieder
+  loswird - das stand bisher nirgends. Der neue Abschnitt steht
+  direkt hinter dem Einrichtungsblock und nimmt genau das zurück,
+  was dieser angelegt hat: Symbole, Menüeintrag, AppStream-Datei,
+  Autostart. Mit dem Hinweis, dass `.deb` und Arch-Paket schlicht
+  über die Software-Verwaltung verschwinden.
+- Das Arch-Paket beschrieb sich noch als „Zeigt Thunderbirds
+  Kalender" - dieselbe veraltete Stelle wie zuvor in der
+  `.desktop`-Datei.
+
 **Behoben**
 
 - Nach einer pipx-Installation erschien KALENDERBlick in keiner

@@ -145,6 +145,37 @@ der Software-Verwaltung erscheint, mitsamt Beschreibung und
 Bildschirmfotos. Bei den fertigen Paketen (`.deb`, Arch) geschieht das
 alles von selbst - dieser Schritt entfällt dort.
 
+### Wieder entfernen
+
+Was dieser Block angelegt hat, nimmt der folgende wieder zurück:
+
+```bash
+rm -f ~/.local/share/icons/hicolor/*/apps/kalenderblick.png
+rm -f ~/.local/share/applications/kalenderblick.desktop
+rm -f ~/.local/share/metainfo/io.github.stephan_lefty.kalenderblick.metainfo.xml
+rm -f ~/.config/autostart/kalenderblick.desktop
+update-desktop-database ~/.local/share/applications
+pipx uninstall kalenderblick
+```
+
+Die Einstellungen und der Zwischenspeicher bleiben dabei erhalten -
+praktisch, wenn man KALENDERBlick nur neu einspielen will. Wer wirklich
+alles loswerden möchte, nimmt diese beiden noch dazu:
+
+```bash
+rm -rf ~/.config/kalenderblick ~/.local/state/kalenderblick
+```
+
+Wurde „Position sperren" benutzt, steht in `~/.config/kwinrulesrc`
+außerdem eine Fensterregel. Sie richtet keinen Schaden an, lässt sich
+aber unter *Systemeinstellungen → Fensterverwaltung → Fensterregeln*
+entfernen.
+
+**Beim `.deb` und beim Arch-Paket ist das alles unnötig**: Dort
+genügt die Software-Verwaltung oder `sudo apt remove kalenderblick`
+beziehungsweise `sudo pacman -R kalenderblick`. Nur die
+Einstellungen im Benutzerordner bleiben auch dann stehen.
+
 ## 4. Kurz prüfen, ob das Profil gefunden wird
 
 ```bash

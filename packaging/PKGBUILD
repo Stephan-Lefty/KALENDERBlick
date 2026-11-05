@@ -2,7 +2,7 @@
 pkgname=kalenderblick
 pkgver=1.8.2
 pkgrel=1
-pkgdesc="Zeigt Thunderbirds Kalender auf dem Schreibtisch und in der Kontrollleiste"
+pkgdesc="Termine aus Thunderbird, Betterbird, Evolution oder GNOME Kalender auf dem Schreibtisch"
 arch=('any')
 url="https://github.com/Stephan-Lefty/KALENDERBlick"
 license=('MIT')
