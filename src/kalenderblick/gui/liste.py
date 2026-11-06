@@ -16,7 +16,15 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from ..modell import MONATE, Termin, WOCHENTAGE, nach_tagen, tagesueberschrift
+from ..modell import (
+    MONATE,
+    Termin,
+    WOCHENTAGE,
+    nach_tagen,
+    naechster,
+    tagesueberschrift,
+    uhr_zeile,
+)
 from .gemeinsam import FARBEN_SYSTEM, erscheinungsfarben, farbe_als_qt
 
 ANSICHT_TAGE = {
@@ -160,13 +168,15 @@ class _UhrAnzeige(QWidget):
     def __init__(self, groesse: str = "mittel", farben: dict = FARBEN_SYSTEM,
                 stunden_format: str = "24", position_fixiert: bool = False,
                 klick_cb=None, klick_aktiv: bool = True,
-                jahr_zeigen: bool = False, parent=None):
+                jahr_zeigen: bool = False, termin_zeigen: bool = False,
+                parent=None):
         super().__init__(parent)
         self._klick_cb = klick_cb
         self._farben = farben
         self._groesse = groesse
         self._stunden_format = stunden_format
         self._position_fixiert = position_fixiert
+        self._termine: list[Termin] = []
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(4, 4, 4, 4)
@@ -197,6 +207,16 @@ class _UhrAnzeige(QWidget):
         self._jahr.setVisible(jahr_zeigen)
         layout.addWidget(self._jahr)
 
+        # Der nächste Termin, ebenfalls abschaltbar. Zusammen mit dem
+        # Jahr ergeben sich vier Möglichkeiten - nichts, Jahr, Termin,
+        # beides -, ohne dass es ein Auswahlfeld dafür bräuchte.
+        self._naechster = QLabel()
+        self._naechster.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._naechster.setWordWrap(True)
+        self._naechster.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self._naechster.setVisible(termin_zeigen)
+        layout.addWidget(self._naechster)
+
         layout.addStretch()
 
         self.setze_klick_aktiv(klick_aktiv)
@@ -216,6 +236,11 @@ class _UhrAnzeige(QWidget):
         self._zeit.setStyleSheet(f"font-size: {pt['zeit']}pt; font-weight: 300;{farbe_haupt}")
         self._datum.setStyleSheet(f"font-size: {pt['datum']}pt; color: {self._farben['gedaempft']};")
         self._jahr.setStyleSheet(f"font-size: {pt['datum']}pt; color: {self._farben['gedaempft']};")
+        # Kleiner als das Datum: Die Zeile ist länger und soll die Uhr
+        # nicht erdrücken.
+        self._naechster.setStyleSheet(
+            f"font-size: {max(7, pt['datum'] - 2)}pt; "
+            f"color: {self._farben['gedaempft']}; padding-top: 2px;")
         self._aktualisiere()
 
     def setze_farben(self, farben: dict) -> None:
@@ -239,6 +264,20 @@ class _UhrAnzeige(QWidget):
         self._jahr.setVisible(wert)
         self._aktualisiere()
 
+    def setze_termin_zeigen(self, wert: bool) -> None:
+        self._naechster.setVisible(wert)
+
+    def setze_termine(self, termine: list[Termin]) -> None:
+        """Nur merken - die Zeile entsteht im Takt, nicht hier.
+
+        Welcher Termin der nächste ist, ändert sich auch ohne neue
+        Daten: Um 13:59 ist es der von 14 Uhr, um 14:01 der danach.
+        Stünde der Text hier fest, bliebe er bis zum nächsten Abruf
+        stehen - also bis zu eine halbe Stunde zu lang.
+        """
+        self._termine = list(termine)
+        self._aktualisiere()
+
     def _aktualisiere(self) -> None:
         jetzt = datetime.now()
         self._wochentag.setText(WOCHENTAGE[jetzt.weekday()].upper())
@@ -251,6 +290,7 @@ class _UhrAnzeige(QWidget):
             self._zeit.setText(jetzt.strftime("%H:%M"))
         self._datum.setText(f"{jetzt.day}. {MONATE[jetzt.month - 1]}")
         self._jahr.setText(str(jetzt.year))
+        self._naechster.setText(uhr_zeile(naechster(self._termine, jetzt), jetzt))
 
     def mousePressEvent(self, event) -> None:
         if event.button() == Qt.MouseButton.LeftButton:
@@ -288,7 +328,8 @@ class TerminListe(QWidget):
                 erscheinung: str | None = None, stunden_format: str = "24",
                 position_fixiert: bool = False, klick_cb=None,
                 uhr_groesse: str = "mittel", klick_aktiv: bool = True,
-                jahr_zeigen: bool = False, parent=None):
+                jahr_zeigen: bool = False, termin_zeigen: bool = False,
+                parent=None):
         super().__init__(parent)
         self._ansicht = ansicht
         self._schrift = schrift
@@ -320,7 +361,8 @@ class TerminListe(QWidget):
 
         self._uhr = _UhrAnzeige(uhr_groesse, farben=self._farben, stunden_format=stunden_format,
                                position_fixiert=position_fixiert, klick_cb=self._klick_cb,
-                               klick_aktiv=klick_aktiv, jahr_zeigen=jahr_zeigen)
+                               klick_aktiv=klick_aktiv, jahr_zeigen=jahr_zeigen,
+                               termin_zeigen=termin_zeigen)
         self._stapel.addWidget(self._uhr)
 
         self._stapel.setCurrentWidget(self._uhr if ansicht == "uhr" else self._scroll)
@@ -353,8 +395,15 @@ class TerminListe(QWidget):
     def setze_jahr_zeigen(self, wert: bool) -> None:
         self._uhr.setze_jahr_zeigen(wert)
 
+    def setze_termin_zeigen(self, wert: bool) -> None:
+        self._uhr.setze_termin_zeigen(wert)
+
     def setze_termine(self, termine: list[Termin]) -> None:
         self._termine = termine
+        # Auch die Uhr lebt von den Terminen, seit sie den nächsten
+        # einblenden kann - und sie hängt nicht an `_aktualisiere`,
+        # das in der Uhr-Ansicht gleich wieder herausspringt.
+        self._uhr.setze_termine(termine)
         self._aktualisiere()
 
     def _aktualisiere(self) -> None:

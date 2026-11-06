@@ -253,6 +253,7 @@ Zweiter Reiter im Hauptfenster:
 | Erscheinungsbild | Dark-Mode (weiße Schrift) oder Light-Mode (schwarze Schrift) - wirkt nur auf das Widget, nicht auf dieses Fenster. |
 | Stundenformat | 24 Stunden oder 12 Stunden mit AM/PM - nur für die Uhr-Ansicht. |
 | Jahreszahl anzeigen | Nur für die Uhr-Ansicht: stellt die Jahreszahl als eigene Zeile unter das Datum. |
+| Nächsten Termin anzeigen | Nur für die Uhr-Ansicht: stellt unter das Datum, was als nächstes ansteht - mit Uhrzeit, bei ferneren Terminen auch mit Tag und Datum. Läuft gerade einer, steht „Jetzt:" davor. Lange Titel werden gekürzt, damit die Uhrzeit in der Mitte bleibt. Die beiden Schalter sind voneinander unabhängig: Es geht also nichts, nur das Jahr, nur der Termin oder beides. |
 | Klick öffnet die Termine | Ein Klick auf das Widget öffnet das Hauptfenster. Ausgeschaltet lässt sich das Widget nur noch ziehen oder über das Leistensymbol öffnen. |
 | Position sperren | Einmal an die richtige Stelle gezogen, lässt sich das Fenster nicht mehr versehentlich verschieben - und bleibt auch über einen Neustart von KALENDERBlick an dieser Stelle (nur KDE/KWin, über eine automatisch angelegte Fensterregel). |
 | Auf allen Arbeitsflächen zeigen | Das Widget bleibt sichtbar, egal auf welche Arbeitsfläche gewechselt wird - nur unter KDE/KWin wirksam. |
@@ -372,10 +373,14 @@ ihres Zeitraums nennt („bis 17.11. keine weiteren"). Liegt im Zeitraum
 wurde und wann der nächste Termin ansteht. So ist ein leeres Widget als
 Auskunft erkennbar und nicht als Fehler.
 
-**Uhr + Datum** - Wochentag, Uhrzeit, Datum, sonst nichts:
+**Uhr + Datum** - Wochentag, Uhrzeit, Datum:
 
-<img src="bilder/uhr_dunkel.png" alt="Uhr-Ansicht, Dark-Mode" width="230">
-<img src="bilder/uhr_hell.png" alt="Uhr-Ansicht, Light-Mode" width="230">
+<img src="bilder/uhr_dunkel.png" alt="Uhr-Ansicht im Dark-Mode, nur Wochentag, Uhrzeit und Datum" width="230">
+<img src="bilder/uhr_hell.png" alt="Uhr-Ansicht im Light-Mode, zusätzlich mit Jahreszahl und nächstem Termin" width="230">
+
+Darunter lassen sich zwei Zeilen einblenden, jede für sich: die
+Jahreszahl und der nächste Termin. Das Bild rechts zeigt beides.
+Ohne sie bleibt es bei Wochentag, Uhrzeit und Datum.
 
 **Nächste 3 Termine** - unabhängig vom Datum immer die drei nächsten
 anstehenden, bereits vergangene Termine des Tages fallen raus:

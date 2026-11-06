@@ -518,6 +518,14 @@ class _EinstellungenReiter(QWidget):
             "Zeile unter dem Datum.")
         wl.addRow(self._jahr_zeigen)
 
+        self._termin_zeigen = QCheckBox("Nächsten Termin anzeigen")
+        self._termin_zeigen.setChecked(e.desktop.termin_zeigen)
+        self._termin_zeigen.setToolTip(
+            "Nur für die Uhr-Ansicht: zeigt unter dem Datum, was als\n"
+            "nächstes ansteht - mit Uhrzeit, und bei ferneren Terminen\n"
+            "auch mit Tag. Lässt sich mit der Jahreszahl verbinden.")
+        wl.addRow(self._termin_zeigen)
+
         self._klick_oeffnet = QCheckBox("Klick öffnet die Termine")
         self._klick_oeffnet.setChecked(e.desktop.klick_oeffnet)
         self._klick_oeffnet.setToolTip(
@@ -771,6 +779,7 @@ class _EinstellungenReiter(QWidget):
         e.desktop.erscheinung = self._erscheinung.currentData()
         e.desktop.stunden_format = self._stunden_format.currentData()
         e.desktop.jahr_zeigen = self._jahr_zeigen.isChecked()
+        e.desktop.termin_zeigen = self._termin_zeigen.isChecked()
         e.desktop.klick_oeffnet = self._klick_oeffnet.isChecked()
         e.desktop.position_fixiert = self._position_fixiert.isChecked()
         e.desktop.alle_arbeitsflaechen = self._alle_arbeitsflaechen.isChecked()

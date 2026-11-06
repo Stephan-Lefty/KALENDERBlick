@@ -39,6 +39,10 @@ class Fensterlage:
     alle_arbeitsflaechen: bool = False   # auf jeder Arbeitsfläche zeigen (nur KDE/KWin)
     klick_oeffnet: bool = False          # Klick auf das Widget öffnet die Termine
     jahr_zeigen: bool = False            # Jahreszahl unter dem Datum (nur Uhr-Ansicht)
+    # Zwei einzelne Schalter statt einer Auswahl mit vier Zeilen: So ist
+    # jede Kombination (nichts, Jahr, Termin, beides) erreichbar, ohne
+    # dass eine Liste erklärt werden muss.
+    termin_zeigen: bool = False          # nächster Termin unter dem Datum (nur Uhr-Ansicht)
 
 
 @dataclass

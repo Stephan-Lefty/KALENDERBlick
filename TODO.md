@@ -27,6 +27,15 @@
       Einzelteile (kopfloses Abholen am Testserver gemessen, die
       Taktlogik über Tests).
 
+- [ ] Die neue Terminzeile in der Uhr-Ansicht am Gerät ansehen. Der
+      Platz ist offscreen gemessen und geht auf: Selbst bei 100 px
+      Breite und der Stufe „Sehr klein" bricht die Zeile nie auf mehr
+      als zwei Zeilen um - dafür sorgt die Kürzung auf 30 Zeichen. Die
+      Uhr wächst dabei mit beiden Zusatzzeilen von 92 auf 149 px.
+      Offen ist nur, ob das am echten Bildschirm auch gut *aussieht*;
+      offscreen meldet Qt, dass es Fenstergrößen nicht verlässlich
+      weitergibt.
+
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
 
 - [x] AUR verworfen (05.11.2026): Ein Paket dort zu pflegen heißt, bei

@@ -83,12 +83,20 @@ def hintergrund(breite: int, hoehe: int) -> QPixmap:
 
 
 def widget_bild(ansicht: str, erscheinung: str, name: str,
-                breite: int, hoehe: int, rand: int = 26) -> None:
+                breite: int, hoehe: int, rand: int = 26,
+                zusatzzeilen: bool = False) -> None:
     """`hoehe` ist die Obergrenze - gezeigt wird nur, was der Inhalt
     braucht. So verhält es sich auch im Betrieb: Der Kasten ist nie
-    größer als nötig, sonst stünde durchscheinender Leerraum herum."""
+    größer als nötig, sonst stünde durchscheinender Leerraum herum.
+
+    `zusatzzeilen` schaltet in der Uhr-Ansicht Jahr und nächsten
+    Termin ein. Von den beiden Uhr-Bildern zeigt eines die nackte
+    Uhr, das andere beides - zwei Bilder desselben Zustands nur in
+    zwei Farben wären für diese Ansicht die ärmere Auskunft.
+    """
     liste = TerminListe(ansicht=ansicht, schrift=10, erscheinung=erscheinung,
-                        uhr_groesse="mittel")
+                        uhr_groesse="mittel",
+                        jahr_zeigen=zusatzzeilen, termin_zeigen=zusatzzeilen)
     liste.setze_termine(TERMINE)
     liste.setFixedWidth(breite)
     liste.setFixedHeight(hoehe)
@@ -163,7 +171,10 @@ for ansicht, name, b, h in [
         ("woche", "woche", 420, 600),
         ("14tage", "14tage", 420, 600)]:
     for erscheinung, kennung in (("dunkel", "dunkel"), ("hell", "hell")):
-        widget_bild(ansicht, erscheinung, f"{name}_{kennung}.png", b, h)
+        # Nur bei der Uhr: das hellere Bild zeigt zusätzlich Jahr und
+        # nächsten Termin, damit beide Zustände einmal zu sehen sind.
+        widget_bild(ansicht, erscheinung, f"{name}_{kennung}.png", b, h,
+                    zusatzzeilen=(ansicht == "uhr" and erscheinung == "hell"))
 
 print("\n--- Hauptfenster ---")
 fenster_bild("Termine", "hauptfenster_termine.png")
