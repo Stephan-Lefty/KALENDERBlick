@@ -10,21 +10,31 @@
       dem Alltag fremder Leute waren in diesem Projekt bisher
       ausnahmslos wertvoller als die eigenen Tests.
 
-- [ ] **Rückmeldung zur 1.8.6 abwarten** (06.11.2026): Ein Bekannter
+- [ ] **Rückmeldung zur 1.8.7 abwarten** (06.11.2026): Ein Bekannter
       von Stephan prüft unter Arch mit Xfce, ob „Position sperren"
       jetzt hält - Widget ziehen, Haken setzen, Einstellungen
-      speichern, und danach noch einmal nach einem Neustart. Er hatte
-      den Fehler gemeldet und nimmt das fertige Arch-Paket vom
-      Release.
+      speichern, und danach noch einmal nach einem Neustart.
 
-      **Das ist die Messung, die zählt.** Geprüft ist der Fix bisher
-      nur offscreen mit erzwungenem X11; ein echter Fenstermanager ist
-      etwas anderes. Auf Stephans Plasma lässt er sich gar nicht
+      **Die 1.8.6 hat es nicht behoben**, obwohl sie genau dafür
+      herausging: Sie merkte die gezogene Stelle nur im Speicher, und
+      das Speichern der Einstellungen lädt die Datei neu. Die 1.8.7
+      hält sie fest und schreibt sie in die Datei.
+
+      **Das ist die Messung, die zählt.** Geprüft ist beides nur
+      offscreen mit erzwungenem X11; ein echter Fenstermanager ist
+      etwas anderes. Auf Stephans Plasma lässt es sich gar nicht
       beurteilen - unter Wayland wird nicht positioniert.
 
-      Springt es weiterhin, liegt es nicht am Merken der Position,
-      sondern daran, wie Xfce `move()` nach einem `show()` behandelt.
-      Das wäre eine andere Baustelle.
+      Springt es ein drittes Mal, soll er vor dem Ziehen und nach dem
+      Speichern hier nachsehen:
+
+          cat ~/.config/kalenderblick/einstellungen.json | grep -E '"x"|"y"'
+
+      Stehen dort nach dem Ziehen die neuen Werte und nach dem
+      Speichern wieder die alten, merken wir die Stelle immer noch
+      falsch. Stehen die neuen drin und das Fenster springt trotzdem,
+      ignoriert Xfce unser `move()` - dann müsste die Lösung woanders
+      ansetzen, nämlich beim Verzicht auf das Zurücksetzen unter X11.
 
 - [ ] Unter Xfce die **übrigen** Schalter einzeln prüfen (hinter
       anderen Fenstern, nicht in der Fensterleiste). „Position
