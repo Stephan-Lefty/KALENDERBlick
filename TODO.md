@@ -10,11 +10,27 @@
       dem Alltag fremder Leute waren in diesem Projekt bisher
       ausnahmslos wertvoller als die eigenen Tests.
 
-- [ ] Unter Xfce die einzelnen Schalter einzeln prüfen (Position sperren,
-      hinter anderen Fenstern, nicht in der Fensterleiste). Der
-      Grundbetrieb läuft seit 04.11.2026; die Haken in der README-Tabelle
-      stehen dort bisher nur, weil Xfce denselben X11-Weg nutzt wie
-      Cinnamon - nachgemessen ist keiner davon.
+- [ ] **Rückmeldung zur 1.8.6 abwarten** (06.11.2026): Ein Bekannter
+      von Stephan prüft unter Arch mit Xfce, ob „Position sperren"
+      jetzt hält - Widget ziehen, Haken setzen, Einstellungen
+      speichern, und danach noch einmal nach einem Neustart. Er hatte
+      den Fehler gemeldet und nimmt das fertige Arch-Paket vom
+      Release.
+
+      **Das ist die Messung, die zählt.** Geprüft ist der Fix bisher
+      nur offscreen mit erzwungenem X11; ein echter Fenstermanager ist
+      etwas anderes. Auf Stephans Plasma lässt er sich gar nicht
+      beurteilen - unter Wayland wird nicht positioniert.
+
+      Springt es weiterhin, liegt es nicht am Merken der Position,
+      sondern daran, wie Xfce `move()` nach einem `show()` behandelt.
+      Das wäre eine andere Baustelle.
+
+- [ ] Unter Xfce die **übrigen** Schalter einzeln prüfen (hinter
+      anderen Fenstern, nicht in der Fensterleiste). „Position
+      sperren" ist seit dem 06.11.2026 nachgemessen - und war kaputt,
+      siehe oben. Die anderen Haken in der README-Tabelle stehen dort
+      weiterhin nur, weil Xfce denselben X11-Weg nutzt wie Cinnamon.
 
 
 - [ ] GNOME Online Konten einmal am lebenden System durchspielen: Konto
