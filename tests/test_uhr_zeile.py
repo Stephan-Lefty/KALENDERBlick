@@ -11,7 +11,7 @@ niemandem abgeholt wurde.
 """
 
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 
@@ -122,6 +122,21 @@ def _liste(qt_app, **kwargs):
     return TerminListe(ansicht="uhr", **kwargs)
 
 
+def _kommender_termin(titel="Zahnarzt") -> Termin:
+    """Ein Termin, der von *jetzt* aus gesehen noch aussteht.
+
+    Die Widget-Tests können keine feste Uhrzeit vorgeben: Die Uhr
+    rechnet mit `datetime.now()`, nicht mit einem übergebenen
+    Zeitpunkt. Ein Termin „um 14:00" ergab vormittags „14:00 Zahnarzt"
+    und nachmittags „Jetzt: Zahnarzt" – der Test wurde am 06.11.2026
+    nach sechs Stunden von selbst rot, ohne dass sich eine Zeile Code
+    geändert hätte.
+    """
+    beginn = datetime.now() + timedelta(hours=2)
+    return Termin(kennung=titel, titel=titel, beginn=beginn,
+                  ende=beginn + timedelta(hours=1))
+
+
 def test_die_termine_kommen_bei_der_uhr_an(qt_app):
     """**Der eigentliche Punkt dieser Datei.**
 
@@ -130,16 +145,24 @@ def test_die_termine_kommen_bei_der_uhr_an(qt_app):
     Termine nur an die Liste gibt, baut eine Zeile, die im Betrieb
     für immer „Keine Termine" sagt - und das sieht nicht nach einem
     Fehler aus, sondern nach einem leeren Kalender.
-    """
-    liste = _liste(qt_app, termin_zeigen=True)
-    liste.setze_termine([_termin()])
 
-    assert liste._uhr._naechster.text() == "14:00 Zahnarzt"
+    Geprüft wird deshalb genau das: dass dort *dieser Termin* steht.
+    Wie der Text im Einzelnen aussieht, prüft die erste Hälfte dieser
+    Datei mit festem Zeitpunkt.
+    """
+    termin = _kommender_termin()
+    liste = _liste(qt_app, termin_zeigen=True)
+    liste.setze_termine([termin])
+
+    zeile = liste._uhr._naechster.text()
+    assert zeile != "Keine Termine", "die Termine kommen bei der Uhr nicht an"
+    assert "Zahnarzt" in zeile
+    assert zeile == uhr_zeile(naechster([termin]))
 
 
 def test_abgeschaltet_bleibt_die_zeile_unsichtbar(qt_app):
     liste = _liste(qt_app, termin_zeigen=False)
-    liste.setze_termine([_termin()])
+    liste.setze_termine([_kommender_termin()])
 
     assert not liste._uhr._naechster.isVisible()
 
