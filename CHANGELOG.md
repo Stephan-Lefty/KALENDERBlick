@@ -1,6 +1,26 @@
 # Änderungsprotokoll
 
-## Unveröffentlicht
+## 1.8.5 – 2026-11-06
+
+**Neu**
+
+- Die Uhr-Ansicht kann den nächsten Termin einblenden - mit Uhrzeit,
+  bei ferneren Terminen auch mit Tag und Datum („Do, 12.11. 16:30
+  Zahnarzt"). Läuft gerade einer, steht „Jetzt:" davor; ganztägige
+  bekommen keine erfundene Uhrzeit.
+- Der Schalter steht neben dem für die Jahreszahl und ist von ihm
+  unabhängig. Zwei Schalter statt einer Auswahlliste mit vier Zeilen:
+  So bleibt jede Mischung erreichbar - nichts, nur das Jahr, nur der
+  Termin oder beides -, ohne dass jemand eine Liste lesen muss.
+- Lange Titel werden gekürzt. Eine wachsende Zeile schöbe sonst die
+  Uhrzeit aus der Mitte, und im kleinsten Widget (220 px) ist unter
+  dem Datum Platz für zwei Zeilen, nicht für vier.
+- Die Zeile entsteht im Sekundentakt, nicht beim Abruf. Welcher
+  Termin der nächste ist, ändert sich auch ohne neue Daten: Um 13:59
+  ist es der von 14 Uhr, um 14:01 der danach. Stünde der Text beim
+  Abruf fest, bliebe er bis zu einer halben Stunde zu lang stehen.
+- Das helle Bild der Uhr-Ansicht in der Anleitung zeigt beide
+  Zusatzzeilen, das dunkle die nackte Uhr.
 
 **Geändert**
 
@@ -28,28 +48,6 @@
   (`packaging/pkg/`, `packaging/src/`, das fertige Paket und das
   Quellarchiv). Sie lagen nach jedem `makepkg` unverfolgt herum und
   wären beim ersten unachtsamen `git add` im Repo gelandet.
-
-## 1.8.5 – 2026-11-06
-
-**Neu**
-
-- Die Uhr-Ansicht kann den nächsten Termin einblenden - mit Uhrzeit,
-  bei ferneren Terminen auch mit Tag und Datum („Do, 12.11. 16:30
-  Zahnarzt"). Läuft gerade einer, steht „Jetzt:" davor; ganztägige
-  bekommen keine erfundene Uhrzeit.
-- Der Schalter steht neben dem für die Jahreszahl und ist von ihm
-  unabhängig. Zwei Schalter statt einer Auswahlliste mit vier Zeilen:
-  So bleibt jede Mischung erreichbar - nichts, nur das Jahr, nur der
-  Termin oder beides -, ohne dass jemand eine Liste lesen muss.
-- Lange Titel werden gekürzt. Eine wachsende Zeile schöbe sonst die
-  Uhrzeit aus der Mitte, und im kleinsten Widget (220 px) ist unter
-  dem Datum Platz für zwei Zeilen, nicht für vier.
-- Die Zeile entsteht im Sekundentakt, nicht beim Abruf. Welcher
-  Termin der nächste ist, ändert sich auch ohne neue Daten: Um 13:59
-  ist es der von 14 Uhr, um 14:01 der danach. Stünde der Text beim
-  Abruf fest, bliebe er bis zu einer halben Stunde zu lang stehen.
-- Das helle Bild der Uhr-Ansicht in der Anleitung zeigt beide
-  Zusatzzeilen, das dunkle die nackte Uhr.
 
 ## 1.8.4 – 2026-11-06
 
