@@ -200,10 +200,12 @@
 
 ## Für GuideOS (Cinnamon, X11)
 
-- [ ] Sobald GuideOS läuft: Schreibtischfenster dort wirklich testen.
-      `umgebung()` in `gui/gemeinsam.py` erkennt X11 bereits und lässt
-      `move()` zu - ungetestet ist es trotzdem.
-- [ ] `.desktop`-Datei und Symbolpfade unter Cinnamon prüfen
+- [x] Erledigt (06.11.2026): Die 1.8.5 ist unter GuideOS (Debian 13 mit
+      Cinnamon) gelaufen. Damit ist auch der Widerspruch weg, der hier
+      zwei Fassungen lang stand - die README nannte Cinnamon seit dem
+      03.11. erprobt, dieser Abschnitt führte es weiter als ungetestet.
+      Was unter Cinnamon anders ist, steht in der Tabelle im README:
+      alles wie unter KDE, außer „auf allen Arbeitsflächen zeigen".
 
 ## Entschieden
 
