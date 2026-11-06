@@ -1,0 +1,12 @@
+kalenderblick (1.8.5) unstable; urgency=medium
+
+  * Erstes Paket, das mit dpkg-buildpackage gebaut wird. Lizenz und
+    Urheberrecht liegen damit unter /usr/share/doc/kalenderblick/,
+    wie es die Debian Policy verlangt - im bisherigen Paket fehlten
+    sie, die MIT-Lizenz lag nur als Beifang im Python-Wheel.
+  * Die Uhr-Ansicht kann den nächsten Termin einblenden, abschaltbar
+    und unabhängig von der Jahreszahl.
+  * Die Paketbeschreibung nennt alle vier Kalenderprogramme statt nur
+    Thunderbird.
+
+ -- Stephan Roesner <stephan.roesner@protonmail.com>  Fri, 06 Nov 2026 08:00:00 +0100

@@ -9,63 +9,70 @@ on:
 jobs:
 
   # ── Debian .deb ──────────────────────────────────────────────────────────
+  #
+  # Gebaut wird mit dpkg-buildpackage aus debian/, nicht mehr von Hand
+  # mit dpkg-deb. Der Grund kam am 06.11.2026 vom Admin der
+  # GuideOS-Distribution: Nur so kann eine Distribution das Paket selbst
+  # nachbauen und aufnehmen. Dem alten Weg fehlten außerdem
+  # /usr/share/doc/kalenderblick/copyright und changelog - beides
+  # verlangt die Debian Policy (§12.5, §12.7), und die MIT-Lizenz lag
+  # nur als Beifang im Python-Wheel.
+  #
+  # Im Container debian:trixie und nicht auf ubuntu-latest: Gebaut
+  # werden soll gegen die Pakete, die das Zielsystem wirklich hat.
   debian-deb:
     runs-on: ubuntu-latest
+    container: debian:trixie
     steps:
+      - name: Werkzeuge für den Checkout
+        # actions/checkout braucht git, und ein nacktes Debian-Abbild
+        # bringt keines mit.
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends git ca-certificates
+
       - uses: actions/checkout@v4
 
-      - name: .deb bauen
+      - name: Bauabhängigkeiten
         run: |
-          set -e
-          python3 -m venv venv
-          venv/bin/pip install --quiet .
-          VERSION=$(venv/bin/python3 -c "from kalenderblick import __version__; print(__version__)")
-          PYVER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-          PKG=deb_pkg
-          mkdir -p "${PKG}/usr/bin" "${PKG}/usr/lib/python3/dist-packages" "${PKG}/DEBIAN" \
-            "${PKG}/usr/share/applications" "${PKG}/usr/share/doc/kalenderblick" \
-            "${PKG}/usr/share/metainfo"
-          cp -r "venv/lib/python${PYVER}/site-packages/kalenderblick" "${PKG}/usr/lib/python3/dist-packages/"
-          find "venv/lib/python${PYVER}/site-packages/" -maxdepth 1 -name 'kalenderblick*.dist-info' \
-            -exec cp -r {} "${PKG}/usr/lib/python3/dist-packages/" \;
-          for script in kalenderblick kalenderblick-fenster; do
-            sed 's|^#!.*|#!/usr/bin/python3|' "venv/bin/${script}" > "${PKG}/usr/bin/${script}"
-            chmod 755 "${PKG}/usr/bin/${script}"
+          apt-get install -y -qq --no-install-recommends \
+            build-essential debhelper dh-python pybuild-plugin-pyproject \
+            python3-all python3-setuptools \
+            python3-dateutil python3-icalendar python3-pyqt6 \
+            python3-pytest lintian
+
+      - name: .deb bauen
+        run: dpkg-buildpackage -us -uc
+
+      - name: lintian
+        # Ein Befund hält die Veröffentlichung an. Lieber kein Paket als
+        # eines, das eine Distribution hinterher zurückweist.
+        run: lintian ../kalenderblick_*.deb
+
+      - name: Probeinstallation und Rauchtest
+        # Ein Paket, das baut, muss sich noch lange nicht installieren
+        # lassen - und ein installiertes muss noch nicht starten.
+        run: |
+          apt-get install -y -qq ../kalenderblick_*.deb
+          kalenderblick --version
+          for pflicht in /usr/share/doc/kalenderblick/copyright \
+                         /usr/share/doc/kalenderblick/changelog.gz \
+                         /usr/share/man/man1/kalenderblick.1.gz \
+                         /usr/share/applications/kalenderblick.desktop \
+                         /usr/share/metainfo/io.github.stephan_lefty.kalenderblick.metainfo.xml; do
+            test -e "$pflicht" || { echo "FEHLT im Paket: $pflicht"; exit 1; }
           done
-          cp src/kalenderblick/paketdaten/kalenderblick.desktop "${PKG}/usr/share/applications/"
-          cp packaging/kalenderblick.kwinrule "${PKG}/usr/share/doc/kalenderblick/"
-          # Ohne AppStream-Metadaten kennen die Software-Verwaltungen das
-          # Programm nicht: Es taucht weder zum Suchen noch unter
-          # "installierte Software" zum Entfernen auf.
-          cp src/kalenderblick/paketdaten/io.github.stephan_lefty.kalenderblick.metainfo.xml \
-            "${PKG}/usr/share/metainfo/"
-          for groesse in 16 22 24 32 48 64 128 256 512; do
-            mkdir -p "${PKG}/usr/share/icons/hicolor/${groesse}x${groesse}/apps"
-            cp "src/kalenderblick/bilder/symbol-${groesse}.png" \
-              "${PKG}/usr/share/icons/hicolor/${groesse}x${groesse}/apps/kalenderblick.png"
-          done
-          {
-            echo "Package: kalenderblick"
-            echo "Version: ${VERSION}"
-            echo "Section: utils"
-            echo "Priority: optional"
-            echo "Architecture: all"
-            echo "Maintainer: Stephan Roesner <stephan.roesner@protonmail.com>"
-            # PyQt6 gehört zu Depends, nicht zu Recommends: ohne die
-            # Oberfläche startet das Programm beim Klick auf den
-            # Menüeintrag gar nicht, und die Fehlermeldung ist nicht zu
-            # sehen (Terminal=false). Recommends wird bei "dpkg -i" zudem
-            # gar nicht mitinstalliert.
-            echo "Depends: python3 (>= 3.10), python3-dateutil, python3-icalendar, python3-pyqt6"
-            echo "Description: Termine aus Thunderbird, Betterbird, Evolution und GNOME Kalender auf dem Schreibtisch"
-            echo " Zeigt Termine aus der Ablage der Kalenderprogramme an - nur lesen, nie schreiben."
-          } > "${PKG}/DEBIAN/control"
-          dpkg-deb --build --root-owner-group "${PKG}" "kalenderblick_${VERSION}_all.deb"
+          echo "Alle Pflichtdateien vorhanden."
+
+      - name: Paket einsammeln
+        run: |
+          mkdir -p ausgabe
+          cp ../kalenderblick_*.deb ausgabe/
 
       - uses: actions/upload-artifact@v4
         with:
           name: debian-deb
-          path: kalenderblick_*.deb
+          path: ausgabe/kalenderblick_*.deb
 
   # ── Hochladen an die GitHub-Release ──────────────────────────────────────
   release-upload:

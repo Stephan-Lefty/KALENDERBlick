@@ -1,0 +1,43 @@
+Source: kalenderblick
+Section: utils
+Priority: optional
+Maintainer: Stephan Roesner <stephan.roesner@protonmail.com>
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               pybuild-plugin-pyproject,
+               python3-all,
+               python3-setuptools
+Standards-Version: 4.7.0
+Homepage: https://github.com/Stephan-Lefty/KALENDERBlick
+Rules-Requires-Root: no
+
+Package: kalenderblick
+Architecture: all
+# python3-pyqt6 gehört zu den harten Abhängigkeiten, nicht zu den
+# empfohlenen: Ohne die Oberfläche passiert beim Klick auf den
+# Menüeintrag wortlos nichts. Ein grafischer Paketinstaller zieht
+# Recommends oft nicht mit - genau daran scheiterte die Fassung 1.1.0.
+Depends: ${python3:Depends},
+         ${misc:Depends},
+         python3-dateutil,
+         python3-icalendar,
+         python3-pyqt6
+# Debian deckelt die erste Zeile bei 80 Zeichen; mit „auf dem
+# Schreibtisch" wären es 86. Deshalb weicht sie hier als einzige von
+# der AppStream-Zusammenfassung ab - alle vier Programme stehen aber
+# weiterhin darin, denn ohne sie findet niemand das Paket über die
+# Suche.
+Description: Termine aus Thunderbird, Betterbird, Evolution und GNOME Kalender anzeigen
+ KALENDERBlick zeigt die Termine aus Thunderbird, Betterbird, Evolution
+ und GNOME Kalender als Schreibtisch-Widget, als Leistensymbol und in
+ einem Fenster an - ohne dass eines dieser Programme geöffnet sein muss.
+ .
+ Gelesen wird ausschließlich, geschrieben nie. Das Programm braucht
+ keine Anmeldung und keine Zugangsdaten: Online-Kalender wie Google,
+ Nextcloud oder Proton bindet man im Kalenderprogramm ein, KALENDERBlick
+ liest sie von dort mit. Wahlweise lässt sich ein Kalender auch
+ unmittelbar über seine iCalendar-Adresse abonnieren.
+ .
+ Das Widget bietet vier Ansichten (Uhr mit Datum, nächste drei Termine,
+ nächste sieben oder vierzehn Tage), fünf Größenstufen, ein helles und
+ ein dunkles Erscheinungsbild sowie einstellbare Transparenz.

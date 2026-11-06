@@ -1,0 +1,32 @@
+#!/usr/bin/make -f
+# Gebaut wird mit pybuild aus der pyproject.toml - dasselbe Wheel wie
+# bei pipx und beim Arch-Paket, nur an die Debian-Pfade installiert.
+
+export PYBUILD_NAME=kalenderblick
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+# Die Dateien für Menü, Software-Verwaltung und Symbolthema liegen im
+# Python-Paket (damit sie jede Installationsart erreichen, auch pipx).
+# Für ein Systempaket müssen sie zusätzlich dorthin, wo die
+# Arbeitsumgebung sie sucht.
+override_dh_install:
+	dh_install
+	install -Dm644 src/kalenderblick/paketdaten/kalenderblick.desktop \
+		debian/kalenderblick/usr/share/applications/kalenderblick.desktop
+	install -Dm644 src/kalenderblick/paketdaten/io.github.stephan_lefty.kalenderblick.metainfo.xml \
+		debian/kalenderblick/usr/share/metainfo/io.github.stephan_lefty.kalenderblick.metainfo.xml
+	install -Dm644 packaging/kalenderblick.kwinrule \
+		debian/kalenderblick/usr/share/doc/kalenderblick/kalenderblick.kwinrule
+	# Das Symbol liegt im Thema unter seinem schlichten Namen, nicht
+	# unter "symbol-<groesse>" - sonst findet die Arbeitsumgebung es
+	# nicht, obwohl es im Paket steckt.
+	set -e; for groesse in 16 22 24 32 48 64 128 256 512; do \
+		install -Dm644 "src/kalenderblick/bilder/symbol-$$groesse.png" \
+			"debian/kalenderblick/usr/share/icons/hicolor/$${groesse}x$${groesse}/apps/kalenderblick.png"; \
+	done
+
+# Die Tests brauchen eine Anzeige; offscreen genügt ihnen.
+override_dh_auto_test:
+	QT_QPA_PLATFORM=offscreen dh_auto_test

@@ -1,0 +1,82 @@
+.TH KALENDERBLICK 1 "06. November 2026" "KALENDERBlick 1.8.5" "Benutzerbefehle"
+.SH BEZEICHNUNG
+kalenderblick \- Termine aus Thunderbird, Betterbird, Evolution und GNOME Kalender anzeigen
+.SH ÜBERSICHT
+.B kalenderblick
+.RI [ OPTIONEN ]
+.I BEFEHL
+.RI [ ARGUMENTE ]
+.SH BESCHREIBUNG
+.B KALENDERBlick
+liest die Termine aus Thunderbird, Betterbird, Evolution und GNOME
+Kalender und zeigt sie als Schreibtisch\-Widget, als Leistensymbol und in
+einem Fenster an \(em ohne dass eines dieser Programme geöffnet sein muss.
+.PP
+Gelesen wird ausschließlich, geschrieben nie. Das Programm braucht keine
+Anmeldung und keine Zugangsdaten: Online\-Kalender wie Google, Nextcloud
+oder Proton bindet man im Kalenderprogramm ein, KALENDERBlick liest sie
+von dort mit.
+.PP
+Thunderbird und Betterbird holen entfernte Kalender nur ab, solange sie
+laufen. Wer sie selten öffnet, sieht deshalb einen älteren Stand; dafür
+gibt es in den Einstellungen einen Schalter, der das Programm regelmäßig
+kurz ohne Fenster startet. Evolution und GNOME Kalender haben das
+Problem nicht, weil ihr Datenserver als Dienst weiterläuft.
+.SH BEFEHLE
+.TP
+.B pruefen
+Zeigt, welche Profile, Dateien und Tabellen gefunden wurden. Der erste
+Befehl, wenn etwas nicht wie erwartet erscheint.
+.TP
+.B kalender
+Listet die Kalender mit ihrer Art und ihrem Abgleichstand auf.
+.TP
+.B liste
+Gibt die kommenden Termine als Text aus.
+.TP
+.B naechster
+Gibt nur den nächsten Termin aus, in einer Zeile. Gedacht für
+Statusleisten und eigene Skripte.
+.TP
+.B einstellungen
+Zeigt die Einstellungen an und ändert sie \(em Vorausblick,
+Aktualisierungstakt, Profil, versteckte Kalender.
+.TP
+.B fenster
+Öffnet das Fenster mit den Reitern Termine, Einstellungen und Hilfe.
+Setzt PyQt6 voraus.
+.TP
+.B start
+Startet Leistensymbol und Schreibtisch\-Widget. Setzt PyQt6 voraus.
+.SH OPTIONEN
+.TP
+.BR \-h ", " \-\-help
+Zeigt die Hilfe an und beendet das Programm.
+.TP
+.B \-\-version
+Zeigt die Fassungsnummer an und beendet das Programm.
+.TP
+.BI \-\-profil " PFAD"
+Gibt das Thunderbird\-Profil von Hand an, statt es suchen zu lassen.
+Nützlich, wenn mehrere Profile mit Terminen vorhanden sind.
+.SH DATEIEN
+.TP
+.I ~/.config/kalenderblick/
+Einstellungen. Enthält auf Wunsch abonnierte Kalenderadressen und liegt
+deshalb nur für den Eigentümer lesbar vor.
+.TP
+.I ~/.local/state/kalenderblick/
+Zwischenspeicher.
+.SH FEHLER
+Fehler bitte melden unter
+.UR https://github.com/Stephan-Lefty/KALENDERBlick/issues
+.UE .
+.SH SIEHE AUCH
+.BR kalenderblick-fenster (1)
+.PP
+Die ausführliche Anleitung mit Bildschirmfotos steht im Programm selbst
+unter „Hilfe“ und online unter
+.UR https://github.com/Stephan-Lefty/KALENDERBlick
+.UE .
+.SH AUTOR
+Stephan Rösner
