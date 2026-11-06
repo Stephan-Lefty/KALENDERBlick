@@ -1,6 +1,6 @@
 # Änderungsprotokoll
 
-## Unveröffentlicht
+## 1.8.6 – 2026-11-06
 
 **Behoben**
 

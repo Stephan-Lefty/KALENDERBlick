@@ -1,3 +1,11 @@
+kalenderblick (1.8.6) unstable; urgency=medium
+
+  * „Position sperren" hielt die falsche Stelle fest: Ein gezogenes
+    Widget sprang beim Speichern der Einstellungen an seinen alten
+    Platz zurück. Betraf jede X11-Sitzung - Xfce, Cinnamon, GuideOS.
+
+ -- Stephan Roesner <stephan.roesner@protonmail.com>  Fri, 06 Nov 2026 17:30:00 +0100
+
 kalenderblick (1.8.5) unstable; urgency=medium
 
   * Erstes Paket, das mit dpkg-buildpackage gebaut wird. Lizenz und

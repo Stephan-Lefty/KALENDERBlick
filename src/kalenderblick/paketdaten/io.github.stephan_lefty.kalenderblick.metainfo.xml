@@ -125,6 +125,15 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.8.6" date="2026-11-06">
+      <description>
+        <p>
+          „Position sperren" hielt die falsche Stelle fest: Ein an eine
+          andere Stelle gezogenes Widget sprang beim Speichern der
+          Einstellungen zurück. Betraf jede X11-Sitzung.
+        </p>
+      </description>
+    </release>
     <release version="1.8.5" date="2026-11-06">
       <description>
         <p>

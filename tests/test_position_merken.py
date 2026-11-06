@@ -37,10 +37,20 @@ def qt_app():
 
 
 @pytest.fixture
-def fenster(qt_app, heim):
-    """Ein Widget auf einer eigenen Konfiguration, auf (60, 60) stehend."""
+def fenster(qt_app, heim, monkeypatch):
+    """Ein Widget auf einer eigenen Konfiguration, auf (60, 60) stehend.
+
+    **Die Sitzung wird auf X11 gestellt, und das ist der Punkt.** Genau
+    dort liegt der Fehler: `_wende_groesse_an` ruft `move()` nur unter
+    X11. Auf einem Wayland-Rechner - und Stephans Manjaro ist einer -
+    liefen diese Tests zwar grün, berührten die fragliche Zeile aber
+    nie. Ein Test, der je nach Rechner etwas anderes prüft, ist keiner.
+    """
     from kalenderblick import config as konfig_modul
     from kalenderblick.gui.desktop import SchreibtischFenster
+
+    monkeypatch.setenv("XDG_SESSION_TYPE", "x11")
+    monkeypatch.delenv("WAYLAND_DISPLAY", raising=False)
 
     e = konfig_modul.laden()
     e.desktop.x, e.desktop.y = 60, 60
@@ -48,6 +58,7 @@ def fenster(qt_app, heim):
     e.speichern()
 
     w = SchreibtischFenster()
+    assert w._env["x11"], "die Sitzung gilt nicht als X11 - der Test misst nichts"
     yield w
     w.close()
 
