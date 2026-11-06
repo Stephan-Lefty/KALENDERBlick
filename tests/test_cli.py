@@ -125,12 +125,17 @@ def test_liste_zeigt_auch_evolution_termine(heim, capsys):
     from hilfe_evolution import EvolutionAblage
     from kalenderblick import cli
 
-    heute = date.today()
+    # **Morgen, nicht heute 14:00.** `liste` zeigt nur, was noch
+    # aussteht - ein Termin auf eine feste Tageszeit macht den Test von
+    # der Uhr abhängig: Er war am 06.11.2026 den ganzen Vormittag grün
+    # und ab 15 Uhr rot, ohne dass sich eine Zeile geändert hätte.
+    # Dieselbe Falle wie am selben Tag in test_uhr_zeile.py.
+    morgen = date.today() + timedelta(days=1)
     a = EvolutionAblage(heim)
     a.lege_kalender_an("ev001", "Evolution-Kalender")
     a.termin("ev001", "e1", "Aus Evolution",
-             datetime(heute.year, heute.month, heute.day, 14, 0),
-             datetime(heute.year, heute.month, heute.day, 15, 0))
+             datetime(morgen.year, morgen.month, morgen.day, 14, 0),
+             datetime(morgen.year, morgen.month, morgen.day, 15, 0))
 
     assert cli.main(["liste"]) == 0
     assert "Aus Evolution" in capsys.readouterr().out

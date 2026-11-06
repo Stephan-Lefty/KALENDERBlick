@@ -1,5 +1,31 @@
 # Änderungsprotokoll
 
+## Unveröffentlicht
+
+**Behoben**
+
+- **„Position sperren" hielt die falsche Stelle fest.** Wer das Widget
+  an einen anderen Platz zog und danach die Einstellungen speicherte,
+  sah es an seinen alten Platz zurückspringen. Gezogen wird über den
+  Fenstermanager (`startSystemMove`), und KALENDERBlick erfuhr die neue
+  Stelle nie: Gemerkt wurde sie allein beim Beenden. Unter X11 setzt
+  das Programm das Fenster nach jeder Größenänderung auf den gemerkten
+  Wert zurück - und das war der vom letzten Beenden.
+
+  Gemeldet am 06.11.2026 von einem Anwender unter Arch mit Xfce, mit
+  einem Bildschirmmitschnitt. Unter Wayland war nichts zu sehen, weil
+  dort gar nicht positioniert wird; auf Plasma lief dieselbe Fassung
+  sauber. **Eine Zusage, die nur auf einer Arbeitsumgebung geprüft ist,
+  gilt nur dort** - in der Tabelle im README stand der Haken für Xfce
+  bisher nur aus Analogie zu Cinnamon, nachgemessen war er nie.
+
+**Geändert**
+
+- Ein Test legte seinen Termin auf heute 14:00 und prüfte, dass die
+  Kommandozeile ihn zeigt. Er war damit von der Uhr abhängig: den
+  ganzen Vormittag grün, ab 15 Uhr rot, ohne dass sich eine Zeile
+  geändert hätte. Gemessen mit vorgestellter Uhr zu vier Tageszeiten.
+
 ## 1.8.5 – 2026-11-06
 
 **Neu**

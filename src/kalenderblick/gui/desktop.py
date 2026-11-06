@@ -179,6 +179,11 @@ class SchreibtischFenster(QWidget):
             hoehe = self._inhalt_hoehe()
         self._e.desktop.breite = breite
         self._e.desktop.hoehe = hoehe
+        # Die Zielstelle *vor* dem Aus- und Wiedereinblenden festhalten:
+        # Beim show() setzt der Fenstermanager das Fenster unter Umständen
+        # erst an eine eigene Stelle, und das dabei ausgelöste moveEvent
+        # schriebe diese in die Einstellungen.
+        ziel_x, ziel_y = self._e.desktop.x, self._e.desktop.y
         neu_mappen = zeige_neu and self.isVisible()
         if neu_mappen:
             self.hide()
@@ -186,7 +191,7 @@ class SchreibtischFenster(QWidget):
         if neu_mappen:
             self.show()
         if self._env["x11"]:
-            self.move(self._e.desktop.x, self._e.desktop.y)
+            self.move(ziel_x, ziel_y)
 
     def _inhalt_hoehe(self) -> int:
         rand = 2 * 8 + 8   # Fensterrand oben/unten + etwas Luft
@@ -301,6 +306,31 @@ class SchreibtischFenster(QWidget):
             positions_modul.entferne_feste_position()
 
     # ------------------------------------------------------------------
+
+    def moveEvent(self, event) -> None:
+        """Die Stelle mitschreiben, sobald das Fenster verschoben wird.
+
+        **Vorher geschah das nur beim Beenden**, und das genügte nicht:
+        Gezogen wird über `startSystemMove()`, also durch den
+        Fenstermanager - KALENDERBlick erfuhr die neue Stelle nie. Unter
+        X11 setzt `_wende_groesse_an` das Fenster anschließend auf den
+        gemerkten Wert zurück, und der war der vom letzten Beenden. Wer
+        das Widget zog und dann die Einstellungen speicherte, sah es an
+        seinen alten Platz zurückspringen - „Position sperren" hielt
+        damit die falsche Stelle fest.
+
+        Gemeldet am 06.11.2026 von einem Anwender unter Arch mit Xfce.
+        Unter Wayland fiel es nie auf, weil dort gar nicht positioniert
+        wird (`self._env["x11"]`) - auf Plasma lief dieselbe Fassung
+        sauber. **Eine Zusage, die nur auf einer Arbeitsumgebung geprüft
+        ist, gilt nur dort.**
+        """
+        super().moveEvent(event)
+        # Ein unsichtbares Fenster meldet beim Aufbau Zwischenstände, die
+        # nichts über den Wunsch des Anwenders sagen.
+        if self.isVisible():
+            self._e.desktop.x = event.pos().x()
+            self._e.desktop.y = event.pos().y()
 
     def closeEvent(self, event) -> None:
         QApplication.instance().removeEventFilter(self)
