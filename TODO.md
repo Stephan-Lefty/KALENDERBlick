@@ -2,6 +2,14 @@
 
 ## Als Nächstes
 
+- [ ] **31.12.2026: Umfrage in der GuideOS-Community läuft aus.**
+      Eingestellt am 06.11.2026 zusammen mit der Vorstellung der 1.8.5
+      (Beitragstext unter `../.kalenderblick-texte/`). Danach das
+      Ergebnis ansehen und entscheiden, was daraus folgt - und was an
+      Rückmeldungen gekommen ist, gehört hier in die Liste. Fehler aus
+      dem Alltag fremder Leute waren in diesem Projekt bisher
+      ausnahmslos wertvoller als die eigenen Tests.
+
 - [ ] Unter Xfce die einzelnen Schalter einzeln prüfen (Position sperren,
       hinter anderen Fenstern, nicht in der Fensterleiste). Der
       Grundbetrieb läuft seit 04.11.2026; die Haken in der README-Tabelle
