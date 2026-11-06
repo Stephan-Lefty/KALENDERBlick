@@ -31,6 +31,11 @@ def _termin(titel="Zahnarzt", beginn=datetime(2026, 11, 6, 14, 0),
 
 @pytest.fixture(scope="module")
 def qt_app():
+    # Der Skip gehört in die Fixture, nicht an den Dateianfang: Oben
+    # stünde er auch über den Texttests, die ohne Qt auskommen. Und er
+    # muss ein Skip sein - ein Import, der in der Fixture platzt, ist
+    # für pytest ein Fehler und färbt die CI rot.
+    pytest.importorskip("PyQt6")
     from PyQt6.QtWidgets import QApplication
     app = QApplication.instance() or QApplication([])
     yield app
