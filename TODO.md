@@ -10,32 +10,6 @@
       dem Alltag fremder Leute waren in diesem Projekt bisher
       ausnahmslos wertvoller als die eigenen Tests.
 
-- [ ] **Rückmeldung zur 1.8.7 abwarten** (06.11.2026): Ein Bekannter
-      von Stephan prüft unter Arch mit Xfce, ob „Position sperren"
-      jetzt hält - Widget ziehen, Haken setzen, Einstellungen
-      speichern, und danach noch einmal nach einem Neustart.
-
-      **Die 1.8.6 hat es nicht behoben**, obwohl sie genau dafür
-      herausging: Sie merkte die gezogene Stelle nur im Speicher, und
-      das Speichern der Einstellungen lädt die Datei neu. Die 1.8.7
-      hält sie fest und schreibt sie in die Datei.
-
-      **Das ist die Messung, die zählt.** Geprüft ist beides nur
-      offscreen mit erzwungenem X11; ein echter Fenstermanager ist
-      etwas anderes. Auf Stephans Plasma lässt es sich gar nicht
-      beurteilen - unter Wayland wird nicht positioniert.
-
-      Springt es ein drittes Mal, soll er vor dem Ziehen und nach dem
-      Speichern hier nachsehen:
-
-          cat ~/.config/kalenderblick/einstellungen.json | grep -E '"x"|"y"'
-
-      Stehen dort nach dem Ziehen die neuen Werte und nach dem
-      Speichern wieder die alten, merken wir die Stelle immer noch
-      falsch. Stehen die neuen drin und das Fenster springt trotzdem,
-      ignoriert Xfce unser `move()` - dann müsste die Lösung woanders
-      ansetzen, nämlich beim Verzicht auf das Zurücksetzen unter X11.
-
 - [ ] Unter Xfce die **übrigen** Schalter einzeln prüfen (hinter
       anderen Fenstern, nicht in der Fensterleiste). „Position
       sperren" ist seit dem 06.11.2026 nachgemessen - und war kaputt,
@@ -62,6 +36,22 @@
       Taktlogik über Tests).
 
 ## Erledigt (installiert auf dem Manjaro-KDE-Rechner)
+
+- [x] **„Position sperren" hält jetzt** (06.11.2026, bestätigt von
+      einem Anwender unter Arch mit Xfce). Er hatte den Fehler
+      gemeldet und beide Behebungsversuche geprüft - die 1.8.6 half
+      nicht, die 1.8.7 hält.
+
+      Zwei Ursachen übereinander: Das Widget merkte sich die gezogene
+      Stelle gar nicht (nur beim Beenden), und als es das tat, warf
+      das Neuladen der Konfigurationsdatei sie wieder weg. Unter
+      Wayland war nichts davon zu sehen, weil dort nicht positioniert
+      wird - deshalb lief es auf Stephans Plasma die ganze Zeit sauber.
+
+      **Die Lehre**: Zweimal hintereinander hat eine Prüfung die
+      fragliche Umgebung nicht nachgestellt - erst die Sitzungsart,
+      dann der Weg über die Datei. Beide Male war der Test grün und
+      der Fehler da.
 
 - [x] Die Terminzeile in der Uhr-Ansicht am Gerät angesehen
       (06.11.2026, Stufe „Sehr klein", KDE/Wayland): sitzt. Damit ist
