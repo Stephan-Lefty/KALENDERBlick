@@ -1,4 +1,7 @@
-"""KALENDERBlick - Thunderbirds Kalender auf dem Schreibtisch und in der Leiste."""
+"""KALENDERBlick - Termine auf dem Schreibtisch und in der Leiste.
+
+Liest Thunderbird, Betterbird, Evolution und GNOME Kalender.
+"""
 
 NAME = "KALENDERBlick"
 

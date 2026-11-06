@@ -5,3 +5,12 @@ build/
 dist/
 .pytest_cache/
 .venv/
+
+# Was makepkg im Paketordner hinterlässt. Ohne diese Zeilen liegen
+# nach einem Paketbau ein fertiges Paket, ein Quellarchiv und ein
+# vollständig entpackter Quellbaum unverfolgt herum - und landen beim
+# ersten unachtsamen `git add` im Repo.
+packaging/pkg/
+packaging/src/
+packaging/*.pkg.tar.*
+packaging/*.tar.gz

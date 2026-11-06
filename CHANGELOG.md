@@ -1,5 +1,34 @@
 # Änderungsprotokoll
 
+## Unveröffentlicht
+
+**Geändert**
+
+- Hinter „Jahreszahl anzeigen" und „Nächsten Termin anzeigen" steht
+  jetzt in Klammern, dass beide nur in der Ansicht „Uhr + Datum"
+  wirken. Wer sie in einer Terminansicht anhakt, sah vorher nichts
+  geschehen - der Hinweis stand nur am Mauszeiger, und dort sucht ihn
+  niemand, der gerade einen Haken setzt.
+
+**Behoben**
+
+- Die Beschreibung des Debian-Pakets sagte noch „Thunderbirds
+  Kalender". Genau das liest ein Nutzer in der Software-Verwaltung,
+  bevor er sich fürs Installieren entscheidet - wer Evolution oder
+  GNOME Kalender einsetzt, hätte das Programm für nichts für sich
+  gehalten. Dieselbe veraltete Stelle war in 1.8.2 schon einmal
+  behoben worden, damals für die `.desktop`-Datei und das Arch-Paket;
+  drei weitere blieben stehen: das Debian-Paket, `pip show` und die
+  Hilfe auf der Kommandozeile (`kalenderblick --help`). Alle vier
+  sagen jetzt wortgleich dasselbe wie die AppStream-Datei.
+
+**Pflege**
+
+- `.gitignore` kennt jetzt die Reste eines Paketbaus
+  (`packaging/pkg/`, `packaging/src/`, das fertige Paket und das
+  Quellarchiv). Sie lagen nach jedem `makepkg` unverfolgt herum und
+  wären beim ersten unachtsamen `git add` im Repo gelandet.
+
 ## 1.8.5 – 2026-11-06
 
 **Neu**

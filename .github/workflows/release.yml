@@ -57,8 +57,8 @@ jobs:
             # sehen (Terminal=false). Recommends wird bei "dpkg -i" zudem
             # gar nicht mitinstalliert.
             echo "Depends: python3 (>= 3.10), python3-dateutil, python3-icalendar, python3-pyqt6"
-            echo "Description: Thunderbirds Kalender auf dem Schreibtisch und in der Kontrollleiste"
-            echo " Zeigt Termine aus Thunderbirds eigener Ablage an - nur lesen, nie schreiben."
+            echo "Description: Termine aus Thunderbird, Betterbird, Evolution und GNOME Kalender auf dem Schreibtisch"
+            echo " Zeigt Termine aus der Ablage der Kalenderprogramme an - nur lesen, nie schreiben."
           } > "${PKG}/DEBIAN/control"
           dpkg-deb --build --root-owner-group "${PKG}" "kalenderblick_${VERSION}_all.deb"
 

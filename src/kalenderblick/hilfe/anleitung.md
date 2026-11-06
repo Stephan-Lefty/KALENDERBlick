@@ -252,8 +252,8 @@ Zweiter Reiter im Hauptfenster:
 | Transparenz | Wie durchsichtig der Hintergrund ist - 0 % nur Schrift, 100 % voll deckend. |
 | Erscheinungsbild | Dark-Mode (weiße Schrift) oder Light-Mode (schwarze Schrift) - wirkt nur auf das Widget, nicht auf dieses Fenster. |
 | Stundenformat | 24 Stunden oder 12 Stunden mit AM/PM - nur für die Uhr-Ansicht. |
-| Jahreszahl anzeigen | Nur für die Uhr-Ansicht: stellt die Jahreszahl als eigene Zeile unter das Datum. |
-| Nächsten Termin anzeigen | Nur für die Uhr-Ansicht: stellt unter das Datum, was als nächstes ansteht - mit Uhrzeit, bei ferneren Terminen auch mit Tag und Datum. Läuft gerade einer, steht „Jetzt:" davor. Lange Titel werden gekürzt, damit die Uhrzeit in der Mitte bleibt. Die beiden Schalter sind voneinander unabhängig: Es geht also nichts, nur das Jahr, nur der Termin oder beides. |
+| Jahreszahl anzeigen (nur bei Uhr + Datum) | Stellt die Jahreszahl als eigene Zeile unter das Datum. |
+| Nächsten Termin anzeigen (nur bei Uhr + Datum) | Stellt unter das Datum, was als nächstes ansteht - mit Uhrzeit, bei ferneren Terminen auch mit Tag und Datum. Läuft gerade einer, steht „Jetzt:" davor. Lange Titel werden gekürzt, damit die Uhrzeit in der Mitte bleibt. Die beiden Schalter sind voneinander unabhängig: Es geht also nichts, nur das Jahr, nur der Termin oder beides. |
 | Klick öffnet die Termine | Ein Klick auf das Widget öffnet das Hauptfenster. Ausgeschaltet lässt sich das Widget nur noch ziehen oder über das Leistensymbol öffnen. |
 | Position sperren | Einmal an die richtige Stelle gezogen, lässt sich das Fenster nicht mehr versehentlich verschieben - und bleibt auch über einen Neustart von KALENDERBlick an dieser Stelle (nur KDE/KWin, über eine automatisch angelegte Fensterregel). |
 | Auf allen Arbeitsflächen zeigen | Das Widget bleibt sichtbar, egal auf welche Arbeitsfläche gewechselt wird - nur unter KDE/KWin wirksam. |

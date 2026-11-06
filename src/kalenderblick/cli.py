@@ -242,7 +242,8 @@ def befehl_start(args=None) -> int:
 def baue_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog=AUFRUF,
-        description=f"{NAME} - zeigt Thunderbirds Kalender auf dem Schreibtisch "
+        description=f"{NAME} - zeigt Termine aus Thunderbird, Betterbird, "
+                    "Evolution und GNOME Kalender auf dem Schreibtisch "
                     "und in der Kontrollleiste.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"""Zuerst ausprobieren:

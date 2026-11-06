@@ -52,6 +52,12 @@ _ANSICHT_NAMEN = {
     "woche":     "Nächste 7 Tage",
     "14tage":    "Nächste 14 Tage",
 }
+# Hinter jeder Einstellung, die nur in der Uhr-Ansicht wirkt. Der Name
+# kommt aus derselben Tabelle wie der Eintrag im Auswahlfeld - sonst
+# stünde hier irgendwann ein anderer Wortlaut als dort, und der Hinweis
+# zeigte auf eine Ansicht, die es so nicht gibt.
+_NUR_UHR = f"nur bei {_ANSICHT_NAMEN['uhr']}"
+
 _GROESSE_NAMEN = {
     "sehr_klein": "Sehr klein",
     "klein":      "Klein",
@@ -509,21 +515,26 @@ class _EinstellungenReiter(QWidget):
         self._stunden_format.setToolTip(
             "Nur für die Uhr-Ansicht: Uhrzeit mit 24 Stunden oder mit\n"
             "12 Stunden samt AM/PM.")
+        # Hier bewusst ohne den Klammerzusatz: Als Beschriftung einer
+        # Formularzeile verbreitert er die ganze linke Spalte und
+        # schiebt jedes Auswahlfeld nach rechts. Bei den Haken darunter
+        # steht er hinter dem Text und kostet nichts. Dass auch das
+        # Stundenformat nur für die Uhr gilt, sagt sein Hinweis am
+        # Mauszeiger - und die drei stehen ohnehin beieinander.
         wl.addRow("Stundenformat:", self._stunden_format)
 
-        self._jahr_zeigen = QCheckBox("Jahreszahl anzeigen")
+        self._jahr_zeigen = QCheckBox(f"Jahreszahl anzeigen ({_NUR_UHR})")
         self._jahr_zeigen.setChecked(e.desktop.jahr_zeigen)
         self._jahr_zeigen.setToolTip(
-            "Nur für die Uhr-Ansicht: zeigt die Jahreszahl als eigene\n"
-            "Zeile unter dem Datum.")
+            "Zeigt die Jahreszahl als eigene Zeile unter dem Datum.")
         wl.addRow(self._jahr_zeigen)
 
-        self._termin_zeigen = QCheckBox("Nächsten Termin anzeigen")
+        self._termin_zeigen = QCheckBox(f"Nächsten Termin anzeigen ({_NUR_UHR})")
         self._termin_zeigen.setChecked(e.desktop.termin_zeigen)
         self._termin_zeigen.setToolTip(
-            "Nur für die Uhr-Ansicht: zeigt unter dem Datum, was als\n"
-            "nächstes ansteht - mit Uhrzeit, und bei ferneren Terminen\n"
-            "auch mit Tag. Lässt sich mit der Jahreszahl verbinden.")
+            "Zeigt unter dem Datum, was als nächstes ansteht - mit\n"
+            "Uhrzeit, und bei ferneren Terminen auch mit Tag. Lässt\n"
+            "sich mit der Jahreszahl verbinden.")
         wl.addRow(self._termin_zeigen)
 
         self._klick_oeffnet = QCheckBox("Klick öffnet die Termine")
