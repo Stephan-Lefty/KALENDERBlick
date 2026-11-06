@@ -1,6 +1,6 @@
 # Änderungsprotokoll
 
-## Unveröffentlicht
+## 1.8.4 – 2026-11-06
 
 **Geändert**
 
@@ -18,7 +18,7 @@
   die Schriftgröße lässt sich ja einstellen.
 - Die Bildschirmfotos der Anleitung zeigen die neuen Überschriften.
 
-## Unveröffentlicht
+## 1.8.4 – 2026-11-06
 
 **Geändert**
 

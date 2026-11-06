@@ -125,6 +125,15 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.8.4" date="2026-11-06">
+      <description>
+        <p>
+          Jede Tagesüberschrift trägt jetzt ein Datum - vorher stand bei
+          den Tagen der laufenden Woche nur der Wochentag. Reicht die
+          Breite nicht, wird gekürzt.
+        </p>
+      </description>
+    </release>
     <release version="1.8.3" date="2026-11-05">
       <description>
         <p>
