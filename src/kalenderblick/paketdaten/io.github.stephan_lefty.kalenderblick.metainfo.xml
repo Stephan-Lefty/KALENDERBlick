@@ -125,6 +125,15 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.8.7" date="2026-11-06">
+      <description>
+        <p>
+          „Position sperren" hielt weiterhin die falsche Stelle fest:
+          Die 1.8.6 hatte nur die halbe Ursache behoben. Betrifft jede
+          X11-Sitzung.
+        </p>
+      </description>
+    </release>
     <release version="1.8.6" date="2026-11-06">
       <description>
         <p>

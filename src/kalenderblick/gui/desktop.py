@@ -270,8 +270,29 @@ class SchreibtischFenster(QWidget):
     # ------------------------------------------------------------------
 
     def aktualisiere_einstellungen(self) -> None:
-        """Wird aufgerufen, wenn der Nutzer Einstellungen geändert hat."""
+        """Wird aufgerufen, wenn der Nutzer Einstellungen geändert hat.
+
+        **Die Stelle überlebt das Neuladen, und das ist hier der
+        springende Punkt.** Das Hauptfenster schreibt beim Speichern
+        die Datei - es holt sie sich vorher frisch und weiß nichts von
+        der Stelle, an die das Widget inzwischen gezogen wurde. Ohne
+        das Festhalten hier käme aus der Datei die Stelle vom letzten
+        Beenden zurück, und `_wende_groesse_an` setzte das Fenster
+        unter X11 darauf.
+
+        Genau das war der Fehler, den die 1.8.6 **nicht** behoben hat:
+        Dort merkt `moveEvent` die Stelle nur im Objekt, und das wurde
+        hier eine Zeile später weggeworfen.
+        """
+        stand_x, stand_y = self._e.desktop.x, self._e.desktop.y
         self._e = konfig_modul.laden()
+        if (self._e.desktop.x, self._e.desktop.y) != (stand_x, stand_y):
+            self._e.desktop.x, self._e.desktop.y = stand_x, stand_y
+            # Und gleich festschreiben: Bisher landete die Stelle erst
+            # beim Beenden in der Datei. Wer den Rechner herunterfährt,
+            # ohne KALENDERBlick vorher zu schließen, verlor sie - das
+            # Sitzungsende beendet Programme nicht immer sanft.
+            self._e.speichern()
         self._liste.setze_erscheinung(self._e.desktop.erscheinung)
         self._liste.setze_ansicht(self._e.desktop.ansicht)
         self._liste.setze_schrift(_SCHRIFT_PRO_GROESSE.get(self._e.desktop.groesse, 10))

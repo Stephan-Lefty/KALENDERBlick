@@ -130,3 +130,60 @@ def test_auch_mit_neu_einblenden(qt_app, fenster):
     qt_app.processEvents()
 
     assert (fenster._e.desktop.x, fenster._e.desktop.y) == (900, 40)
+
+
+def test_speichern_ueber_die_datei_verwirft_die_stelle_nicht(qt_app, fenster):
+    """**Der gemeldete Fall, vollständig nachgestellt.**
+
+    Die 1.8.6 hat ihn nicht behoben, und der Grund steht hier: Das
+    Hauptfenster schreibt beim Speichern die *Datei* - und holt sie
+    sich vorher frisch, weiß also nichts von der Stelle, die das
+    Widget inzwischen gemerkt hat. Danach lädt
+    `aktualisiere_einstellungen` die Datei neu, und die alte Stelle
+    ist wieder da.
+
+    Mein erster Test hat das nicht gefunden, weil er `_wende_groesse_an`
+    unmittelbar aufrief, statt den Weg über die Datei zu gehen.
+    """
+    from kalenderblick import config as konfig_modul
+
+    fenster.show()
+    qt_app.processEvents()
+    _verschieben(fenster, 900, 40)
+
+    # Was das Hauptfenster beim Klick auf „Einstellungen speichern" tut:
+    # Datei laden, eine Einstellung ändern, Datei schreiben.
+    e = konfig_modul.laden()
+    e.desktop.position_fixiert = True
+    e.speichern()
+
+    # Und was das Widget daraufhin tut.
+    fenster.aktualisiere_einstellungen()
+    qt_app.processEvents()
+
+    assert (fenster._e.desktop.x, fenster._e.desktop.y) == (900, 40), (
+        "das Speichern über die Datei hat die gezogene Stelle verworfen")
+
+
+def test_die_stelle_steht_danach_in_der_datei(qt_app, fenster):
+    """Nicht nur im Speicher.
+
+    Wer den Rechner herunterfährt, ohne KALENDERBlick vorher zu
+    schließen, verlöre die Stelle sonst - das Sitzungsende beendet
+    Programme nicht immer so sanft, dass `closeEvent` noch läuft.
+    """
+    from kalenderblick import config as konfig_modul
+
+    fenster.show()
+    qt_app.processEvents()
+    _verschieben(fenster, 900, 40)
+
+    e = konfig_modul.laden()
+    e.desktop.position_fixiert = True
+    e.speichern()
+    fenster.aktualisiere_einstellungen()
+    qt_app.processEvents()
+
+    aus_der_datei = konfig_modul.laden()
+    assert (aus_der_datei.desktop.x, aus_der_datei.desktop.y) == (900, 40), (
+        "die Stelle steht nur im Speicher, nicht in der Datei")

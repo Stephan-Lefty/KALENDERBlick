@@ -1,5 +1,24 @@
 # Änderungsprotokoll
 
+## 1.8.7 – 2026-11-06
+
+**Behoben**
+
+- **„Position sperren" hielt weiterhin die falsche Stelle fest.** Die
+  1.8.6 hatte nur die halbe Ursache behoben: Das Widget merkte sich
+  die gezogene Stelle zwar, aber nur im Speicher. Beim Klick auf
+  „Einstellungen speichern" lädt das Hauptfenster die
+  Konfigurationsdatei frisch, schreibt sie zurück - und das Widget
+  lädt sie danach ebenfalls neu. Damit war die gemerkte Stelle wieder
+  weg, und unter X11 setzte das Programm das Fenster auf die alte.
+
+  Gemeldet vom selben Anwender, der schon die 1.8.6 angestoßen hatte:
+  „bei Arch und Xfce ist auch mit der 1.8.6 das Verhalten dasselbe".
+
+  Die Stelle überlebt das Neuladen jetzt und wird dabei festgeschrieben
+  - bisher landete sie erst beim Beenden in der Datei, und wer den
+  Rechner herunterfährt, ohne KALENDERBlick zu schließen, verlor sie.
+
 ## 1.8.6 – 2026-11-06
 
 **Behoben**

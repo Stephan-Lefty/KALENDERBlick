@@ -1,6 +1,6 @@
 # Maintainer: Stephan Rösner
 pkgname=kalenderblick
-pkgver=1.8.6
+pkgver=1.8.7
 pkgrel=1
 pkgdesc="Termine aus Thunderbird, Betterbird, Evolution und GNOME Kalender auf dem Schreibtisch"
 arch=('any')

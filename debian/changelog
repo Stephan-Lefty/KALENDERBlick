@@ -1,3 +1,13 @@
+kalenderblick (1.8.7) unstable; urgency=medium
+
+  * „Position sperren" hielt weiterhin die falsche Stelle fest - die
+    1.8.6 hatte nur die halbe Ursache behoben. Das Hauptfenster
+    schreibt beim Speichern die Konfigurationsdatei und holt sie sich
+    vorher frisch; die Stelle, die das Widget inzwischen gemerkt
+    hatte, stand nur im Speicher und wurde dabei verworfen.
+
+ -- Stephan Roesner <stephan.roesner@protonmail.com>  Fri, 06 Nov 2026 18:30:00 +0100
+
 kalenderblick (1.8.6) unstable; urgency=medium
 
   * „Position sperren" hielt die falsche Stelle fest: Ein gezogenes
