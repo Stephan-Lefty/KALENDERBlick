@@ -125,6 +125,16 @@
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="1.8.5" date="2026-11-06">
+      <description>
+        <p>
+          Die Uhr-Ansicht kann den nächsten Termin einblenden - mit
+          Uhrzeit, bei ferneren Terminen auch mit Tag und Datum. Der
+          Schalter steht neben dem für die Jahreszahl und ist von ihm
+          unabhängig.
+        </p>
+      </description>
+    </release>
     <release version="1.8.4" date="2026-11-06">
       <description>
         <p>

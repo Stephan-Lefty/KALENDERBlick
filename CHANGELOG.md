@@ -1,6 +1,6 @@
 # Änderungsprotokoll
 
-## Unveröffentlicht
+## 1.8.5 – 2026-11-06
 
 **Neu**
 
@@ -39,11 +39,6 @@
   wird mit der tatsächlichen Schrift, nicht gegen eine feste Grenze -
   die Schriftgröße lässt sich ja einstellen.
 - Die Bildschirmfotos der Anleitung zeigen die neuen Überschriften.
-
-## 1.8.4 – 2026-11-06
-
-**Geändert**
-
 - Die AppStream-Datei nennt jetzt ihr Symbol ausdrücklich
   (`<icon type="stock">`). Software-Verwaltungen, die sie lesen,
   finden es damit sicher.
@@ -91,18 +86,6 @@
 
 ## 1.8.2 – 2026-11-05
 
-**Dokumentation**
-
-- Die Anleitung sagt jetzt auch, wie man KALENDERBlick wieder
-  loswird - das stand bisher nirgends. Der neue Abschnitt steht
-  direkt hinter dem Einrichtungsblock und nimmt genau das zurück,
-  was dieser angelegt hat: Symbole, Menüeintrag, AppStream-Datei,
-  Autostart. Mit dem Hinweis, dass `.deb` und Arch-Paket schlicht
-  über die Software-Verwaltung verschwinden.
-- Das Arch-Paket beschrieb sich noch als „Zeigt Thunderbirds
-  Kalender" - dieselbe veraltete Stelle wie zuvor in der
-  `.desktop`-Datei.
-
 **Behoben**
 
 - Nach einer pipx-Installation erschien KALENDERBlick in keiner
@@ -117,6 +100,17 @@
   sie ihn zum Abtippen enthielt; jetzt gibt es nur noch eine Fassung.
 
 **Dokumentation**
+
+- Die Anleitung sagt jetzt auch, wie man KALENDERBlick wieder
+  loswird - das stand bisher nirgends. Der neue Abschnitt steht
+  direkt hinter dem Einrichtungsblock und nimmt genau das zurück,
+  was dieser angelegt hat: Symbole, Menüeintrag, AppStream-Datei,
+  Autostart. Mit dem Hinweis, dass `.deb` und Arch-Paket schlicht
+  über die Software-Verwaltung verschwinden.
+- Das Arch-Paket beschrieb sich noch als „Zeigt Thunderbirds
+  Kalender" - dieselbe veraltete Stelle wie zuvor in der
+  `.desktop`-Datei.
+
 
 - README und Anleitung nennen für Debian das `.deb` an erster Stelle
   und sagen ausdrücklich, dass „Source code (zip)" nicht zum
@@ -144,25 +138,6 @@
 
 ## 1.8.0 – 2026-11-04
 
-**Geändert**
-
-- Überall dort, wo das Mailprogramm angesprochen wird, steht jetzt
-  „Thunderbird/Betterbird" statt nur „Thunderbird" - in der
-  Oberfläche, in der Anleitung und im README. Betterbird verhält sich
-  in jeder Hinsicht gleich, hieß aber nur an einzelnen Stellen beim
-  Namen.
-- Die Rückmeldung beim Setzen des Hakens nennt beide Zahlen und sagt,
-  dass sich das Programm in dieser Zeit nicht öffnen lässt. Den
-  Hinweis am Mauszeiger sieht nur, wer dort verharrt.
-
-**Dokumentation**
-
-- Die Anleitung erklärt, wie man aus einem Arbeitsordner statt von
-  GitHub installiert - samt der beiden Stolpersteine: `--force`
-  scheitert, wenn pipx im Hintergrund `uv` benutzt, und ohne
-  `--system-site-packages` fehlt PyQt6, womit Fenster und
-  Leistensymbol wegfallen.
-
 **Neu**
 
 - Schalter **„Thunderbird im Hintergrund mitlaufen lassen"**. Thunderbird
@@ -187,9 +162,17 @@
   ungesicherter Nachricht. Bleibt nach einem Absturz ein Prozess übrig,
   wird er beim nächsten Start eingesammelt.
 
-## 1.8.0 – 2026-11-04
-
 **Geändert**
+
+- Überall dort, wo das Mailprogramm angesprochen wird, steht jetzt
+  „Thunderbird/Betterbird" statt nur „Thunderbird" - in der
+  Oberfläche, in der Anleitung und im README. Betterbird verhält sich
+  in jeder Hinsicht gleich, hieß aber nur an einzelnen Stellen beim
+  Namen.
+- Die Rückmeldung beim Setzen des Hakens nennt beide Zahlen und sagt,
+  dass sich das Programm in dieser Zeit nicht öffnen lässt. Den
+  Hinweis am Mauszeiger sieht nur, wer dort verharrt.
+
 
 - Ein Test bildet nach, wie ein Kalender aus den GNOME Online-Konten
   abgelegt wird: Der Data Server kennt dafür kein eigenes Verfahren,
@@ -199,6 +182,13 @@
   ausgerechnet der bequemste Weg zu Google unsichtbar.
 
 **Dokumentation**
+
+- Die Anleitung erklärt, wie man aus einem Arbeitsordner statt von
+  GitHub installiert - samt der beiden Stolpersteine: `--force`
+  scheitert, wenn pipx im Hintergrund `uv` benutzt, und ohne
+  `--system-site-packages` fehlt PyQt6, womit Fenster und
+  Leistensymbol wegfallen.
+
 
 - Der Weg über die **GNOME Online-Konten** ist beschrieben: Konto einmal
   in den Systemeinstellungen eintragen, „Kalender" ankreuzen - die
@@ -216,16 +206,6 @@
 
 ## 1.7.3 – 2026-11-04
 
-**Behoben**
-
-- Von Evolution wurden nur die örtlichen Kalender gelesen. Entfernte -
-  CalDAV, Google, Nextcloud, abonnierte Adressen - legt Evolution nicht
-  als iCalendar-Datei ab, sondern als SQLite-Zwischenspeicher an einem
-  anderen Ort; sie blieben deshalb unsichtbar, obwohl README, Anleitung
-  und die Beschreibung für die Software-Verwaltungen genau das
-  versprachen. Beide Ablageorte werden jetzt gelesen. Aufgefallen beim
-  Durchspielen mit einem frisch eingerichteten Evolution 3.60.2.
-
 **Geändert**
 
 - Evolutions eingebauter Kalender hieß „(ohne Namen, system)" statt
@@ -239,6 +219,16 @@
   Mauszeiger-Hinweis, dass sie nur abgeholt werden, solange Thunderbird
   läuft. Wer sein Kalenderprogramm selten öffnet, suchte den Fehler
   sonst bei KALENDERBlick.
+
+**Behoben**
+
+- Von Evolution wurden nur die örtlichen Kalender gelesen. Entfernte -
+  CalDAV, Google, Nextcloud, abonnierte Adressen - legt Evolution nicht
+  als iCalendar-Datei ab, sondern als SQLite-Zwischenspeicher an einem
+  anderen Ort; sie blieben deshalb unsichtbar, obwohl README, Anleitung
+  und die Beschreibung für die Software-Verwaltungen genau das
+  versprachen. Beide Ablageorte werden jetzt gelesen. Aufgefallen beim
+  Durchspielen mit einem frisch eingerichteten Evolution 3.60.2.
 
 **Dokumentation**
 
@@ -436,6 +426,13 @@ einzutragen sind.
 
 ## 1.3.1 – 2026-11-03
 
+**Geändert**
+
+- Die Anleitung hat einen eigenen Abschnitt zu GNOME bekommen: die
+  Erweiterung für das Leistensymbol und die Tatsache, dass sich unter
+  GNOME/Wayland weder eine feste Position noch „hinter allen Fenstern"
+  durchsetzen lässt.
+
 **Behoben**
 
 - Unter GNOME startete KALENDERBlick wortlos und blieb unsichtbar: Die
@@ -444,13 +441,6 @@ einzutragen sind.
   ein Hinweis samt dem Befehl für die nötige Erweiterung
   (`gnome-shell-extension-appindicator`); wäre sonst überhaupt nichts
   zu sehen, öffnet sich stattdessen das Hauptfenster.
-
-**Geändert**
-
-- Die Anleitung hat einen eigenen Abschnitt zu GNOME bekommen: die
-  Erweiterung für das Leistensymbol und die Tatsache, dass sich unter
-  GNOME/Wayland weder eine feste Position noch „hinter allen Fenstern"
-  durchsetzen lässt.
 
 ## 1.3.0 – 2026-11-03
 
@@ -518,6 +508,13 @@ Alle Fehler dieser Fassung kamen heraus, als die Installation nach
 `Anleitung.md` auf einem frisch bereinigten Rechner Schritt für Schritt
 durchgespielt wurde. Wer 1.0.x einsetzt, sollte aktualisieren.
 
+**Geändert**
+
+- `Anleitung.md`: Der Schritt zum Anlegen von Menüeintrag und Symbolen
+  fehlte - `pipx install` richtet nur die Befehle ein.
+- Die Pixelangaben in der Größen-Auswahl („Klein (280 × 340)") sind
+  entfallen; die Höhe richtet sich ohnehin nach dem Inhalt.
+
 **Behoben**
 
 - Das Schreibtischwidget erschien oder verschwand erst nach einem
@@ -539,13 +536,6 @@ durchgespielt wurde. Wer 1.0.x einsetzt, sollte aktualisieren.
   beim nächsten Speichern.
 - „Einstellungen speichern" konnte aus dem sichtbaren Bereich scrollen;
   der Knopf ist jetzt fest am unteren Rand verankert.
-
-**Geändert**
-
-- `Anleitung.md`: Der Schritt zum Anlegen von Menüeintrag und Symbolen
-  fehlte - `pipx install` richtet nur die Befehle ein.
-- Die Pixelangaben in der Größen-Auswahl („Klein (280 × 340)") sind
-  entfallen; die Höhe richtet sich ohnehin nach dem Inhalt.
 
 ## 1.0.1 – 2026-11-02
 
