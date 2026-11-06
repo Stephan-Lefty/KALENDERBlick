@@ -6,6 +6,10 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 
 WOCHENTAGE = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+# Für schmale Fenster. Zwei Buchstaben sind im Deutschen eindeutig -
+# anders als bei einem, wo Montag, Mittwoch und Donnerstag, Dienstag
+# zusammenfielen.
+WOCHENTAGE_KURZ = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
 MONATE = ["Januar", "Februar", "März", "April", "Mai", "Juni",
           "Juli", "August", "September", "Oktober", "November", "Dezember"]
 
@@ -54,18 +58,35 @@ class Termin:
         return self.ende <= jetzt
 
 
-def tagesueberschrift(tag: date, heute: date | None = None) -> str:
+def tagesueberschrift(tag: date, heute: date | None = None,
+                      kurz: bool = False) -> str:
+    """Die Überschrift über einem Tagesblock.
+
+    **Immer mit Datum**, und ohne Jahr - das steht ohnehin fest.
+    „Mittwoch" allein beantwortet nicht, der wievielte das ist; wer
+    einen Termin eintragen oder absagen will, braucht die Zahl. Bis
+    November 2026 stand bei den Tagen der laufenden Woche nur der
+    Wochentag, bei ferneren das volle Datum - zwei Formen
+    nebeneinander, von denen die eine zu wenig sagte.
+
+    Mit `kurz` wird aus „Mittwoch, 5. November" ein „Mi, 5.11." Das
+    ist für schmale Fenster: Ausgeschrieben passt die längste
+    Überschrift ab 14 pt nicht mehr in das kleinste Widget (220 px).
+    """
     heute = heute or date.today()
     abstand = (tag - heute).days
+    datum = (f"{tag.day}.{tag.month}." if kurz
+             else f"{tag.day}. {MONATE[tag.month - 1]}")
+
     if abstand == 0:
-        return "Heute"
-    if abstand == 1:
-        return "Morgen"
-    if abstand == -1:
-        return "Gestern"
-    if 0 < abstand < 7:
-        return WOCHENTAGE[tag.weekday()]
-    return f"{WOCHENTAGE[tag.weekday()]}, {tag.day}. {MONATE[tag.month - 1]}"
+        name = "Heute"
+    elif abstand == 1:
+        name = "Morgen"
+    elif abstand == -1:
+        name = "Gestern"
+    else:
+        name = (WOCHENTAGE_KURZ if kurz else WOCHENTAGE)[tag.weekday()]
+    return f"{name}, {datum}"
 
 
 def nach_tagen(termine: list[Termin]) -> list[tuple[date, list[Termin]]]:

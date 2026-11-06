@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta
 
 from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QColor, QPainter
+from PyQt6.QtGui import QFont, QFontMetrics, QColor, QPainter
 from PyQt6.QtWidgets import (
     QFrame,
     QLabel,
@@ -101,17 +101,44 @@ class _TerminZeile(QWidget):
         layout.addWidget(zeile)
 
 
+def _passende_ueberschrift(tag: date, punkte: int, platz: int) -> str:
+    """Die lange Form, solange sie hineinpasst - sonst die kurze.
+
+    Gemessen statt geschätzt: Wie breit ein Text wird, hängt an Schrift
+    und Schriftgröße, und die lässt sich einstellen. Eine feste Grenze
+    säße bei der nächsten Einstellung falsch.
+    """
+    lang = tagesueberschrift(tag).upper()
+    if platz <= 0:
+        return tagesueberschrift(tag)
+
+    schrift = QFont()
+    schrift.setPointSize(max(1, punkte))
+    schrift.setBold(True)
+    if QFontMetrics(schrift).horizontalAdvance(lang) <= platz:
+        return tagesueberschrift(tag)
+    return tagesueberschrift(tag, kurz=True)
+
+
 class _TagesBlock(QWidget):
     """Tagesüberschrift + darunter die Terminzeilen."""
 
     def __init__(self, tag: date, termine: list[Termin], schrift: int,
-                farben: dict = FARBEN_SYSTEM, parent=None):
+                farben: dict = FARBEN_SYSTEM, parent=None,
+                platz: int = 0):
+        """`platz` ist die verfügbare Breite in Pixeln.
+
+        Danach entscheidet sich, ob „Mittwoch, 5. November" hineinpasst
+        oder ob „Mi, 5.11." genommen wird. 0 heißt: unbekannt, dann die
+        lange Form - im Hauptfenster ist immer genug Raum.
+        """
         super().__init__(parent)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 6, 0, 2)
         layout.setSpacing(1)
 
-        ueberschrift = QLabel(tagesueberschrift(tag).upper())
+        ueberschrift = QLabel(
+            _passende_ueberschrift(tag, schrift - 1, platz).upper())
         ueberschrift.setStyleSheet(
             f"font-size: {schrift - 1}pt; font-weight: bold; "
             f"color: {farben['gedaempft']}; padding-left: 4px;"
@@ -366,7 +393,12 @@ class TerminListe(QWidget):
             return
 
         for tag, eintraege in nach_tagen(gefiltert):
-            block = _TagesBlock(tag, eintraege, self._schrift, self._farben)
+            # Die Breite des Rollbereichs abzüglich Einzug und
+            # Rollbalken - daran entscheidet sich, ob die ausgeschriebene
+            # Überschrift hineinpasst.
+            platz = max(0, self._scroll.viewport().width() - 14)
+            block = _TagesBlock(tag, eintraege, self._schrift, self._farben,
+                                platz=platz)
             self._inhalt_layout.insertWidget(self._inhalt_layout.count() - 1, block)
 
         # Abschlusszeile mit dem Ende des Zeitraums. Ohne sie wirkt die

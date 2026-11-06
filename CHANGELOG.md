@@ -4,6 +4,24 @@
 
 **Geändert**
 
+- Jede Tagesüberschrift trägt jetzt ein Datum - im Widget wie im
+  Reiter „Termine". Bisher stand bei den Tagen der laufenden Woche nur
+  der Wochentag, bei ferneren das volle Datum; zwei Formen
+  nebeneinander, von denen die eine zu wenig sagte. „Mittwoch"
+  beantwortet nicht, der wievielte das ist, und wer einen Termin
+  absagen oder eintragen will, braucht die Zahl.
+- Das Jahr bleibt weg - es steht ohnehin fest und kostet Platz.
+- Reicht die Breite nicht, wird gekürzt: aus „Donnerstag,
+  12. November" wird „Do, 12.11." Ausgeschrieben passt die längste
+  Überschrift ab 14 pt nicht mehr in das kleinste Widget. Gemessen
+  wird mit der tatsächlichen Schrift, nicht gegen eine feste Grenze -
+  die Schriftgröße lässt sich ja einstellen.
+- Die Bildschirmfotos der Anleitung zeigen die neuen Überschriften.
+
+## Unveröffentlicht
+
+**Geändert**
+
 - Die AppStream-Datei nennt jetzt ihr Symbol ausdrücklich
   (`<icon type="stock">`). Software-Verwaltungen, die sie lesen,
   finden es damit sicher.
