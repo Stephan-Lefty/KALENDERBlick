@@ -34,6 +34,18 @@
       dieser Unterscheidung hängt bei uns, ob überhaupt positioniert
       wird. Die dritte sagt, ob unser Prozess den Grab hält.
 
+      **Sein System** (Stand 07.11.2026): Mint 22.3, Thunderbird
+      153.7.0esr als Mint-eigenes Systempaket („Codename-Meadow for
+      Linux Mint mint-001"), KALENDERBlick war die 1.8.7 als `.deb` -
+      inzwischen deinstalliert. Mint 22.3 beruht auf Ubuntu 24.04;
+      dort ist die Installation am 06.11. im Container durchgespielt
+      worden und lief sauber.
+
+      **Reihenfolge am Wochenende**, weil er neu installieren muss:
+      Erst `echo $XDG_SESSION_TYPE` - das geht vorher und ohne
+      Risiko. Erst wenn dort `x11` steht, lohnt der Versuch, und dann
+      mit einem **zweiten, schon offenen Terminal** für das `pkill`.
+
       **Nicht vorher bauen.** Am 06.11. habe ich mir zweimal eine
       Ursache zurechtgelegt und zweimal danebengelegen.
 
