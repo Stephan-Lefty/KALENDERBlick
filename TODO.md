@@ -2,6 +2,41 @@
 
 ## Als Nächstes
 
+- [ ] **Mint: eingefrorene Oberfläche - Rückmeldung steht aus**
+      (gemeldet 07.11.2026 im LinuxGuides-Forum). Nach dem Aktivieren
+      von „Position sperren" reagiert bei einem Anwender die ganze
+      Oberfläche nicht mehr; es half nur Strg+Alt+Rücktaste. Er hatte
+      die 14-Tage-Ansicht eingestellt und kann erst am Wochenende
+      wieder nachsehen.
+
+      **Bei anderen Mint-Anwendern läuft es** - also kein
+      systematisches Cinnamon-Problem, sondern etwas an seinem System.
+
+      Zwei Hypothesen sind schon widerlegt: Der Ereignisfilter greift
+      nur für eigene Fenster (`objekt.window() is self`), und die
+      Fensterhöhe ist auf 90 % des Bildschirms begrenzt - ein
+      bildschirmfüllender Kasten kann es also nicht sein.
+
+      Verbliebener Verdacht: ein X11-Grab. `startSystemMove()`
+      übergibt das Ziehen dem Fenstermanager, der dabei den Zeiger
+      greift; bleibt das hängen, ist die ganze Oberfläche blockiert.
+      Das passt zum Bild und dazu, dass nur ein X-Neustart half.
+
+      **Was zu erfragen ist, in dieser Reihenfolge:**
+
+          echo $XDG_SESSION_TYPE
+          kalenderblick --version
+          pkill -f kalenderblick        (aus einer Textkonsole, nach dem Einfrieren)
+          grep -E '"x"|"y"|"breite"|"hoehe"|klick_oeffnet' ~/.config/kalenderblick/einstellungen.json
+
+      Die erste Zeile könnte alles erklären: Mint bietet seit 21.3
+      eine experimentelle Cinnamon-Sitzung unter Wayland, und an
+      dieser Unterscheidung hängt bei uns, ob überhaupt positioniert
+      wird. Die dritte sagt, ob unser Prozess den Grab hält.
+
+      **Nicht vorher bauen.** Am 06.11. habe ich mir zweimal eine
+      Ursache zurechtgelegt und zweimal danebengelegen.
+
 - [ ] **31.12.2026: Umfrage in der GuideOS-Community läuft aus.**
       Eingestellt am 06.11.2026 zusammen mit der Vorstellung der 1.8.5
       (Beitragstext unter `../.kalenderblick-texte/`). Danach das
