@@ -49,6 +49,20 @@
       **Nicht vorher bauen.** Am 06.11. habe ich mir zweimal eine
       Ursache zurechtgelegt und zweimal danebengelegen.
 
+      **Nachstellversuch am 25.11.2026: nichts friert ein.** Mint 22.3
+      mit Cinnamon 6.6.9 in einer VM, `XDG_SESSION_TYPE=x11`, Qt 6.4.2
+      aus `python3-pyqt6 6.6.1-2build4`, KALENDERBlick 1.8.7 als
+      `.deb` - also seine Kombination. Mit dem Testkalender
+      (`werkzeuge/testkalender.py`) stand die 14-Tage-Ansicht als
+      hoher, voll besetzter Kasten auf dem Schreibtisch und blieb
+      bedienbar.
+
+      **Das entlastet 1.8.7 für Mint 22.3 im Allgemeinen, widerlegt
+      seinen Fall aber nicht.** Was die VM nicht nachstellt: echter
+      Grafiktreiber statt Software-Rendering, mehrere Bildschirme,
+      abweichende Compositing-Einstellungen. Wenn von ihm noch etwas
+      kommt, sind das die Fragen - nicht noch eine Hypothese von mir.
+
 - [ ] **31.12.2026: Umfrage in der GuideOS-Community läuft aus.**
       Eingestellt am 06.11.2026 zusammen mit der Vorstellung der 1.8.5
       (Beitragstext unter `../.kalenderblick-texte/`). Danach das
