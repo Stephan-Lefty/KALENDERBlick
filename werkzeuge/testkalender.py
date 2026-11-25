@@ -63,20 +63,14 @@ def _mikro(zeitpunkt: datetime, ortszeit: bool = True) -> int:
 
 
 class Profil:
+    # Kein Ordner mit Punkt am Anfang: Thunderbird legt sein Profil
+    # unter ~/.thunderbird ab, aber dieser hier wird von Hand
+    # ausgewählt - und versteckte Ordner zeigt weder der Dateimanager
+    # noch der Auswahldialog. Der Ordner sah dadurch leer aus.
     def __init__(self, wurzel: Path):
         self.wurzel = wurzel
-        self.profil = wurzel / ".thunderbird" / "test.default"
+        self.profil = wurzel / "profil"
         (self.profil / "calendar-data").mkdir(parents=True)
-        (wurzel / ".thunderbird" / "profiles.ini").write_text(
-            "[Install0000000000000000]\n"
-            "Default=test.default\n"
-            "Locked=1\n\n"
-            "[Profile0]\n"
-            "Name=default\n"
-            "IsRelative=1\n"
-            "Path=test.default\n"
-            "Default=1\n",
-            encoding="utf-8")
         self.prefs: list[str] = []
 
     def kalender(self, kennung: str, name: str, farbe: str):
@@ -94,6 +88,14 @@ class Profil:
     def fertig(self) -> None:
         (self.profil / "prefs.js").write_text(
             "// Mozilla User Preferences\n\n" + "\n".join(self.prefs) + "\n",
+            encoding="utf-8")
+        (self.wurzel / "LIESMICH.txt").write_text(
+            "Erfundene Termine zum Ausprobieren von KALENDERBlick.\n\n"
+            "In KALENDERBlick unter „Einstellungen -> Kalenderquellen“ auf\n"
+            "„Profilordner auswählen …“ gehen und diesen Ordner wählen:\n\n"
+            f"    {self.profil}\n\n"
+            "Zurück zum echten Profil: „Wieder automatisch suchen“.\n"
+            "Zum Entfernen genügt es, diesen Ordner zu löschen.\n",
             encoding="utf-8")
 
 
