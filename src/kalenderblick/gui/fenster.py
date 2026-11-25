@@ -128,9 +128,15 @@ class _AboDialog(QDialog):
         """Gleich ausprobieren, statt später eine leere Liste zu zeigen."""
         name = self._name.text().strip()
         url = self._url.text().strip()
-        if not url:
+        # Erkennbar falsche Adressarten gleich hier abfangen, ohne Abruf:
+        # Wer die Browser-Adresse seines Google-Kalenders einträgt, bekam
+        # sonst erst nach dem Netzzugriff eine Antwort - und zwar die
+        # Anmeldeseite, als Wand aus HTML. Jetzt steht sofort da, welche
+        # Adresse gebraucht wird.
+        vorab = ics_abo.adressen_hinweis(url)
+        if vorab is not None:
             self._hinweis.setStyleSheet("color: #e66100;")
-            self._hinweis.setText("Bitte eine Adresse angeben.")
+            self._hinweis.setText(vorab)
             return
 
         self._hinweis.setStyleSheet("color: palette(mid);")

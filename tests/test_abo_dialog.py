@@ -59,3 +59,32 @@ def test_dialog_ist_breit_genug_zum_lesen(qt_app):
     dialog.show()
     assert dialog.width() >= 500, "zu schmal, der Text würde zur Bleiwüste"
     dialog.close()
+
+
+def test_falsche_adresse_wird_ohne_netzzugriff_gemeldet(qt_app, monkeypatch):
+    """**Kein Abruf, wenn die Adressart schon erkennbar falsch ist.**
+
+    Am 07.11.2026 trug Stephan die Browser-Adresse seines
+    Google-Kalenders ein. Der Dialog rief sie ab, Google antwortete mit
+    einer Anmeldeseite, und im Hinweisfeld landeten fünfzig Zeilen HTML
+    und CSS. Jetzt steht dort sofort, welche Adresse gebraucht wird -
+    und das Netz wird gar nicht erst bemüht.
+    """
+    from kalenderblick import ics_abo
+    from kalenderblick.gui.fenster import _AboDialog
+
+    def nicht_abrufen(*a, **k):
+        raise AssertionError("es wurde trotzdem abgerufen")
+
+    monkeypatch.setattr(ics_abo, "hole", nicht_abrufen)
+
+    dialog = _AboDialog()
+    dialog._name.setText("Google Kalender")
+    dialog._url.setText("https://calendar.google.com/calendar/u/0?cid=abc123")
+    dialog._pruefen_und_schliessen()
+
+    hinweis = dialog._hinweis.text()
+    assert ".ics" in hinweis, f"der Hinweis hilft nicht weiter: {hinweis!r}"
+    assert len(hinweis) < 300
+    assert dialog.result() != dialog.DialogCode.Accepted, \
+        "der Dialog hat die falsche Adresse angenommen"

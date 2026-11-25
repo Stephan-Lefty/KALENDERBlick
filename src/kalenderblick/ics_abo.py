@@ -41,6 +41,60 @@ class AboFehler(Exception):
     """Ein Abo ließ sich nicht abrufen."""
 
 
+def adressen_hinweis(adresse: str) -> str | None:
+    """Sagt vorab, wenn eine Adresse erkennbar die falsche Sorte ist.
+
+    **Der häufigste Einrichtungsfehler - und er sieht aus wie ein
+    Programmfehler.** Wer bei Google den Kalender öffnet und die
+    Adresszeile des Browsers kopiert, bekommt
+    ``calendar.google.com/calendar/u/0?cid=…``; die zeigt die
+    Weboberfläche. Abgerufen antwortet Google mit einer Anmeldeseite,
+    und der Kalenderleser scheiterte daran mit einer Wand aus HTML und
+    CSS. Gebraucht wird die „Privatadresse im iCal-Format", die auf
+    ``.ics`` endet.
+
+    Gibt den Hinweis zurück oder ``None``, wenn nichts auffällt.
+    Geprüft wird nur, was sich sicher sagen lässt: Jeder Anbieter baut
+    seine Adressen anders, eine unbekannte gilt deshalb als in Ordnung.
+    """
+    kurz = adresse.strip().lower()
+
+    if not kurz:
+        return "Bitte eine Adresse eintragen."
+
+    if "calendar.google.com/calendar/u/" in kurz or "&cid=" in kurz \
+            or "?cid=" in kurz:
+        return ("Das ist die Adresse, mit der Google den Kalender im "
+                "Browser öffnet - sie liefert keine Termine. Gebraucht "
+                "wird die „Privatadresse im iCal-Format“ aus den "
+                "Kalendereinstellungen; sie endet auf „.ics“.")
+
+    # Die Einbetten-Adresse ist derselbe Fehler in Grün.
+    if "calendar.google.com/calendar/embed" in kurz:
+        return ("Das ist die Adresse zum Einbetten in eine Webseite. "
+                "Gebraucht wird die „Privatadresse im iCal-Format“ aus "
+                "den Kalendereinstellungen; sie endet auf „.ics“.")
+
+    if not kurz.startswith(("http://", "https://", "webcal://")):
+        return ("Das sieht nicht nach einer Internetadresse aus - "
+                "erwartet wird eine, die mit „https://“ oder "
+                "„webcal://“ beginnt.")
+
+    return None
+
+
+def _sieht_nach_webseite_aus(roh: bytes) -> bool:
+    """Hat der Server eine Webseite geschickt statt eines Kalenders?
+
+    Meist eine Anmeldeseite: Die Adresse verlangt eine Anmeldung, die
+    KALENDERBlick nicht hat. Ohne diese Unterscheidung landete der
+    halbe HTML-Quelltext in der Fehlermeldung - für niemanden lesbar.
+    """
+    anfang = roh[:512].lstrip().lower()
+    return anfang.startswith((b"<!doctype html", b"<html", b"<head",
+                              b"<?xml"))
+
+
 @dataclass
 class Abo:
     """Ein abonnierter Kalender."""
@@ -142,6 +196,23 @@ def hole(abo: Abo, erzwingen: bool = False) -> Path:
 
     # Erst prüfen, dann ablegen - sonst überschreibt eine Fehlerseite die
     # brauchbare Abschrift.
+    #
+    # Eine Webseite wird dabei gesondert benannt. Sie durch den
+    # Kalenderleser zu schicken ergab eine Fehlermeldung aus fünfzig
+    # Zeilen HTML und CSS - formal richtig und für niemanden brauchbar.
+    # Aufgefallen am 07.11.2026, als Stephan die Browser-Adresse seines
+    # Google-Kalenders eintrug.
+    if _sieht_nach_webseite_aus(roh):
+        if ziel.exists():
+            return ziel
+        hinweis = adressen_hinweis(abo.url)
+        raise AboFehler(
+            f"„{abo.name}“ liefert eine Webseite statt Kalenderdaten. "
+            + (hinweis or "Meist ist das eine Anmeldeseite: Die Adresse "
+                          "ist nicht frei abrufbar. Gebraucht wird eine, "
+                          "die ohne Anmeldung iCalendar-Daten liefert - "
+                          "sie endet üblicherweise auf „.ics“."))
+
     try:
         ical.oeffne_text(roh)
     except BibliothekFehlt:

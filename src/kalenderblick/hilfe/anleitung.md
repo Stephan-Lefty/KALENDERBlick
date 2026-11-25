@@ -291,6 +291,20 @@ ruft ihn dann selbst ab, höchstens alle 30 Minuten. Abonnierte Kalender
 erscheinen in der Liste unter „Abonniert“ und lassen sich dort mit dem
 Kreuz wieder entfernen; beim Anbieter ändert sich dadurch nichts.
 
+**Achte auf die richtige Adresse - es gibt bei Google drei.** Gebraucht
+wird die, die auf `.ics` endet:
+
+| Adresse | wofür |
+|---|---|
+| `…/calendar/ical/…/basic.ics` | **die richtige** – liefert die Termine |
+| `…/calendar/u/0?cid=…` | öffnet den Kalender im Browser |
+| `…/calendar/embed?src=…` | bettet ihn in eine Webseite ein |
+
+Zu finden in Google Kalender unter *Einstellungen → links den Kalender
+anklicken → ganz unten „Privatadresse im iCal-Format“*. Wer eine der
+beiden anderen einträgt, bekommt keine Termine, sondern eine
+Anmeldeseite - KALENDERBlick sagt das jetzt und nennt die richtige.
+
 ### Wann kommen neue Termine an?
 
 Das hängt davon ab, wer den Kalender abholt:

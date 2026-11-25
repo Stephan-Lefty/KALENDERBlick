@@ -1,5 +1,34 @@
 # Änderungsprotokoll
 
+## Unveröffentlicht
+
+**Behoben**
+
+- **Eine falsche Kalenderadresse ergab eine unlesbare Fehlermeldung.**
+  Wer bei Google die Adresse aus der Browser-Zeile einträgt
+  (`…/calendar/u/0?cid=…`), bekommt von Google eine Anmeldeseite
+  zurück. KALENDERBlick schickte die durch den Kalenderleser, und im
+  Dialog standen fünfzig Zeilen HTML und CSS. Formal richtig und für
+  niemanden brauchbar - wer das liest, hält das Programm für kaputt.
+
+  Jetzt zweierlei: Erkennbar falsche Adressarten werden genannt,
+  **bevor** überhaupt abgerufen wird (die Browser-Adresse und die zum
+  Einbetten), und eine Webseite als Antwort wird als solche benannt
+  statt zerlegt. Beide Male steht dabei, was gebraucht wird: die
+  Privatadresse im iCal-Format, die auf `.ics` endet.
+
+  Geprüft wird nur, was sich sicher sagen lässt - jeder Anbieter baut
+  seine Adressen anders, eine unbekannte Form gilt als in Ordnung.
+  Eine Prüfung, die zu viel abweist, hielte Leute auf, deren Adresse
+  stimmt.
+
+**Dokumentation**
+
+- Die Anleitung stellt Googles drei Adressen nebeneinander und sagt,
+  welche davon Termine liefert. Der bisherige Hinweis nannte die
+  richtige zwar, aber beiläufig - und genau daran ist Stephan am
+  07.11.2026 selbst vorbeigelaufen.
+
 ## 1.8.7 – 2026-11-06
 
 **Behoben**
