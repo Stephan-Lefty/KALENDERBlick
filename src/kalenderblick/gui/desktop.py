@@ -313,6 +313,16 @@ class SchreibtischFenster(QWidget):
         QTimer.singleShot(0, self._erzwinge_kwin_eigenschaften)
         QTimer.singleShot(0, self._wende_positionssperre_an)
         self._timer.setInterval(self._e.aktualisierung_minuten * 60 * 1000)
+        # Und die Termine gleich neu holen. Ein neues Intervall ändert
+        # nichts an der Liste, die schon hängt: Wer das Profil wechselt,
+        # die Terminquelle umstellt oder einen Kalender ein- oder
+        # ausschaltet, sah bis zu zehn Minuten weiter den alten Stand -
+        # und half sich damit, das Widget abzuschalten und neu zu
+        # aktivieren. Das Hauptfenster macht es in
+        # `_einstellungen_geaendert` längst so; hier fehlte die Zeile.
+        # Der Ladethread liest die Konfiguration selbst frisch, also
+        # genügt der Aufruf ohne Übergabe.
+        self._starte_ladethread()
 
     def _wende_positionssperre_an(self) -> None:
         """"Position sperren" heißt auch: über einen Neustart hinweg an

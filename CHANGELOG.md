@@ -4,6 +4,18 @@
 
 **Behoben**
 
+- **Das Schreibtischwidget zog nach dem Speichern nicht nach.** Wer den
+  Profilordner wechselte, die Terminquelle umstellte oder einen
+  Kalender ein- oder ausschaltete, sah im Widget bis zu zehn Minuten
+  weiter den alten Stand - so lange, bis der Aktualisierungstimer von
+  selbst zuschlug. Besonders deutlich beim ersten Einrichten: Lief das
+  Widget schon, bevor ein Kalender eingetragen war, blieb es leer, und
+  es half nur, es abzuschalten und neu zu aktivieren.
+
+  Das Hauptfenster holte die Termine beim Speichern längst neu, das
+  Widget nicht - dort fehlte schlicht die Zeile. Gemeldet von Stephan
+  am 25.11.2026 beim Einrichten des Testkalenders in einer Mint-VM.
+
 - **Eine falsche Kalenderadresse ergab eine unlesbare Fehlermeldung.**
   Wer bei Google die Adresse aus der Browser-Zeile einträgt
   (`…/calendar/u/0?cid=…`), bekommt von Google eine Anmeldeseite
