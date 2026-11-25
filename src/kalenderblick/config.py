@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from dataclasses import asdict, dataclass, field, fields
 
 from . import paths
@@ -12,6 +13,9 @@ from . import paths
 class KonfigFehler(Exception):
     pass
 
+
+# Farbangabe wie #3584e4 - die Kurzform #abc nimmt Qt auch an.
+_IST_FARBE = re.compile(r"#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})")
 
 ANSICHTEN = ("uhr", "naechste3", "woche", "14tage")
 GROESSEN = {
@@ -53,6 +57,11 @@ class Einstellungen:
     tage_zurueck: int = 0
     aktualisierung_minuten: int = 10
     versteckte_kalender: list[str] = field(default_factory=list)
+    # Eigene Farbe je Kalender, nach derselben Kennung wie oben.
+    # Was hier nicht steht, behält die Farbe aus dem Kalenderprogramm -
+    # die ist als Vorgabe meist richtig, weil der Nutzer sie dort schon
+    # einmal vergeben hat. Nur wer abweichen will, trägt etwas ein.
+    kalender_farben: dict[str, str] = field(default_factory=dict)
     # Abonnierte Kalender: je Eintrag name/url/farbe/abgeschaltet.
     # Die Adressen sind Geheimnisse - siehe speichern().
     ics_abos: list[dict] = field(default_factory=list)
@@ -84,6 +93,15 @@ class Einstellungen:
             raise KonfigFehler("Das Erscheinungsbild muss 'hell' oder 'dunkel' sein.")
         if self.desktop.stunden_format not in ("12", "24"):
             raise KonfigFehler("Das Stundenformat muss '12' oder '24' sein.")
+        # Die Oberfläche liefert nur gültige Farben, von Hand bearbeitete
+        # Dateien nicht. Ein unbrauchbarer Wert käme sonst erst im
+        # Stylesheet an, und dort fällt er lautlos aus - der Punkt wäre
+        # einfach schwarz, ohne dass jemand den Grund sieht.
+        for kennung, farbe in self.kalender_farben.items():
+            if not _IST_FARBE.fullmatch(str(farbe)):
+                raise KonfigFehler(
+                    f"Unbrauchbare Farbe für den Kalender {kennung}: {farbe!r}. "
+                    "Erwartet wird eine Angabe wie #3584e4.")
 
     def speichern(self):
         paths.lege_ordner_an()

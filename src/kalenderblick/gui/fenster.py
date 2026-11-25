@@ -8,12 +8,13 @@ from pathlib import Path
 
 from PyQt6.QtCore import Qt, QTimer, QUrl
 from PyQt6.QtGui import (
-    QDesktopServices, QImage, QPalette, QTextCursor, QTextDocument, QTextLength,
-    QTextTable,
+    QColor, QDesktopServices, QImage, QPalette, QTextCursor, QTextDocument,
+    QTextLength, QTextTable,
 )
 from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
+    QColorDialog,
     QComboBox,
     QDialog,
     QDialogButtonBox,
@@ -310,6 +311,7 @@ class _KalenderUebersicht(QScrollArea):
 
         jetzt = datetime.now()
         versteckt = set(konfig_modul.laden().versteckte_kalender)
+        self._eigene_farben = dict(konfig_modul.laden().kalender_farben)
         self._haken = {}
 
         # Eine Zeile je Kalender statt eines Rahmens mit vier Angaben:
@@ -354,14 +356,42 @@ class _KalenderUebersicht(QScrollArea):
         self._haken[kal.kennung] = haken
         wl.addWidget(haken)
 
-        punkt = QLabel("●")
-        punkt.setStyleSheet(f"color: {kal.farbe}; font-size: 13pt;")
+        # Der Farbpunkt ist anklickbar: Die Farbe aus dem Kalenderprogramm
+        # ist eine gute Vorgabe - dort hat der Nutzer sie schon einmal
+        # vergeben -, aber auf dem Schreibtisch wirkt dieselbe Farbe oft
+        # anders als in Thunderbird. Er sitzt neben dem Haken, weil beides
+        # dasselbe betrifft: wie dieser Kalender im Widget erscheint.
+        eigene = self._eigene_farben.get(kal.kennung)
+        punkt = QPushButton("●")
+        punkt.setFlat(True)
+        punkt.setFixedWidth(26)
+        punkt.setCursor(Qt.CursorShape.PointingHandCursor)
+        punkt.setStyleSheet(
+            f"QPushButton {{ color: {eigene or kal.farbe}; font-size: 13pt;"
+            " border: none; padding: 0; }")
+        punkt.clicked.connect(lambda _, k=kal: self._farbe_waehlen(k))
         wl.addWidget(punkt)
 
         name = QLabel(kal.name or kal.kennung[:16])
         if kal.abgeschaltet:
             name.setStyleSheet("font-style: italic; color: palette(mid);")
         wl.addWidget(name, stretch=1)
+
+        # Der Rückweg erscheint nur, wenn es etwas zurückzunehmen gibt -
+        # sonst stünde in jeder Zeile ein Knopf, der nichts tut. Er steht
+        # am Zeilenende wie das Kreuz bei den Abonnements: Zwischen Punkt
+        # und Namen gesetzt, rückte er die Namen der betroffenen Zeilen
+        # ein, und die Liste stand nicht mehr bündig.
+        if eigene:
+            zurueck = QPushButton("↺")
+            zurueck.setFlat(True)
+            zurueck.setFixedWidth(24)
+            zurueck.setCursor(Qt.CursorShape.PointingHandCursor)
+            zurueck.setToolTip(
+                "Wieder die Farbe aus dem Kalenderprogramm verwenden"
+                f" ({kal.farbe}).")
+            zurueck.clicked.connect(lambda _, k=kal: self._farbe_zuruecksetzen(k))
+            wl.addWidget(zurueck)
 
         # Einzelheiten nur auf Nachfrage - sonst wird die Liste wieder lang.
         teile = [f"Art: {kal.art}", kal.abholtext()]
@@ -396,8 +426,15 @@ class _KalenderUebersicht(QScrollArea):
         teile.append("Haken entfernen, um diesen Kalender in KALENDERBlick\n"
                      "auszublenden - im Kalenderprogramm bleibt er sichtbar.")
         hinweis = "\n".join(teile)
-        for widget in (zeile, haken, name, punkt):
+        for widget in (zeile, haken, name):
             widget.setToolTip(hinweis)
+        # Der Punkt bekommt einen eigenen Hinweis - dass er anklickbar
+        # ist, sieht man ihm sonst nicht an.
+        punkt.setToolTip(
+            "Anklicken, um eine eigene Farbe für diesen Kalender zu wählen."
+            + (f"\nAus dem Kalenderprogramm käme {kal.farbe}."
+               if eigene else
+               f"\nZurzeit die Farbe aus dem Kalenderprogramm ({kal.farbe})."))
 
         # Abonnierte Kalender hat der Nutzer selbst eingetragen - also
         # soll er sie auch wieder loswerden können.
@@ -408,6 +445,44 @@ class _KalenderUebersicht(QScrollArea):
             weg.clicked.connect(lambda _, k=kal: self._abo_entfernen(k))
             wl.addWidget(weg)
         return zeile
+
+    def _farbe_waehlen(self, kal) -> None:
+        """Eigene Farbe für einen Kalender - oder zurück zur Vorgabe.
+
+        Wird genau die Farbe gewählt, die das Kalenderprogramm ohnehin
+        liefert, merken wir nichts: Sonst stünde ein Eintrag in der
+        Konfiguration, der nichts bewirkt - und würde eine spätere
+        Änderung in Thunderbird stillschweigend blockieren.
+        """
+        e = konfig_modul.laden()
+        start = QColor(e.kalender_farben.get(kal.kennung) or kal.farbe)
+        gewaehlt = QColorDialog.getColor(
+            start, self, f"Farbe für „{kal.name or kal.kennung[:16]}“")
+        if not gewaehlt.isValid():
+            return
+        neu = gewaehlt.name()
+        if neu.lower() == (kal.farbe or "").lower():
+            e.kalender_farben.pop(kal.kennung, None)
+        else:
+            e.kalender_farben[kal.kennung] = neu
+        self._farben_schreiben(e)
+
+    def _farbe_zuruecksetzen(self, kal) -> None:
+        e = konfig_modul.laden()
+        e.kalender_farben.pop(kal.kennung, None)
+        self._farben_schreiben(e)
+
+    def _farben_schreiben(self, e) -> None:
+        """Sofort speichern statt auf „Einstellungen speichern" zu warten.
+
+        Wie beim Entfernen eines Abonnements: Wer eine Farbe wählt, will
+        sie sehen. `_speichern` lädt die Datei ohnehin frisch, der
+        Eintrag überlebt also einen späteren Klick auf den Knopf.
+        """
+        e.speichern()
+        self.lade()
+        if self._nach_aenderung:
+            self._nach_aenderung()
 
     def _abo_entfernen(self, abo) -> None:
         antwort = QMessageBox.question(

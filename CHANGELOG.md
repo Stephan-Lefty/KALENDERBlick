@@ -2,6 +2,21 @@
 
 ## Unveröffentlicht
 
+**Neu**
+
+- **Eigene Farbe je Kalender.** Bisher übernahm KALENDERBlick die
+  Farbe stillschweigend aus Thunderbird oder Evolution. Das bleibt die
+  Vorgabe - dort ist sie schon einmal vergeben worden, und niemand
+  soll alles ein zweites Mal einrichten müssen. Wer abweichen will,
+  klickt in den Einstellungen unter „Kalenderquellen" auf den
+  Farbpunkt neben dem Haken; ein **↺** daneben führt zurück zur Farbe
+  aus dem Kalenderprogramm.
+
+  Die Wahl gilt nur für KALENDERBlick - im Kalenderprogramm ändert
+  sich nichts. Angeregt aus der Community am 25.11.2026, weil
+  dieselbe Farbe auf dunklem Schreibtischgrund anders wirkt als in
+  einem hellen Kalenderfenster.
+
 **Behoben**
 
 - **Das Schreibtischwidget zog nach dem Speichern nicht nach.** Wer den

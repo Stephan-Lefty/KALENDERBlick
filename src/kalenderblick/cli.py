@@ -165,6 +165,7 @@ def befehl_liste(args) -> int:
         tage_voraus=args.tage or e.tage_voraus,
         tage_zurueck=e.tage_zurueck,
         versteckt=e.versteckte_kalender,
+        farben=e.kalender_farben,
     )
     if not args.alles and not e.vergangene_zeigen:
         jetzt = datetime.now()
@@ -193,7 +194,8 @@ def befehl_naechster(args) -> int:
     termine = quellen.lies_termine(
         quelle=e.quelle,
         profil_vorgabe=getattr(args, "profil", "") or e.profil,
-        tage_voraus=e.tage_voraus, versteckt=e.versteckte_kalender)
+        tage_voraus=e.tage_voraus, versteckt=e.versteckte_kalender,
+        farben=e.kalender_farben)
     _schreib(kurzfassung(naechster(termine)))
     return 0
 

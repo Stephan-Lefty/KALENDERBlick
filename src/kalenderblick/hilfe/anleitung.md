@@ -285,6 +285,19 @@ geschrieben wurde und ob der Kalender abgeschaltet oder nur lesbar ist.
 Praktisch zum Nachsehen, warum ein Kalender nicht wie erwartet
 auftaucht.
 
+**Der Farbpunkt ist anklickbar.** Normalerweise übernimmt
+KALENDERBlick die Farbe aus dem Kalenderprogramm - dort ist sie schon
+einmal vergeben worden, und niemand soll alles ein zweites Mal
+einrichten müssen. Auf dem Schreibtisch wirkt dieselbe Farbe aber oft
+anders als in einem hellen Kalenderfenster. Ein Klick auf den Punkt
+öffnet die Farbauswahl; die Wahl gilt sofort und nur für
+KALENDERBlick, im Kalenderprogramm ändert sich nichts.
+
+Ist eine eigene Farbe gesetzt, erscheint daneben ein **↺**. Damit geht
+es zurück zur Farbe aus dem Kalenderprogramm - und erst dann wirken
+dortige Änderungen wieder mit. Solange eine eigene Farbe gilt, hat sie
+Vorrang.
+
 Mit **„Kalender abonnieren …“** lässt sich ein Kalender unmittelbar über
 seine Internetadresse einbinden - ohne Kalenderprogramm. KALENDERBlick
 ruft ihn dann selbst ab, höchstens alle 30 Minuten. Abonnierte Kalender

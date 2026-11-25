@@ -40,6 +40,7 @@ class LadeThread(QThread):
                 tage_voraus=max(e.tage_voraus, weiteste_ansicht),
                 tage_zurueck=e.tage_zurueck,
                 versteckt=e.versteckte_kalender,
+                farben=e.kalender_farben,
             )
             self.fertig.emit(termine)
         except Exception as fehler:

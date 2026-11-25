@@ -75,7 +75,8 @@ def _gewaehlt(quelle: str, vorhanden: Lage) -> tuple[bool, bool]:
 
 def lies_termine(quelle: str = AUTOMATISCH, profil_vorgabe: str = "",
                  tage_voraus: int = 14, tage_zurueck: int = 0,
-                 versteckt: list[str] | None = None) -> list[Termin]:
+                 versteckt: list[str] | None = None,
+                 farben: dict[str, str] | None = None) -> list[Termin]:
     """Termine aus allen gewählten Quellen, zusammengeführt und sortiert."""
     vorhanden = lage(profil_vorgabe)
     nutze_tb, nutze_ev = _gewaehlt(quelle, vorhanden)
@@ -120,8 +121,29 @@ def lies_termine(quelle: str = AUTOMATISCH, profil_vorgabe: str = "",
     if fehler and not alle:
         raise KeineQuelle("\n\n".join(fehler))
 
+    faerbe(alle, farben)
     alle.sort(key=lambda t: (t.beginn, not t.ganztags, t.titel))
     return alle
+
+
+def faerbe(termine: list[Termin], farben: dict[str, str] | None) -> None:
+    """Setzt selbst gewählte Kalenderfarben über die der Quelle.
+
+    An einer Stelle für alle drei Quellen, weil `Termin.kalender_id`
+    überall dieselbe Kennung trägt wie `Kalender.kennung` - dieselbe,
+    nach der auch ausgeblendet wird. Würde jede Quelle das selbst tun,
+    müsste die Zuordnung dreimal stimmen.
+
+    Was nicht in `farben` steht, bleibt, wie die Quelle es geliefert
+    hat. Die Farben aus Thunderbird oder Evolution sind als Vorgabe
+    meist richtig: Dort hat der Nutzer sie schon einmal vergeben.
+    """
+    if not farben:
+        return
+    for termin in termine:
+        eigene = farben.get(termin.kalender_id)
+        if eigene:
+            termin.farbe = eigene
 
 
 def lies_kalender(quelle: str = AUTOMATISCH, profil_vorgabe: str = "") -> list:
