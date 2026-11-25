@@ -55,7 +55,9 @@
       `.deb` - also seine Kombination. Mit dem Testkalender
       (`werkzeuge/testkalender.py`) stand die 14-Tage-Ansicht als
       hoher, voll besetzter Kasten auf dem Schreibtisch und blieb
-      bedienbar.
+      bedienbar. Danach jeder Schalter einzeln durchgegangen,
+      „Position sperren" eingeschlossen - **alle sauber.** Damit ist
+      auch der Auslöser abgedeckt, den er genannt hatte.
 
       **Das entlastet 1.8.7 für Mint 22.3 im Allgemeinen, widerlegt
       seinen Fall aber nicht.** Was die VM nicht nachstellt: echter

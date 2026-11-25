@@ -35,9 +35,9 @@ und ein Klick darauf öffnet gar kein Fenster mehr. In den kurzen
 Abholfenstern ist das derselbe Effekt, nur selten genug, um nicht zu
 stören.
 
-Erprobt auf Arch/Manjaro mit KDE Plasma (Wayland), auf Debian mit
-Cinnamon (X11), auf Debian 13 mit GNOME (Wayland) und auf Debian mit
-Xfce (X11). Den vollen Funktionsumfang gibt es unter KDE Plasma – was
+Erprobt auf Arch/Manjaro mit KDE Plasma (Wayland), auf Debian und auf
+Linux Mint 22.3 mit Cinnamon (X11), auf Debian 13 mit GNOME (Wayland)
+und auf Xfce (X11). Den vollen Funktionsumfang gibt es unter KDE Plasma – was
 unter den anderen Arbeitsumgebungen anders ist, steht weiter unten.
 
 ## Warum nicht einfach Rainlendar oder ein Plasma-Widget?
@@ -198,8 +198,10 @@ Fertig mitgeliefert, aber optional:
 **Cinnamon und Xfce (X11):** Hier darf sich das Fenster selbst
 positionieren, es braucht also keine Regel. Beide laufen über denselben
 X11-Weg; die Haken in der Tabelle gelten für das, was X11 dem Programm
-erlaubt - unter Xfce ist bisher der Grundbetrieb erprobt, die einzelnen
-Schalter noch nicht jeder für sich.
+erlaubt. Unter Cinnamon ist jeder Schalter einzeln nachgemessen,
+zuletzt am 25.11.2026 unter Linux Mint 22.3 (Cinnamon 6.6.9, Qt 6.4.2).
+Unter Xfce ist bisher nur der Grundbetrieb und „Position sperren"
+erprobt, die übrigen Schalter noch nicht jeder für sich.
 
 **GNOME/Wayland:** Es gibt keine Schnittstelle für Fensterposition oder
 Stapelreihenfolge - das Schreibtischfenster verhält sich wie jedes andere
