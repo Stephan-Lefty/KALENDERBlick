@@ -478,4 +478,5 @@ einer Sitzung.
 | Termine aus Evolution fehlen | Prüfen, ob unter „Terminquelle" nicht versehentlich „Nur Thunderbird / Betterbird" eingestellt ist. |
 | Abonnierter Kalender zeigt nichts | Die Adresse muss auf eine iCalendar-Datei zeigen (endet meist auf `.ics`). Bei Google ist es die **private** Adresse, nicht die öffentliche. |
 | Kein Symbol in der Leiste (GNOME) | Die Erweiterung `gnome-shell-extension-appindicator` installieren und sich einmal neu anmelden - siehe Abschnitt 10. |
+| Zahnrad statt KALENDERBlick-Symbol im Menü | Die Arbeitsumgebung hält ihr eigenes Abbild des Menüs und bemerkt das neue Symbol erst nach einem Neuladen. Unter Cinnamon genügt **Strg+Alt+Esc**, unter KDE Plasma `kbuildsycoca6 --noincremental`, sonst hilft einmal ab- und wieder anmelden. Am Paket liegt es nicht: Dass die Symboldatei da ist, zeigt `ls /usr/share/icons/hicolor/48x48/apps/kalenderblick.png`. |
 | Zweites Fenster lässt sich nicht öffnen | KALENDERBlick läuft schon - ein Blick ins Leistensymbol genügt, ein zweiter gleichzeitiger Start ist bewusst gesperrt. |
